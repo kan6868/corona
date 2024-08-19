@@ -1,4 +1,4 @@
-name: Daily Build
+name: Build Test
 
 on:
   push:
@@ -133,7 +133,6 @@ jobs:
       - source-code
       - native
       - webtemplate
-      - linux
     runs-on: windows-2019
     steps:
       - name: Get processed code
