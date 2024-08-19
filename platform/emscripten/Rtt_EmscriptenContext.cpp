@@ -448,8 +448,8 @@ namespace Rtt
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
 			if (w > 0 && h > 0)
 			{
-				fWidth = w;
-				fHeight = h;
+				fWidth = w * 2;
+				fHeight = h * 2;
 			}
 			else
 			{
@@ -463,14 +463,14 @@ namespace Rtt
 			fOrientation = DeviceOrientation::kSidewaysLeft; 	// bottom of device is to the left
 			if (w > 0 && h > 0)
 			{
-				fWidth = w * 2.;
-				fHeight = h * 2.;
+				fWidth = w * 2;
+				fHeight = h * 2;
 			}
 			else
 			{
 				// no valid defaultViewWidth & defaultViewHeight in 'build.settings', default values of fWidth & fHeight for Portrait
 				// use swapped default settings 
-				Swap(fWidth * 2., fHeight * 2.);
+				Swap(fWidth, fHeight);
 			}
 		}
 		else if (orientation == "portrait")
@@ -651,7 +651,7 @@ namespace Rtt
 		while (closeApp == false)
 		{
 			closeApp = TimerTick();
-			SDL_Delay(30);		// hack, 30FPS for debugging
+			SDL_Delay(60);		// hack, 30FPS for debugging
 		}
 #endif
 	}
