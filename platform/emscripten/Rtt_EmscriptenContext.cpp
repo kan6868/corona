@@ -463,14 +463,14 @@ namespace Rtt
 			fOrientation = DeviceOrientation::kSidewaysLeft; 	// bottom of device is to the left
 			if (w > 0 && h > 0)
 			{
-				fWidth = w;
-				fHeight = h;
+				fWidth = w * 2.;
+				fHeight = h * 2.;
 			}
 			else
 			{
 				// no valid defaultViewWidth & defaultViewHeight in 'build.settings', default values of fWidth & fHeight for Portrait
 				// use swapped default settings 
-				Swap(fWidth, fHeight);
+				Swap(fWidth * 2., fHeight * 2.);
 			}
 		}
 		else if (orientation == "portrait")
@@ -519,7 +519,7 @@ namespace Rtt
 			fWidth *= scale;
 			fHeight *= scale;
 		}
-		SDL_GL_SetSwapInterval(1); // Enable vsync
+		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
