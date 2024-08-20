@@ -69,14 +69,11 @@ namespace Rtt
 	{
 		CoronaAppContext *context = (CoronaAppContext*) userdata;
 		float frameDuration = 1000.0f / (float) context->getFPS();
-	
-		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		
-		U64 delta = now - s_tick;
 
-		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
+		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
-			s_tick = now - (delta % frameDuration);
+			s_tick = now;
 			context->TimerTick();
 		}
 	}
