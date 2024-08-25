@@ -443,6 +443,11 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
+		
+		w = w / 2;
+		
+		h = h / 2;
+
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -651,17 +656,17 @@ namespace Rtt
 		while (closeApp == false)
 		{
 			closeApp = TimerTick();
-			SDL_Delay(60);		// hack, 30FPS for debugging
+			SDL_Delay(30);		// hack, 30FPS for debugging
 		}
 #endif
 	}
 
 	void CoronaAppContext::pause()
 	{
-		if (fRuntime->IsSuspended() == false)
-		{
-			fRuntime->Suspend();
-		}
+		//if (fRuntime->IsSuspended() == false)
+		//{
+			//fRuntime->Suspend();
+		//}
 	}
 
 	void CoronaAppContext::resume()
