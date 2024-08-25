@@ -455,7 +455,7 @@ namespace Rtt
 			{
 				// no valid defaultViewWidth & defaultViewHeight in 'build.settings', default values of fWidth & fHeight for Portrait
 				// use swapped default settings 
-				//Swap(fWidth, fHeight);
+				Swap(fWidth, fHeight);
 			}
 		}
 		else if (orientation == "landscapeLeft")
@@ -470,7 +470,7 @@ namespace Rtt
 			{
 				// no valid defaultViewWidth & defaultViewHeight in 'build.settings', default values of fWidth & fHeight for Portrait
 				// use swapped default settings 
-				//Swap(fWidth, fHeight);
+				Swap(fWidth, fHeight);
 			}
 		}
 		else if (orientation == "portrait")
@@ -550,7 +550,7 @@ namespace Rtt
 		// pass config.lua to JS
 		if (orientation == "landscapeRight" || orientation == "landscapeLeft")
 		{
-			//Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
 		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
