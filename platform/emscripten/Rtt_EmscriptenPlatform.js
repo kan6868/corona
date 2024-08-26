@@ -536,6 +536,9 @@ var platformLibrary =
 		Module.appElementCounter = 1;	// element counter
 		Module.appInitWidth = appWidth;
 		Module.appInitHeight = appHeight;
+		
+		console.log("AppWidth: " + appWidth + " AppHeight: " + appHeight);
+
 		Module.appOrientation = orientation;
 		Module.appContentWidth = 0;
 		Module.appContentHeight = 0;
@@ -597,6 +600,8 @@ var platformLibrary =
 
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
+				
+				console.log("Object Scale: " + scale);
 
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
@@ -619,12 +624,12 @@ var platformLibrary =
 
 	jsContextConfig: function(w, h)	{
 		console.log("Context Config - w: " + w + ", h: " + h);
-		Module.appContentWidth = w / 2;
-		Module.appContentHeight = h / 2;
+		Module.appContentWidth = w;
+		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() {	return window.innerWidth;	},
-	jsContextGetWindowHeight: function() { return window.innerHeight;	},
+	jsContextGetWindowWidth: function() {	console.log("Window width: " + window.innerWidth); return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { console.log("Window height: " + window.innerHeight); return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -935,16 +940,14 @@ var platformLibrary =
 		ww = w > 0 ? w : 1;
 		if (hh <= 0)
 		{
-			console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+		
 			hh = 1;
 		}
 		// it's needs for corona ?
 		if ((ww & 0x3) != 0) {
 			ww = (ww + 3) & -4;
 		}
-
-	
-
+		console.log('render: ', ww, hh);
 		var myImageData = ctx.getImageData(0, 0, ww, hh);
 		var img = Module.jarray2carray(myImageData.data);
 		_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
