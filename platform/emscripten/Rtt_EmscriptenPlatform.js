@@ -619,8 +619,8 @@ var platformLibrary =
 
 	jsContextConfig: function(w, h)	{
 		console.log("Context Config - w: " + w + ", h: " + h);
-		Module.appContentWidth = w;
-		Module.appContentHeight = h;
+		Module.appContentWidth = w / 2;
+		Module.appContentHeight = h / 2;
 	},
 
 	jsContextGetWindowWidth: function() {	return window.innerWidth;	},
@@ -933,13 +933,17 @@ var platformLibrary =
 
 		hh = h > 0 ? h : y + lineHeight;
 		ww = w > 0 ? w : 1;
-
+		if (hh <= 0)
+		{
+			console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+			hh = 1;
+		}
 		// it's needs for corona ?
 		if ((ww & 0x3) != 0) {
 			ww = (ww + 3) & -4;
 		}
 
-		console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+	
 
 		var myImageData = ctx.getImageData(0, 0, ww, hh);
 		var img = Module.jarray2carray(myImageData.data);
