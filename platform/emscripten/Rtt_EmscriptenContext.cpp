@@ -443,10 +443,6 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-		
-		w = w / 2;
-		
-		h = h / 2;
 
 		if (orientation == "landscapeRight")
 		{
@@ -663,10 +659,10 @@ namespace Rtt
 
 	void CoronaAppContext::pause()
 	{
-		//if (fRuntime->IsSuspended() == false)
-		//{
-			//fRuntime->Suspend();
-		//}
+		if (fRuntime->IsSuspended() == false)
+		{
+			fRuntime->Suspend();
+		}
 	}
 
 	void CoronaAppContext::resume()
