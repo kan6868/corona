@@ -516,7 +516,7 @@ namespace Rtt
 
 			float scaleX = (float) jsWindowWidth / (float) fWidth;
 			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmin(scaleX, scaleY);				// keep ratio
+			float scale = fmax(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}

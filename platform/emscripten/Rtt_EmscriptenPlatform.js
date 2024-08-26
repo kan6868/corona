@@ -628,8 +628,8 @@ var platformLibrary =
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() {	console.log("Window width: " + window.innerWidth); return window.innerWidth;	},
-	jsContextGetWindowHeight: function() { console.log("Window height: " + window.innerHeight); return window.innerHeight;	},
+	jsContextGetWindowWidth: function() { return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -859,7 +859,10 @@ var platformLibrary =
 
 		var a = measureText(testtext, false, fontName, fontSize);
 		var lineHeight = a[1];
-
+		if (lineHeight <= 0)
+		{
+			lineHeight = 24;
+		}
 		if (w == 0) {
 			// calc width
 			var line = '';
@@ -947,7 +950,7 @@ var platformLibrary =
 		if ((ww & 0x3) != 0) {
 			ww = (ww + 3) & -4;
 		}
-		console.log('render: ', ww, hh);
+		console.log('render: ', ww, hh, lineHeight);
 		var myImageData = ctx.getImageData(0, 0, ww, hh);
 		var img = Module.jarray2carray(myImageData.data);
 		_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
