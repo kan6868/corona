@@ -357,8 +357,8 @@ namespace Rtt
 		, fPathToApp(pathToApp)
 		, fDocumentsDir(pathToApp)
 		, fPlatform(NULL)
-		, fWidth(320)
-		, fHeight(480)
+		, fWidth(640)
+		, fHeight(960)
 		, fOrientation(DeviceOrientation::kUpright)
 		, fAppState(MOUNT_IDBFS)
 		, fWindow(NULL)
@@ -443,7 +443,8 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-
+		w = w * 2;
+		h = h * 2;
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -516,7 +517,7 @@ namespace Rtt
 
 			float scaleX = (float) jsWindowWidth / (float) fWidth;
 			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmax(scaleX, scaleY);				// keep ratio
+			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}
