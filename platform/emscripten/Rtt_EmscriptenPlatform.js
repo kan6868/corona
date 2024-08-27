@@ -628,8 +628,8 @@ var platformLibrary =
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() { return window.innerWidth / 2;	},
-	jsContextGetWindowHeight: function() { return window.innerHeight / 2;	},
+	jsContextGetWindowWidth: function() { return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it

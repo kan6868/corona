@@ -71,7 +71,7 @@ namespace Rtt
 		float frameDuration = 1.0f / (float) context->getFPS();
 		
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
 			s_tick = now;
 			context->TimerTick();
@@ -506,7 +506,8 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-
+		fWidth *= 2;
+		fHeight *= 2;
 		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
