@@ -517,8 +517,8 @@ namespace Rtt
 			float scaleX = (float)jsWindowWidth / (float)fWidth;
 			float scaleY =  (float) jsWindowHeight / (float)fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			//fWidth *= scale;
-			//fHeight *= scale;
+			fWidth *= scale;
+			fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
@@ -561,7 +561,7 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-
+		jsContextResizeNativeObjects();
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
@@ -569,7 +569,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 #endif
-
+		fRuntime->DispatchEvent(ResizeEvent());
 		return true;
 	}
 
