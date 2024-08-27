@@ -600,7 +600,7 @@ var platformLibrary =
 
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
-				
+				scale *= 2;
 				console.log("Object Scale: " + scale);
 
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
@@ -628,8 +628,8 @@ var platformLibrary =
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() { return window.innerWidth;	},
-	jsContextGetWindowHeight: function() { return window.innerHeight;	},
+	jsContextGetWindowWidth: function() { return window.innerWidth / 2;	},
+	jsContextGetWindowHeight: function() { return window.innerHeight / 2;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
