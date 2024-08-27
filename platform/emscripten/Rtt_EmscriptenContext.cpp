@@ -69,7 +69,7 @@ namespace Rtt
 	{
 		CoronaAppContext *context = (CoronaAppContext*) userdata;
 		float frameDuration = 1.0f / (float) context->getFPS();
-
+		
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
 		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
@@ -357,8 +357,8 @@ namespace Rtt
 		, fPathToApp(pathToApp)
 		, fDocumentsDir(pathToApp)
 		, fPlatform(NULL)
-		, fWidth(640)
-		, fHeight(960)
+		, fWidth(320)
+		, fHeight(480)
 		, fOrientation(DeviceOrientation::kUpright)
 		, fAppState(MOUNT_IDBFS)
 		, fWindow(NULL)
@@ -443,8 +443,7 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-		w = w * 2;
-		h = h * 2;
+
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -554,7 +553,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * 2, fRuntimeDelegate->fContentHeight * 2);
 
 		fRuntime->BeginRunLoop();
 
