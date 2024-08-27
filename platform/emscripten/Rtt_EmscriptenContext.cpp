@@ -506,8 +506,7 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		fWidth *= 2;
-		fHeight *= 2;
+
 		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
@@ -515,8 +514,8 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
+			float scaleX = (float)fWidth / (float)jsWindowWidth;
+			float scaleY = (float)fHeight / (float) jsWindowHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -648,7 +647,6 @@ namespace Rtt
 	{
 #if defined(EMSCRIPTEN)
 		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
-		jsContextResizeNativeObjects();
 #else
 		bool closeApp = false;
 		while (closeApp == false)
