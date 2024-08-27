@@ -506,8 +506,9 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		fWidth *= 2;
-		fHeight *= 2;
+		fWidth /= 2;
+		fHeight /= 2;
+
 		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
