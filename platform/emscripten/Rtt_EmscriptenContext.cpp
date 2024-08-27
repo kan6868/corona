@@ -511,14 +511,14 @@ namespace Rtt
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth() * 2.0;
-			int jsWindowHeight = jsContextGetWindowHeight() * 2.0;
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
 
 			float scaleX = (float)jsWindowWidth / (float)fWidth;
 			float scaleY =  (float) jsWindowHeight / (float)fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			fWidth *= scale;
-			fHeight *= scale;
+			//fWidth *= scale;
+			//fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
@@ -939,8 +939,8 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1 * 2.0;
-					float h = (float)event.window.data2 * 2.0;
+					float w = (float)event.window.data1;
+					float h = (float)event.window.data2;
 
 					// keep ratio
 					float scaleX = w / fWidth;
