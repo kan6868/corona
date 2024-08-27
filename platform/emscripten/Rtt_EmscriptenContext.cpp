@@ -511,8 +511,8 @@ namespace Rtt
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
+			int jsWindowWidth = jsContextGetWindowWidth() * 2.0;
+			int jsWindowHeight = jsContextGetWindowHeight() * 2.0;
 
 			float scaleX = (float)jsWindowWidth / (float)fWidth;
 			float scaleY =  (float) jsWindowHeight / (float)fHeight;
@@ -939,8 +939,8 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
+					float w = (float)event.window.data1 * 2.0;
+					float h = (float)event.window.data2 * 2.0;
 
 					// keep ratio
 					float scaleX = w / fWidth;
