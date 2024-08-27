@@ -507,12 +507,12 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit(fWidth, fHeight, fOrientation);
+		jsContextInit(fWidth * 2, fHeight * 2, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth() / 2;
-			int jsWindowHeight = jsContextGetWindowHeight() / 2;
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
 
 			float scaleX = (float)jsWindowWidth / (float)fWidth;
 			float scaleY =  (float) jsWindowHeight / (float)fHeight;
@@ -553,7 +553,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * 2, fRuntimeDelegate->fContentHeight * 2);
 
 		fRuntime->BeginRunLoop();
 
@@ -941,8 +941,6 @@ namespace Rtt
 				{
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
-					w = w / 2;
-					h = h / 2;
 					// keep ratio
 					float scaleX = w / fWidth;
 					float scaleY = h / fHeight;
