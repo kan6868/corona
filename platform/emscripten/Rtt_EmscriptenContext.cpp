@@ -517,8 +517,8 @@ namespace Rtt
 			float scaleX = (float)jsWindowWidth / (float)fWidth;
 			float scaleY =  (float) jsWindowHeight / (float)fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			//fWidth *= scale;
-			//fHeight *= scale;
+			fWidth *= scale;
+			fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;

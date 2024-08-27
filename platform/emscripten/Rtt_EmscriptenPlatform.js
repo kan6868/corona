@@ -284,7 +284,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 		
 		window.refreshNativeObject(obj.id);
-		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
+		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -601,7 +601,6 @@ var platformLibrary =
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
 				scale *= 2;
-				console.log("Object Scale: " + scale);
 
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
@@ -628,8 +627,8 @@ var platformLibrary =
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() { return window.innerWidth;	},
-	jsContextGetWindowHeight: function() { return window.innerHeight;	},
+	jsContextGetWindowWidth: function() { console.log("innerWidth: " + window.innerWidth); return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { console.log("innerHeight: " + window.innerHeight); return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -655,7 +654,7 @@ var platformLibrary =
 		catch (e) {
 			Module.printErr('Error: Failed to sync IDBFS\n', e);
 		}
-		console.log("Syncing started");
+		//console.log("Syncing started");
 	},
 
 	jsContextResizeNativeObjects: function () {
@@ -859,106 +858,103 @@ var platformLibrary =
 
 		var a = measureText(testtext, false, fontName, fontSize);
 		var lineHeight = a[1];
-		if (lineHeight <= 0)
-		{
-			lineHeight = 24;
-		}
-		if (w == 0) {
-			// calc width
-			var line = '';
-			for (var i = 0; i < text.length; i++) {
-				if (text.charAt(i) == '\n') {
-					line = '';
-				}
-				else {
-					line += text.charAt(i);
-					var metrics = ctx.measureText(line);
-					if (metrics.width > w) {
-						w = metrics.width;
-					}
-				}
-			}
-			// last line
-			var metrics = ctx.measureText(line);
-			w = Math.max(w, metrics.width);
-		}
-
-		var x = 0;
-		var y = 0;
-		if (alignment === 'right') {
-			x = w;
-		}
-		else
-			if (alignment === 'center') {
-				x = w / 2;
-			}
-
-		// wrap text
-
-		var ww = 0;
-		var hh = 0;
-		var line = '';
-		for (var i = 0; i < text.length; i++) {
-			if (text.charAt(i) == '\n') {
-				ctx.fillText(line, x, y);
-				line = '';
-				y += lineHeight;
-			}
-			else {
-				var testLine = line + text.charAt(i);
-				var metrics = ctx.measureText(testLine);
-				if (metrics.width > w) {
-					if (text.charAt(i) === ' ') {
-						// ignore last space
-						ctx.fillText(line, x, y);
+		console.log("Line Height: " + lineHeight);
+		if (lineHeight){
+			if (w == 0) {
+				// calc width
+				var line = '';
+				for (var i = 0; i < text.length; i++) {
+					if (text.charAt(i) == '\n') {
 						line = '';
 					}
 					else {
-						// delete last uncomplete word if space exists
-						var a = line.split(' ');
-						if (a.length > 1)	{
-							var line = a[a.length - 1] + text.charAt(i);	// the beginning of next line
-							a.pop();		// remove last
-							var s = a.join(' ');
-							ctx.fillText(s, x, y);
-						}
-						else{
-							// no words, draw line as is 
-							ctx.fillText(line, x, y);
-							line = text.charAt(i);	// the beginning of next line
+						line += text.charAt(i);
+						var metrics = ctx.measureText(line);
+						if (metrics.width > w) {
+							w = metrics.width;
 						}
 					}
+				}
+				// last line
+				var metrics = ctx.measureText(line);
+				w = Math.max(w, metrics.width);
+			}
+
+			var x = 0;
+			var y = 0;
+			if (alignment === 'right') {
+				x = w;
+			}
+			else
+				if (alignment === 'center') {
+					x = w / 2;
+				}
+
+			// wrap text
+
+			var ww = 0;
+			var hh = 0;
+			var line = '';
+			for (var i = 0; i < text.length; i++) {
+				if (text.charAt(i) == '\n') {
+					ctx.fillText(line, x, y);
+					line = '';
 					y += lineHeight;
 				}
 				else {
-					line = testLine;
+					var testLine = line + text.charAt(i);
+					var metrics = ctx.measureText(testLine);
+					if (metrics.width > w) {
+						if (text.charAt(i) === ' ') {
+							// ignore last space
+							ctx.fillText(line, x, y);
+							line = '';
+						}
+						else {
+							// delete last uncomplete word if space exists
+							var a = line.split(' ');
+							if (a.length > 1)	{
+								var line = a[a.length - 1] + text.charAt(i);	// the beginning of next line
+								a.pop();		// remove last
+								var s = a.join(' ');
+								ctx.fillText(s, x, y);
+							}
+							else{
+								// no words, draw line as is 
+								ctx.fillText(line, x, y);
+								line = text.charAt(i);	// the beginning of next line
+							}
+						}
+						y += lineHeight;
+					}
+					else {
+						line = testLine;
+					}
 				}
 			}
-		}
 
-		// last line
-		ctx.fillText(line, x, y);
+			// last line
+			ctx.fillText(line, x, y);
 
-		hh = h > 0 ? h : y + lineHeight;
-		ww = w > 0 ? w : 1;
-		if (hh <= 0)
-		{
-		
-			hh = 1;
-		}
-		// it's needs for corona ?
-		if ((ww & 0x3) != 0) {
-			ww = (ww + 3) & -4;
-		}
-		console.log('render: ', ww, hh, lineHeight);
-		var myImageData = ctx.getImageData(0, 0, ww, hh);
-		var img = Module.jarray2carray(myImageData.data);
-		_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
-		_free(img);
+			hh = h > 0 ? h : y + lineHeight;
+			ww = w > 0 ? w : 1;
 
-		//var body = document.getElementsByTagName("body")[0];
-		//body.appendChild(canva);
-		//canva.remove();
+			// it's needs for corona ?
+			if ((ww & 0x3) != 0) {
+				ww = (ww + 3) & -4;
+			}
+
+			//console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+
+			var myImageData = ctx.getImageData(0, 0, ww, hh);
+			var img = Module.jarray2carray(myImageData.data);
+			_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
+			_free(img);
+
+			//var body = document.getElementsByTagName("body")[0];
+			//body.appendChild(canva);
+			//canva.remove();
+		}
 	},
 
 	jsContextSetClearColor: function(r, g, b, a)
