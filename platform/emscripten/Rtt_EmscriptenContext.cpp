@@ -514,8 +514,8 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float)jsWindowWidth / (float)(fWidth);
-			float scaleY =  (float) jsWindowHeight / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
+			float scaleY =  (float)(jsWindowHeight * 2) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
