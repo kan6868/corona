@@ -508,16 +508,17 @@ namespace Rtt
 		}
 
 		jsContextInit(fWidth, fHeight, fOrientation);
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
+
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
+			// get JS window size
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
+
 			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
 			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			scale = scale * 2;
 			fWidth *= scale;
 			fHeight *= scale;
 		}
@@ -948,7 +949,6 @@ namespace Rtt
 					float scaleY = h / fHeight;
 
 					float scale = fmin(scaleX, scaleY);
-					scale = scale * 2;
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;

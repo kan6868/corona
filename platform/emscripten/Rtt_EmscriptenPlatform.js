@@ -597,10 +597,15 @@ var platformLibrary =
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+				
+				console.log("viewport: ");
+				console.log(viewPort);
 
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
-
+				
+				console.log("scale " + scale);
+				
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
 				obj.style.left = left + 'px';
