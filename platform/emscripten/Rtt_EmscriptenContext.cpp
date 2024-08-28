@@ -945,7 +945,7 @@ namespace Rtt
 					float scaleX = w / fWidth;
 					float scaleY = h / fHeight;
 
-					float scale = fmin(scaleX, scaleY) / 2.0;
+					float scale = fmin(scaleX, scaleY) * 2.0;
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
