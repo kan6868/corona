@@ -514,11 +514,11 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float)jsWindowWidth / (float)(fWidth / 2);
-			float scaleY =  (float) jsWindowHeight / (float)(fHeight / 2);
+			float scaleX = (float)jsWindowWidth / (float)(fWidth);
+			float scaleY =  (float) jsWindowHeight / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			fWidth *= scale;
-			fHeight *= scale;
+			//fWidth *= scale;
+			//fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
