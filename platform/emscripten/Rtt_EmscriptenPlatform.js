@@ -279,12 +279,12 @@ var platformLibrary =
 		obj.w = w - 2;	// -2 border
 		obj.h = h - 2;	// -2 border
 		obj.style.position = "absolute";
-		obj.style.width = obj.w + 'px';
-		obj.style.height = obj.h + 'px';
+		obj.style.width = (obj.w / 2) + 'px';
+		obj.style.height = (obj.h / 2) + 'px';
 		obj.style.borderWidth = "1px 1px 1px 1px";
 		
 		window.refreshNativeObject(obj.id);
-		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
+		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -295,8 +295,8 @@ var platformLibrary =
 			obj.y = y + 1;	// +1 border
 			obj.w = w - 2;	// -2 border
 			obj.h = h - 2;	// -2 border
-			obj.style.width = obj.w + 'px';
-			obj.style.height = obj.h + 'px';
+			obj.style.width = (obj.w / 2) + 'px';
+			obj.style.height = (obj.h / 2) + 'px';
 			window.refreshNativeObject(obj.id);
 		}
 	},
