@@ -517,8 +517,8 @@ namespace Rtt
 			float scaleX = (float)jsWindowWidth / (float)(fWidth);
 			float scaleY =  (float) jsWindowHeight / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			//fWidth *= scale;
-			//fHeight *= scale;
+			fWidth *= scale;
+			fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
@@ -942,8 +942,8 @@ namespace Rtt
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
 					// keep ratio
-					float scaleX = w / fWidth;
-					float scaleY = h / fHeight;
+					float scaleX = (w * 2.0) / fWidth;
+					float scaleY = (h * 2.0) / fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
