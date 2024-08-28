@@ -514,11 +514,10 @@ namespace Rtt
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-	
-
 			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
 			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
+			scale = scale * 2;
 			fWidth *= scale;
 			fHeight *= scale;
 		}
@@ -526,7 +525,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, jsWindowWidth, jsWindowHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -949,6 +948,7 @@ namespace Rtt
 					float scaleY = h / fHeight;
 
 					float scale = fmin(scaleX, scaleY);
+					scale = scale * 2;
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
