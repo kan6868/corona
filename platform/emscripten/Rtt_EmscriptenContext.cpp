@@ -508,14 +508,16 @@ namespace Rtt
 		}
 
 		jsContextInit(fWidth, fHeight, fOrientation);
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
+	
 
-			float scaleX = (float)(jsWindowWidth / 2) / (float)(fWidth / 2);
-			float scaleY =  (float)(jsWindowHeight / 2) / (float)(fHeight / 2);
+			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
+			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -525,9 +527,10 @@ namespace Rtt
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-
+		SDL_SetWindowSize(fWindow, fWidth, fHeight);
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
