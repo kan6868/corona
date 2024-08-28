@@ -514,8 +514,8 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth * 2);
-			float scaleY =  (float)(jsWindowHeight * 2) / (float)(fHeight * 2);
+			float scaleX = (float)(jsWindowWidth / 2) / (float)(fWidth / 2);
+			float scaleY =  (float)(jsWindowHeight / 2) / (float)(fHeight / 2);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -524,7 +524,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * 2, fHeight * 2, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
