@@ -566,7 +566,7 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		//jsContextResizeNativeObjects();
+		jsContextResizeNativeObjects();
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
@@ -574,43 +574,6 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 #endif
-
-		if (fMode == "maximized" || fMode == "fullscreen")
-		{
-			float w = (float)jsContextGetWindowWidth() * 2;
-			float h = (float)jsContextGetWindowHeight() * 2;
-			// keep ratio
-			float scaleX = w / fWidth;
-			float scaleY = h / fHeight;
-
-			float scale = fmin(scaleX, scaleY);
-			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-			{
-				w = fWidth * scaleX;
-				h = fHeight * scaleY;
-			}
-			else
-				if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-				{
-				}
-				else
-				{
-					w = fWidth * scale;
-					h = fHeight * scale;
-				}
-
-			SDL_SetWindowSize(fWindow, w, h);
-
-			fRuntime->WindowSizeChanged();
-			fRuntime->RestartRenderer(fOrientation);
-			fRuntime->GetDisplay().Invalidate();
-
-			fRuntime->DispatchEvent(ResizeEvent());
-		}
-
-		// refresh native elements
-		jsContextResizeNativeObjects();
-
 
 		return true;
 	}
