@@ -833,10 +833,7 @@ var platformLibrary =
 
 		var canva = document.createElement("canvas");
 		var dpr = Module.getPixelRatio();
-		var rect = canva.getBoundingClientRect();
 
-		canva.width = rect.width * dpr;
-		canva.height = rect.height * dpr;
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
