@@ -38,6 +38,7 @@ extern "C"
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
 	extern int jsContextGetWindowWidth();
 	extern int jsContextGetWindowHeight();
+	extern float jsContextGetPixelRatio();
 	extern void jsContextUnlockAudio();
 	extern void jsContextSyncFS();
 	extern void jsContextResizeNativeObjects();
@@ -52,6 +53,7 @@ extern "C"
 	int jsContextInit(int w, int h, int fOrientation) { appWidth = w; appHeight = h; return 0; }
 	int jsContextGetWindowWidth() { return appWidth; }
 	int jsContextGetWindowHeight() { return appHeight; }
+	float jsContextGetPixelRatio() { return 1.0; };
 	void jsContextUnlockAudio() {}
 	void jsContextSyncFS() {}
 	void jsContextResizeNativeObjects() {}
@@ -506,9 +508,9 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-
-		jsContextInit(fWidth, fHeight, fOrientation);
-
+		float pxRatio = jsContextGetPixelRatio();
+		jsContextInit(fWidth * pxRatio, fHeight * pxRatio, fOrientation);
+		
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
@@ -524,11 +526,12 @@ namespace Rtt
 			fWidth *= scale;
 			fHeight *= scale;
 		}
+
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pxRatio, fHeight * pxRatio, flags);
 		
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -574,7 +577,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", jsWindowWidth, jsWindowHeight);
+		emscripten_set_element_css_size("canvas", fWidth, fHeight);
 #endif
 
 		return true;
