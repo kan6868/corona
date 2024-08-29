@@ -510,11 +510,13 @@ namespace Rtt
 		jsContextInit(fWidth, fHeight, fOrientation);
 
 
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
+
 
 			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
 			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
@@ -556,7 +558,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth / 2, fRuntimeDelegate->fContentHeight / 2);
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
@@ -572,7 +574,13 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 #endif
-		//fRuntime->DispatchEvent(ResizeEvent());
+		SDL_SetWindowSize(fWindow, jsWindowWidth * 2, jsWindowWidth * 2);
+
+		fRuntime->WindowSizeChanged();
+		fRuntime->RestartRenderer(fOrientation);
+		fRuntime->GetDisplay().Invalidate();
+
+		fRuntime->DispatchEvent(ResizeEvent());
 		return true;
 	}
 
