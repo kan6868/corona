@@ -576,7 +576,7 @@ namespace Rtt
 #endif
 		SDL_SetWindowSize(fWindow, jsWindowWidth * 2, jsWindowWidth * 2);
 
-		fRuntime->WindowSizeChanged();
+		//fRuntime->WindowSizeChanged();
 		fRuntime->RestartRenderer(fOrientation);
 		fRuntime->GetDisplay().Invalidate();
 
