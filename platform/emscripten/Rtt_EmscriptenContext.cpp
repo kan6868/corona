@@ -510,13 +510,13 @@ namespace Rtt
 		jsContextInit(fWidth, fHeight, fOrientation);
 
 
-
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
+
 
 			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
 			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
@@ -574,7 +574,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", fWidth, fHeight);
+		emscripten_set_element_css_size("canvas", jsWindowWidth, jsWindowHeight);
 #endif
 
 		return true;
