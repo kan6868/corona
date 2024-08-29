@@ -575,7 +575,7 @@ namespace Rtt
 		}
 #endif
 
-		if (fullScreen == false && fMode == "maximized")
+		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			float w = (float)jsContextGetWindowWidth() * 2;
 			float h = (float)jsContextGetWindowHeight() * 2;
