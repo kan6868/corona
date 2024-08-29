@@ -574,13 +574,13 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 #endif
-		SDL_SetWindowSize(fWindow, jsWindowWidth * 2, jsWindowWidth * 2);
+		SDL_SetWindowSize(fWindow, jsWindowWidth, jsWindowWidth);
 
 		fRuntime->WindowSizeChanged();
 		fRuntime->RestartRenderer(fOrientation);
 		fRuntime->GetDisplay().Invalidate();
 
-		//fRuntime->DispatchEvent(ResizeEvent());
+		fRuntime->DispatchEvent(ResizeEvent());
 		return true;
 	}
 
