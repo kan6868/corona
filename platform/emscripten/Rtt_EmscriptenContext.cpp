@@ -38,7 +38,6 @@ extern "C"
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
 	extern int jsContextGetWindowWidth();
 	extern int jsContextGetWindowHeight();
-	extern float jsContextGetPixelRatio();
 	extern void jsContextUnlockAudio();
 	extern void jsContextSyncFS();
 	extern void jsContextResizeNativeObjects();
@@ -53,7 +52,6 @@ extern "C"
 	int jsContextInit(int w, int h, int fOrientation) { appWidth = w; appHeight = h; return 0; }
 	int jsContextGetWindowWidth() { return appWidth; }
 	int jsContextGetWindowHeight() { return appHeight; }
-	float jsContextGetPixelRatio() { return 1.0; };
 	void jsContextUnlockAudio() {}
 	void jsContextSyncFS() {}
 	void jsContextResizeNativeObjects() {}
@@ -508,9 +506,9 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		float pxRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth * pxRatio, fHeight * pxRatio, fOrientation);
-		
+
+		jsContextInit(fWidth, fHeight, fOrientation);
+
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
@@ -520,18 +518,17 @@ namespace Rtt
 		{
 
 
-			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
-			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth * 2.0) / (float)(fWidth);
+			float scaleY =  (float)(jsWindowHeight * 2.0) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}
-
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pxRatio, fHeight * pxRatio, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -944,7 +941,7 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true: false;
 				});
-
+				emscripten_set_element_css_size("canvas", fWidth, fHeight);
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
@@ -982,6 +979,9 @@ namespace Rtt
 					fRuntime->DispatchEvent(ResizeEvent());
 				}
 
+#ifdef EMSCRIPTEN
+				emscripten_set_element_css_size("canvas", fWidth, fHeight);
+#endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;

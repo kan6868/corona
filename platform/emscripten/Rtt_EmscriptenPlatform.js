@@ -556,6 +556,17 @@ var platformLibrary =
 			return dpr / bsr;
 		}
 
+		Module.createHiDPICanvas = function (w, h, ratio) {
+			if (!ratio) { ratio = Module.getPixelRatio(); }
+			var can = document.createElement("canvas");
+			can.width = w * ratio;
+			can.height = h * ratio;
+			can.style.width = w + "px";
+			can.style.height = h + "px";
+			can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+			return can;
+		}
+
 		// override Emscripten's function
 		Module.requestFullscreen = function () {
 			var element = document.getElementById('canvas');
@@ -623,10 +634,6 @@ var platformLibrary =
 		console.log("Context Config - w: " + w + ", h: " + h);
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
-	},
-	jsContextGetPixelRatio : function()
-	{
-		return Module.getPixelRatio();
 	},
 
 	jsContextGetWindowWidth: function () { console.log("innerWidth: " + window.innerWidth); return window.innerWidth; },
