@@ -510,19 +510,20 @@ var platformLibrary =
 		return 0;
 	},
 
-	jsGetPixelRatio: function (context) {
-		dpr = window.devicePixelRatio || 1,
-			bsr = context.webkitBackingStorePixelRatio ||
-			context.mozBackingStorePixelRatio ||
-			context.msBackingStorePixelRatio ||
-			context.oBackingStorePixelRatio ||
-			context.backingStorePixelRatio || 1;
+	jsContextGetPixelRatio: function () {
+		var ctx = document.createElement("canvas").getContext("2d"),
+        dpr = window.devicePixelRatio || 1,
+        bsr = ctx.webkitBackingStorePixelRatio ||
+              ctx.mozBackingStorePixelRatio ||
+              ctx.msBackingStorePixelRatio ||
+              ctx.oBackingStorePixelRatio ||
+              ctx.backingStorePixelRatio || 1;
 
-		return dpr / bsr;
+    	return dpr / bsr;
 	},
 
-	jsCreateHiDPICanvas: function (w, h, ratio) {
-		if (!ratio) { ratio = jsGetPixelRatio(); }
+	jsContextCreateHiDPICanvas: function (w, h, ratio) {
+		if (!ratio) { ratio = jsContextGetPixelRatio(); }
 		var can = document.createElement("canvas");
 		can.width = w * ratio;
 		can.height = h * ratio;
@@ -587,7 +588,7 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = jsCreateHiDPICanvas(Module.appContentWidth,Module.appContentHeight);
+		var canva = jsContextCreateHiDPICanvas(Module.appContentWidth,Module.appContentHeight);
 
 		var ctx = canva.getContext("2d");
 
@@ -826,7 +827,7 @@ var platformLibrary =
 		fontName = a[0];
 		var ext = a[1];
 
-		var canva = jsCreateHiDPICanvas(Module.appContentWidth,Module.appContentHeight);
+		var canva = jsContextCreateHiDPICanvas(Module.appContentWidth,Module.appContentHeight);
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
