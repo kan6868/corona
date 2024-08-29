@@ -587,10 +587,15 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = Module.createHiDPICanvas(Module.appContentWidth, Module.appContentHeight);
+		var canva = document.createElement("canvas");
+		var dpr = Module.getPixelRatio();
+		var rect = canva.getBoundingClientRect();
+
+		canva.width = rect.width * dpr;
+		canva.height = rect.height * dpr;
 
 		var ctx = canva.getContext("2d");
-
+		ctx.scale(dpr, dpr);
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
@@ -826,11 +831,16 @@ var platformLibrary =
 		fontName = a[0];
 		var ext = a[1];
 
-		var canva = Module.createHiDPICanvas(Module.appContentWidth, Module.appContentHeight);
+		var canva = document.createElement("canvas");
+		var dpr = Module.getPixelRatio();
+		var rect = canva.getBoundingClientRect();
+
+		canva.width = rect.width * dpr;
+		canva.height = rect.height * dpr;
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
-
+		ctx.scale(dpr, dpr);
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
 		}
