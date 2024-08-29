@@ -614,6 +614,8 @@ var platformLibrary =
 				obj.style.left = left + 'px';
 				obj.style.top = top + 'px';
 				obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
+			}else{
+				console.log("Element not found " + id);
 			}
 		};
 
