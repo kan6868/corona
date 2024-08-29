@@ -543,8 +543,9 @@ var platformLibrary =
 		var parent = document.getElementById('canvas').parentNode;
 		parent.id = 'emscripten_border';
 
-		Module.getPixelRatio = function () {
-			var ctx = document.createElement("canvas").getContext("2d"),
+		Module.getPixelRatio = function (context) {
+			if (!context) { context = document.createElement("canvas").getContext("2d");}
+			var ctx = context,
 			dpr = window.devicePixelRatio || 1,
 			bsr = ctx.webkitBackingStorePixelRatio ||
 				  ctx.mozBackingStorePixelRatio ||
@@ -588,13 +589,14 @@ var platformLibrary =
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
 		var canva = document.createElement("canvas");
-		var dpr = Module.getPixelRatio();
+		var ctx = canva.getContext("2d");
+		var dpr = Module.getPixelRatio(ctx);
 		var rect = canva.getBoundingClientRect();
 
 		canva.width = rect.width * dpr;
 		canva.height = rect.height * dpr;
 
-		var ctx = canva.getContext("2d");
+		
 		ctx.scale(dpr, dpr);
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
@@ -832,10 +834,21 @@ var platformLibrary =
 		var ext = a[1];
 
 		var canva = document.createElement("canvas");
+		var ctx = canva.getContext("2d");
+		
+		var dpr = Module.getPixelRatio(ctx);
+
 		canva.style.position = "absolute";
+		
+		canva.style.width = canva.width + "px"; 
+        canva.style.height = canva.height + "px"; 
+
+		canva.width = canva.width * dpr;
+		canva.height = canva.height * dpr;
 
 		var ctx = canva.getContext("2d");
-
+		ctx.scale(dpr, dpr);
+		
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
 		}
