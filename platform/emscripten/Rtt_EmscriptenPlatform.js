@@ -836,19 +836,17 @@ var platformLibrary =
 		var canva = document.createElement("canvas");
 		var ctx = canva.getContext("2d");
 		
-		var dpr = Module.getPixelRatio(ctx);
-
 		canva.style.position = "absolute";
 		
 		canva.style.width = canva.width + "px"; 
         canva.style.height = canva.height + "px"; 
 
-		canva.width = canva.width * dpr;
-		canva.height = canva.height * dpr;
+		canva.width = Math.floor(canva.width * 2.);
+		canva.height = Math.floor(canva.height * 2.);
 
 		var ctx = canva.getContext("2d");
-		ctx.scale(dpr, dpr);
-		
+		ctx.scale(2., 2.);
+
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
 		}
