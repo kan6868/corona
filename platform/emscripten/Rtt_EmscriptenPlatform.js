@@ -587,7 +587,7 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = Module.createHiDPICanvas(window.innerWidth, window.innerHeight);
+		var canva = Module.createHiDPICanvas(Module.appContentWidth, Module.appContentHeight);
 
 		var ctx = canva.getContext("2d");
 
@@ -826,7 +826,7 @@ var platformLibrary =
 		fontName = a[0];
 		var ext = a[1];
 
-		var canva = Module.createHiDPICanvas(window.innerWidth, window.innerHeight);
+		var canva = Module.createHiDPICanvas(Module.appContentWidth, Module.appContentHeight);
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
