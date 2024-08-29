@@ -832,12 +832,10 @@ var platformLibrary =
 		var ext = a[1];
 
 		var canva = document.createElement("canvas");
-		var dpr = Module.getPixelRatio();
-
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
-		ctx.scale(dpr, dpr);
+
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
 		}
