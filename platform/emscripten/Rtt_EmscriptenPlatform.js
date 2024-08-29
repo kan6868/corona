@@ -510,30 +510,6 @@ var platformLibrary =
 		return 0;
 	},
 
-	jsContextGetPixelRatio: function () {
-		var ctx = document.createElement("canvas").getContext("2d"),
-        dpr = window.devicePixelRatio || 1,
-        bsr = ctx.webkitBackingStorePixelRatio ||
-              ctx.mozBackingStorePixelRatio ||
-              ctx.msBackingStorePixelRatio ||
-              ctx.oBackingStorePixelRatio ||
-              ctx.backingStorePixelRatio || 1;
-
-    	return dpr / bsr;
-	},
-
-	jsContextCreateHiDPICanvas: function (w, h, ratio) {
-		if (!ratio) { ratio = jsContextGetPixelRatio(); }
-		var can = document.createElement("canvas");
-		can.width = w * ratio;
-		can.height = h * ratio;
-		can.style.width = w + "px";
-		can.style.height = h + "px";
-		can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
-		return can;
-	},
-
-
 	jsContextInit: function (appWidth, appHeight, orientation) {
 		// global app JS settings
 		Module.appObjects = [];
@@ -567,6 +543,29 @@ var platformLibrary =
 		var parent = document.getElementById('canvas').parentNode;
 		parent.id = 'emscripten_border';
 
+		Module.getPixelRatio = function () {
+			var ctx = document.createElement("canvas").getContext("2d"),
+			dpr = window.devicePixelRatio || 1,
+			bsr = ctx.webkitBackingStorePixelRatio ||
+				  ctx.mozBackingStorePixelRatio ||
+				  ctx.msBackingStorePixelRatio ||
+				  ctx.oBackingStorePixelRatio ||
+				  ctx.backingStorePixelRatio || 1;
+	
+			return dpr / bsr;
+		}
+
+		Module.createHiDPICanvas = function (w, h, ratio) {
+			if (!ratio) { ratio = Module.getPixelRatio(); }
+			var can = document.createElement("canvas");
+			can.width = w * ratio;
+			can.height = h * ratio;
+			can.style.width = w + "px";
+			can.style.height = h + "px";
+			can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+			return can;
+		}
+
 		// override Emscripten's function
 		Module.requestFullscreen = function () {
 			var element = document.getElementById('canvas');
@@ -588,7 +587,7 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = jsContextCreateHiDPICanvas(window.innerWidth,window.innerHeight);
+		var canva = Module.createHiDPICanvas(Module.appInitWidth, Module.appInitHeight);
 
 		var ctx = canva.getContext("2d");
 
@@ -827,7 +826,7 @@ var platformLibrary =
 		fontName = a[0];
 		var ext = a[1];
 
-		var canva = jsContextCreateHiDPICanvas(window.innerWidth,window.innerHeight);
+		var canva = Module.createHiDPICanvas(Module.appInitWidth, Module.appInitHeight);
 		canva.style.position = "absolute";
 
 		var ctx = canva.getContext("2d");
