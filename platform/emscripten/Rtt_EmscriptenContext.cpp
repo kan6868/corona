@@ -566,7 +566,7 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		jsContextResizeNativeObjects();
+		//jsContextResizeNativeObjects();
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))

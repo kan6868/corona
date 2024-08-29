@@ -585,8 +585,16 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = document.createElement('canvas');
+		const ratio = window.devicePixelRatio;
+    	var canva = document.createElement("canvas");
+		//canva.width = window.innerWidth * ratio;
+		//canva.height = window.innerHeight * ratio;
+		//canva.style.width = window.innerWidth + "px";
+		//canva.style.height = window.innerHeight + "px";
+
 		var ctx = canva.getContext("2d");
+		ctx.scale(ratio, ratio);
+
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
