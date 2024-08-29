@@ -16,6 +16,8 @@ var platformLibrary =
 	$jsLocaleCountry: null,
 	$jsLanguage: null,
 
+
+
 	jsOpenURL: function (_url) {
 		var url = UTF8ToString(_url);
 		var win = window.open(url, 'Corona Labs');
@@ -85,8 +87,7 @@ var platformLibrary =
 		});
 
 		// add buttons
-		for (var i = 0; i < numButtons; i++)
-		{
+		for (var i = 0; i < numButtons; i++) {
 			var _caption = getValue(buttons + i * pointerSize, '*');
 			var caption = UTF8ToString(_caption);
 
@@ -103,7 +104,7 @@ var platformLibrary =
 			});
 		}
 
-//		document.body.appendChild(awindow);
+		//		document.body.appendChild(awindow);
 		canvas.parentNode.appendChild(awindow);
 
 		// move to center
@@ -161,15 +162,13 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLocaleLanguage: function()
-	{
+	jsGetLocaleLanguage: function () {
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[0];
 
 		var maxBytesToWrite = 64;
-		if (jsLocaleLanguage == null)
-		{
+		if (jsLocaleLanguage == null) {
 			jsLocaleLanguage = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLocaleLanguage, maxBytesToWrite);
@@ -177,15 +176,13 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLocaleCountry: function ()
-	{
+	jsGetLocaleCountry: function () {
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[1] || localization;
 
 		var maxBytesToWrite = 64;
-		if (jsLocaleCountry == null)
-		{
+		if (jsLocaleCountry == null) {
 			jsLocaleCountry = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLocaleCountry, maxBytesToWrite);
@@ -193,15 +190,13 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLanguage: function ()
-	{
+	jsGetLanguage: function () {
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[0] + '_' + (a[1] || a[0]).toUpperCase();
 
 		var maxBytesToWrite = 64;
-		if (jsLanguage == null)
-		{
+		if (jsLanguage == null) {
 			jsLanguage = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLanguage, maxBytesToWrite);
@@ -220,7 +215,7 @@ var platformLibrary =
 		}
 	},
 
-	jsDisplayObjectShowControls: function(id, val) {
+	jsDisplayObjectShowControls: function (id, val) {
 		var obj = document.getElementById(id);
 		if (obj) {
 			obj.controls = id;
@@ -242,14 +237,14 @@ var platformLibrary =
 		}
 	},
 
-	jsDisplayObjectsetBackgroundColor: function(id, val) {
+	jsDisplayObjectsetBackgroundColor: function (id, val) {
 		var obj = document.getElementById(id);
 		if (obj) {
 			var rgba = UTF8ToString(val);
 			obj.style.backgroundColor = rgba;
 		}
 	},
-	
+
 	jsDisplayObjectGetVisible: function (id) {
 		var obj = document.getElementById(id);
 		if (obj && obj.style.visibility == 'hidden') {
@@ -258,10 +253,9 @@ var platformLibrary =
 		return false;
 	},
 
-	jsTextFieldSetValue: function(id, s) {
+	jsTextFieldSetValue: function (id, s) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.value = UTF8ToString(s);
 		}
 	},
@@ -282,7 +276,7 @@ var platformLibrary =
 		obj.style.width = obj.w + 'px';
 		obj.style.height = obj.h + 'px';
 		obj.style.borderWidth = "1px 1px 1px 1px";
-		
+
 		window.refreshNativeObject(obj.id);
 		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
@@ -301,7 +295,7 @@ var platformLibrary =
 		}
 	},
 
-	jsTextFieldInitialize: function(id)	{
+	jsTextFieldInitialize: function (id) {
 		var obj = document.getElementById(id);
 		if (obj) {
 			obj.oldText = obj.value;
@@ -338,7 +332,7 @@ var platformLibrary =
 			}
 		}
 	},
-	
+
 	jsTextFieldGetValue: function (id, buf, bufsize) {
 		var obj = document.getElementById(id);
 		if (obj) {
@@ -363,111 +357,98 @@ var platformLibrary =
 		return 0;
 	},
 
-	jsTextFieldGetFontSize: function(id) {
+	jsTextFieldGetFontSize: function (id) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			var style = window.getComputedStyle(obj, null).getPropertyValue('font-size');
 			return parseFloat(style);
 		}
 		return 0;
 	},
 
-	jsTextFieldSetFontSize: function(id, size) {
+	jsTextFieldSetFontSize: function (id, size) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.style.fontSize = (size) + 'px';
 		}
 	},
 
-	jsTextFieldGetAlign: function(id, buf, size) { 
+	jsTextFieldGetAlign: function (id, buf, size) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			stringToUTF8(obj.style.textAlign, buf, size);
 		}
 	},
 
-	jsTextFieldSetAlign: function(id, align) {
+	jsTextFieldSetAlign: function (id, align) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.style.textAlign = UTF8ToString(align);
 		}
 	},
 
-	jsTextFieldGetSecure: function(id, buf, size) {
+	jsTextFieldGetSecure: function (id, buf, size) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			stringToUTF8(obj.type, buf, size);
 		}
 	},
 
-	jsTextFieldGetInputType: function(id, buf, size) {
+	jsTextFieldGetInputType: function (id, buf, size) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			stringToUTF8(obj.type, buf, size);
 		}
 	},
 
-	jsTextFieldSetInputType: function(id, inputType) {
+	jsTextFieldSetInputType: function (id, inputType) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.type = UTF8ToString(inputType);
 		}
 	},
 
-	jsTextFieldGetEditable: function(id) {
+	jsTextFieldGetEditable: function (id) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			return obj.readonly;
 		}
 		return false;
 	},
 
-	jsTextFieldSetEditable: function(id, isEditable) {
+	jsTextFieldSetEditable: function (id, isEditable) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.readonly = isEditable;
 		}
 	},
 
-	jsTextFieldSetFont: function(id, name, size) {
+	jsTextFieldSetFont: function (id, name, size) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.style.fontFamily = UTF8ToString(name);
 			obj.style.fontSize = (size) + 'px';
 		}
 	},
 
-	jsTextFieldSetPlaceholder: function(id, text) {
+	jsTextFieldSetPlaceholder: function (id, text) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			var s = UTF8ToString(text);
 			obj.placeholder = s;
 		}
 	},
 
-	jsTextFieldSetSecure: function(id, secure) {
+	jsTextFieldSetSecure: function (id, secure) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			obj.type = secure ? "password" : "text";
 		}
 	},
 
-	jsTextFieldSetColor: function(id, _rgb) {
+	jsTextFieldSetColor: function (id, _rgb) {
 		var obj = document.getElementById(id);
-		if (obj)
-		{
+		if (obj) {
 			var rgb = UTF8ToString(_rgb);
 			obj.style.color = rgb;
 		}
@@ -477,8 +458,7 @@ var platformLibrary =
 	// context
 	//
 
-	jsContextLoadFonts: function(_name, buf, size)
-	{
+	jsContextLoadFonts: function (_name, buf, size) {
 		var name = UTF8ToString(_name);
 		var body = new Uint8Array(size);
 		for (var i = 0; i < size; i++) {
@@ -495,7 +475,7 @@ var platformLibrary =
 		var fontType = c[c.length - 1];
 		c = b.split('.' + fontType);
 		var fontName = c[0];
-//		console.log('jsContextLoadFonts:', name, fontName, fontType);
+		//		console.log('jsContextLoadFonts:', name, fontName, fontType);
 
 		var blob = new Blob([body], { type: ("font/" + fontType) });
 		var url = URL.createObjectURL(blob);
@@ -517,7 +497,7 @@ var platformLibrary =
 		}
 
 		// load font
-		if (document.fonts && typeof(document.fonts.load) == 'function') {
+		if (document.fonts && typeof (document.fonts.load) == 'function') {
 			if (!Module.loadingFonts) {
 				Module.loadingFonts = 0;
 			}
@@ -530,13 +510,36 @@ var platformLibrary =
 		return 0;
 	},
 
+	jsGetPixelRatio: function (context) {
+		dpr = window.devicePixelRatio || 1,
+			bsr = context.webkitBackingStorePixelRatio ||
+			context.mozBackingStorePixelRatio ||
+			context.msBackingStorePixelRatio ||
+			context.oBackingStorePixelRatio ||
+			context.backingStorePixelRatio || 1;
+
+		return dpr / bsr;
+	},
+
+	jsCreateHiDPICanvas: function (w, h, ratio) {
+		if (!ratio) { ratio = jsGetPixelRatio(); }
+		var can = document.createElement("canvas");
+		can.width = w * ratio;
+		can.height = h * ratio;
+		can.style.width = w + "px";
+		can.style.height = h + "px";
+		can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+		return can;
+	},
+
+
 	jsContextInit: function (appWidth, appHeight, orientation) {
 		// global app JS settings
 		Module.appObjects = [];
 		Module.appElementCounter = 1;	// element counter
 		Module.appInitWidth = appWidth;
 		Module.appInitHeight = appHeight;
-		
+
 		console.log("AppWidth: " + appWidth + " AppHeight: " + appHeight);
 
 		Module.appOrientation = orientation;
@@ -564,8 +567,7 @@ var platformLibrary =
 		parent.id = 'emscripten_border';
 
 		// override Emscripten's function
-		Module.requestFullscreen = function ()
-		{
+		Module.requestFullscreen = function () {
 			var element = document.getElementById('canvas');
 			element = element.parentNode;
 
@@ -585,16 +587,10 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		const ratio = window.devicePixelRatio;
-    	var canva = document.createElement("canvas");
-		canva.width = canva.width * ratio;
-		canva.height = canva.height * ratio;
-		canva.style.width = canva.width + "px";
-		canva.style.height = canva.height + "px";
+		var canva = jsCreateHiDPICanvas(window.innerWidth, window.innerHeight);
 
 		var ctx = canva.getContext("2d");
-		ctx.scale(ratio, ratio);
-		
+
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
@@ -605,15 +601,15 @@ var platformLibrary =
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-				
+
 				console.log("viewport: ");
 				console.log(viewPort);
 
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
-				
+
 				console.log("scale " + scale);
-				
+
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
 				obj.style.left = left + 'px';
@@ -633,14 +629,14 @@ var platformLibrary =
 
 	},
 
-	jsContextConfig: function(w, h)	{
+	jsContextConfig: function (w, h) {
 		console.log("Context Config - w: " + w + ", h: " + h);
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() { console.log("innerWidth: " + window.innerWidth); return window.innerWidth;	},
-	jsContextGetWindowHeight: function() { console.log("innerHeight: " + window.innerHeight); return window.innerHeight;	},
+	jsContextGetWindowWidth: function () { console.log("innerWidth: " + window.innerWidth); return window.innerWidth; },
+	jsContextGetWindowHeight: function () { console.log("innerHeight: " + window.innerHeight); return window.innerHeight; },
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -653,7 +649,7 @@ var platformLibrary =
 		}
 	},
 
-	jsContextSyncFS: function() {
+	jsContextSyncFS: function () {
 		Module.idbfsSynced = 0;
 		try {
 			FS.syncfs(function (err) {
@@ -670,17 +666,17 @@ var platformLibrary =
 	},
 
 	jsContextResizeNativeObjects: function () {
-//		var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-//		if (fullscreenElement == null) {
-			var parent = canvas.parentNode.childNodes;
-			for (var item in parent) {
-				var obj = parent[item];
-				if (parseInt(obj.id, 10) > 0)		// native object ?
-				{
-					window.refreshNativeObject(obj.id);
-				}
+		//		var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+		//		if (fullscreenElement == null) {
+		var parent = canvas.parentNode.childNodes;
+		for (var item in parent) {
+			var obj = parent[item];
+			if (parseInt(obj.id, 10) > 0)		// native object ?
+			{
+				window.refreshNativeObject(obj.id);
 			}
-//		}
+		}
+		//		}
 	},
 
 	jsContextMountFS: function () {
@@ -717,7 +713,7 @@ var platformLibrary =
 	//
 
 	jsNetworkRequest: function (_url, _method, _headers, _body, body_size, progress, _requestPtr) {
-	//  progress:	UNKNOWN		= 0, 	Upload		= 1, 	Download	= 2, 	None		= 3
+		//  progress:	UNKNOWN		= 0, 	Upload		= 1, 	Download	= 2, 	None		= 3
 		var url = UTF8ToString(_url);
 		var method = UTF8ToString(_method);
 		var headers = UTF8ToString(_headers);
@@ -829,17 +825,11 @@ var platformLibrary =
 		var a = fontName.split('.');
 		fontName = a[0];
 		var ext = a[1];
-		const ratio = window.devicePixelRatio;
-		var canva = document.createElement('canvas');
-		canva.width = canvas.width * ratio;
-		canva.height = canvas.height * ratio;
+
+		var canva = jsCreateHiDPICanvas(window.innerWidth, window.innerHeight);
 		canva.style.position = "absolute";
 
-		canva.style.width = canva.width + "px";
-		canva.style.height = canva.height + "px";
-
 		var ctx = canva.getContext("2d");
-		ctx.scale(ratio, ratio);
 
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
@@ -865,7 +855,7 @@ var platformLibrary =
 		fontExist = newSize != baselineSize;
 
 		if (fontName === '' || fontExist == false) {
-		//	console.log(fontName + ' not found, using sans-serif');
+			//	console.log(fontName + ' not found, using sans-serif');
 			fontName = 'sans-serif';		// Default value
 		}
 		ctx.font = String(fontSize) + 'px ' + fontName;
@@ -876,7 +866,7 @@ var platformLibrary =
 		var a = measureText(testtext, false, fontName, fontSize);
 		var lineHeight = a[1];
 		console.log("Line Height: " + lineHeight);
-		if (lineHeight){
+		if (lineHeight) {
 			if (w == 0) {
 				// calc width
 				var line = '';
@@ -930,13 +920,13 @@ var platformLibrary =
 						else {
 							// delete last uncomplete word if space exists
 							var a = line.split(' ');
-							if (a.length > 1)	{
+							if (a.length > 1) {
 								var line = a[a.length - 1] + text.charAt(i);	// the beginning of next line
 								a.pop();		// remove last
 								var s = a.join(' ');
 								ctx.fillText(s, x, y);
 							}
-							else{
+							else {
 								// no words, draw line as is 
 								ctx.fillText(line, x, y);
 								line = text.charAt(i);	// the beginning of next line
@@ -974,8 +964,7 @@ var platformLibrary =
 		}
 	},
 
-	jsContextSetClearColor: function(r, g, b, a)
-	{
+	jsContextSetClearColor: function (r, g, b, a) {
 		var rgba = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
 		var canvas = document.getElementById('canvas');
 		canvas.parentNode.style.backgroundColor = rgba;
