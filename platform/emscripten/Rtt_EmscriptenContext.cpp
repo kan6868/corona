@@ -510,13 +510,13 @@ namespace Rtt
 		jsContextInit(fWidth, fHeight, fOrientation);
 
 
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
+
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-
+			// get JS window size
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
 
 			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
 			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
@@ -574,13 +574,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 #endif
-		SDL_SetWindowSize(fWindow, jsWindowWidth, jsWindowWidth);
 
-		fRuntime->WindowSizeChanged();
-		fRuntime->RestartRenderer(fOrientation);
-		fRuntime->GetDisplay().Invalidate();
-
-		fRuntime->DispatchEvent(ResizeEvent());
 		return true;
 	}
 
@@ -656,6 +650,43 @@ namespace Rtt
 
 	void CoronaAppContext::Start()
 	{
+
+		if (fullScreen == false && fMode == "maximized")
+		{
+			float w = (float)jsContextGetWindowWidth() * 2;
+			float h = (float)jsContextGetWindowHeight() * 2;
+			// keep ratio
+			float scaleX = w / fWidth;
+			float scaleY = h / fHeight;
+
+			float scale = fmin(scaleX, scaleY);
+			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+			{
+				w = fWidth * scaleX;
+				h = fHeight * scaleY;
+			}
+			else
+				if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+				{
+				}
+				else
+				{
+					w = fWidth * scale;
+					h = fHeight * scale;
+				}
+
+			SDL_SetWindowSize(fWindow, w, h);
+
+			fRuntime->WindowSizeChanged();
+			fRuntime->RestartRenderer(fOrientation);
+			fRuntime->GetDisplay().Invalidate();
+
+			fRuntime->DispatchEvent(ResizeEvent());
+		}
+
+		// refresh native elements
+		jsContextResizeNativeObjects();
+
 #if defined(EMSCRIPTEN)
 		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
 #else
