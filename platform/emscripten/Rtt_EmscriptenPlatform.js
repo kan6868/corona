@@ -588,16 +588,8 @@ var platformLibrary =
 		}
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
-		var canva = document.createElement("canvas");
+		var canva = document.createElement('canvas');
 		var ctx = canva.getContext("2d");
-		var dpr = Module.getPixelRatio(ctx);
-		var rect = canva.getBoundingClientRect();
-
-		canva.width = rect.width * dpr;
-		canva.height = rect.height * dpr;
-
-		
-		ctx.scale(dpr, dpr);
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
@@ -612,8 +604,8 @@ var platformLibrary =
 				console.log("viewport: ");
 				console.log(viewPort);
 
-				var scale = viewPort.width / Module.appInitWidth;
-				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
+				var scale = Module.getPixelRatio();
+				//scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
 
 				console.log("scale " + scale);
 
@@ -833,19 +825,25 @@ var platformLibrary =
 		fontName = a[0];
 		var ext = a[1];
 
-		var canva = document.createElement("canvas");
-		var ctx = canva.getContext("2d");
-		var dpr = window.devicePixelRatio || 1;
+		var canva = document.createElement('canvas');
+		canva.width = canvas.width;
+		canva.height = canvas.height;
 		canva.style.position = "absolute";
-		
-		canva.style.width = canva.width + "px"; 
-        canva.style.height = canva.height + "px"; 
-
-		canva.width = Math.floor(canva.width * dpr);
-		canva.height = Math.floor(canva.height * dpr);
-
 		var ctx = canva.getContext("2d");
-		ctx.scale(dpr, dpr);
+
+		// var canva = document.createElement("canvas");
+		// var ctx = canva.getContext("2d");
+		// var dpr = window.devicePixelRatio || 1;
+		// canva.style.position = "absolute";
+		
+		// canva.style.width = canva.width + "px"; 
+        // canva.style.height = canva.height + "px"; 
+
+		// canva.width = Math.floor(canva.width * dpr);
+		// canva.height = Math.floor(canva.height * dpr);
+
+		// var ctx = canva.getContext("2d");
+		// ctx.scale(dpr, dpr);
 
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
