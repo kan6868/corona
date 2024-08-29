@@ -587,14 +587,14 @@ var platformLibrary =
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
 		const ratio = window.devicePixelRatio;
     	var canva = document.createElement("canvas");
-		//canva.width = window.innerWidth * ratio;
-		//canva.height = window.innerHeight * ratio;
-		//canva.style.width = window.innerWidth + "px";
-		//canva.style.height = window.innerHeight + "px";
+		canva.width = canva.width * ratio;
+		canva.height = canva.height * ratio;
+		canva.style.width = canva.width + "px";
+		canva.style.height = canva.height + "px";
 
 		var ctx = canva.getContext("2d");
 		ctx.scale(ratio, ratio);
-
+		
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
@@ -829,12 +829,17 @@ var platformLibrary =
 		var a = fontName.split('.');
 		fontName = a[0];
 		var ext = a[1];
-
+		const ratio = window.devicePixelRatio;
 		var canva = document.createElement('canvas');
-		canva.width = canvas.width;
-		canva.height = canvas.height;
+		canva.width = canvas.width * ratio;
+		canva.height = canvas.height * ratio;
 		canva.style.position = "absolute";
+
+		canva.style.width = canva.width + "px";
+		canva.style.height = canva.height + "px";
+
 		var ctx = canva.getContext("2d");
+		ctx.scale(ratio, ratio);
 
 		if (Module.isSafari) {
 			ctx.fillStyle = 'red';
