@@ -980,7 +980,7 @@ namespace Rtt
 				}
 
 #ifdef EMSCRIPTEN
-				emscripten_set_element_css_size("canvas", fWidth, fHeight);
+				emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
