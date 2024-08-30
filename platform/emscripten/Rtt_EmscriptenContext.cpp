@@ -959,15 +959,14 @@ namespace Rtt
 						w = fWidth * scaleX;
 						h = fHeight * scaleY;
 					}
+					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					{
+					}
 					else
-						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-						{
-						}
-						else
-						{
-							w = fWidth * scale;
-							h = fHeight * scale;
-						}
+					{
+						w = fWidth * scale;
+						h = fHeight * scale;
+					}
 
 					SDL_SetWindowSize(fWindow, w, h);
 
@@ -976,7 +975,6 @@ namespace Rtt
 					fRuntime->GetDisplay().Invalidate();
 
 					fRuntime->DispatchEvent(ResizeEvent());
-
 				}
 
 
