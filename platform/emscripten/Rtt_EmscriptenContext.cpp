@@ -966,7 +966,7 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 
-					SDL_SetWindowSize(fWindow, w * 2, h * 2);
+					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
@@ -974,9 +974,9 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 
-#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);
-#endif
+//#ifdef EMSCRIPTEN
+//					emscripten_set_element_css_size("canvas", w / 2, h / 2);
+//#endif
 				}
 
 
