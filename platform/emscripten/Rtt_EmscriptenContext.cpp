@@ -948,8 +948,8 @@ namespace Rtt
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
 					// keep ratio
-					float scaleX = (w * 2) / fWidth;
-					float scaleY = (h * 2) / fHeight;
+					float scaleX = (w) / fWidth;
+					float scaleY = (h) / fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
