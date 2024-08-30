@@ -161,8 +161,8 @@ namespace Rtt
 		std::string fPathToApp;
 		std::string fDocumentsDir;
 
-		int fWidth;
-		int fHeight;
+		float fWidth;
+		float fHeight;
 
 		EmscriptenPlatform* fPlatform;
 		DeviceOrientation::Type fOrientation;

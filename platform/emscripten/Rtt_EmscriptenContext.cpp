@@ -516,8 +516,8 @@ namespace Rtt
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
-			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth * 2) / (fWidth);
+			float scaleY = (float)(jsWindowHeight * 2) / (fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -939,7 +939,7 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
-				emscripten_set_element_css_size("canvas", event.window.data1, event.window.data2);
+				emscripten_set_element_css_size("canvas", fWidth, fHeight);
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
