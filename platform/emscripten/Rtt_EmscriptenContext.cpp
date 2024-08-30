@@ -939,7 +939,7 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
-				emscripten_set_element_css_size("canvas", fWidth, fHeight);
+				emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
