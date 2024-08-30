@@ -851,9 +851,9 @@ var platformLibrary =
 		ctx.textBaseline = 'top';
 		ctx.textAlign = alignment;
 
-		var a = measureText(testtext, false, fontName, fontSize);
+		var a = ctx.measureText(testtext, false, fontName, fontSize);
 		var lineHeight = a[1];
-
+		console.log("Line Height: " + lineHeight);
 		if (w == 0) {
 			// calc width
 			var line = '';
