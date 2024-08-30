@@ -976,7 +976,7 @@ namespace Rtt
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
 
-					//fRuntime->DispatchEvent(ResizeEvent());
+					fRuntime->DispatchEvent(ResizeEvent());
 				}
 
 
