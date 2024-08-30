@@ -518,8 +518,8 @@ namespace Rtt
 		{
 
 
-			float scaleX = (float)(jsWindowWidth * 2.0) / (float)(fWidth);
-			float scaleY =  (float)(jsWindowHeight * 2.0) / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth) / (float)(fWidth);
+			float scaleY =  (float)(jsWindowHeight) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -574,7 +574,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+		emscripten_set_element_css_size("canvas", fWidth, fHeight);
 #endif
 
 		return true;
@@ -980,7 +980,7 @@ namespace Rtt
 				}
 
 #ifdef EMSCRIPTEN
-				emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+				emscripten_set_element_css_size("canvas", fWidth, fHeight);
 #endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
