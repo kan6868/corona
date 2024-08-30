@@ -967,14 +967,16 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
+#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", w / 2, h / 2);
+#endif
+					//SDL_SetWindowSize(fWindow, w, h);
 
-					SDL_SetWindowSize(fWindow, w, h);
+					//fRuntime->WindowSizeChanged();
+					//fRuntime->RestartRenderer(fOrientation);
+					//fRuntime->GetDisplay().Invalidate();
 
-					fRuntime->WindowSizeChanged();
-					fRuntime->RestartRenderer(fOrientation);
-					fRuntime->GetDisplay().Invalidate();
-
-					fRuntime->DispatchEvent(ResizeEvent());
+					//fRuntime->DispatchEvent(ResizeEvent());
 				}
 
 
