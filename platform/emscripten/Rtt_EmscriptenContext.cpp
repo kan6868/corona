@@ -516,8 +516,6 @@ namespace Rtt
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-
-
 			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
 			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
@@ -967,9 +965,7 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);
-#endif
+
 					SDL_SetWindowSize(fWindow, w * 2, h * 2);
 
 					fRuntime->WindowSizeChanged();
@@ -977,6 +973,10 @@ namespace Rtt
 					fRuntime->GetDisplay().Invalidate();
 
 					fRuntime->DispatchEvent(ResizeEvent());
+
+#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", w / 2, h / 2);
+#endif
 				}
 
 
