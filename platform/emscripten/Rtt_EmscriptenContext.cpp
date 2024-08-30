@@ -977,11 +977,13 @@ namespace Rtt
 					fRuntime->GetDisplay().Invalidate();
 
 					fRuntime->DispatchEvent(ResizeEvent());
-				}
 
 #ifdef EMSCRIPTEN
-				emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
+				}
+
+
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;
