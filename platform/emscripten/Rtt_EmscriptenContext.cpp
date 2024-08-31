@@ -516,8 +516,8 @@ namespace Rtt
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			float scaleX = (float)(jsWindowWidth * 2) / (fWidth);
-			float scaleY = (float)(jsWindowHeight * 2) / (fHeight);
+			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
+			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -564,7 +564,11 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		//jsContextResizeNativeObjects();
+
+		fRuntime->GetDisplay().Invalidate();
+
+		fRuntime->DispatchEvent(ResizeEvent());
+
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
@@ -949,8 +953,8 @@ namespace Rtt
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
 					// keep ratio
-					float scaleX = (w * 2) / fWidth;
-					float scaleY = (h * 2) / fHeight;
+					float scaleX = (w * 2) / (float)fWidth;
+					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
