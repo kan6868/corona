@@ -571,9 +571,9 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			//EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
+			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
-
+		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth, fHeight);
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 
@@ -941,12 +941,9 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
-				if (fullScreen)
-				{
 					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-				}
-	
+				
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
@@ -964,6 +961,7 @@ namespace Rtt
 
 					if (w == 0 || h == 0)
 					{
+						SDL_Log("After Re-get size.");
 						w = fWidth;
 						h = fHeight;
 					}
@@ -997,7 +995,16 @@ namespace Rtt
 					fRuntime->DispatchEvent(ResizeEvent());
 
 #ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);
+					if (w == 0 || h == 0)
+					{
+						SDL_Log("Window resize: fwidth = %d , fheight = %d ", fWidth / 2, fHeight / 2);
+						emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+					}
+					else
+					{
+						emscripten_set_element_css_size("canvas", w / 2, h / 2);
+					}
+					
 #endif
 				}
 
