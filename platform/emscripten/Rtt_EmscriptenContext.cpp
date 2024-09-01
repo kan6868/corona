@@ -442,8 +442,10 @@ namespace Rtt
 
 		int w = 0;
 		int h = 0;
+		
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-
+		w = fRuntime->GetDisplay().ActualContentWidth();
+		h = fRuntime->GetDisplay().ActualContentHeight();
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -554,32 +556,28 @@ namespace Rtt
 		// pass config.lua to JS
 		if (orientation == "landscapeRight" || orientation == "landscapeLeft")
 		{
-			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+			Swap(fRuntimeDelegate->fActualContentWidth, fRuntimeDelegate->fActualContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fActualContentWidth, fRuntimeDelegate->fActualContentHeight);
 
 		fRuntime->BeginRunLoop();
 
 		DisplayDefaults& defaults = fRuntime->GetDisplay().GetDefaults();
+
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		SDL_SetWindowSize(fWindow, fWidth, fHeight);
-		fRuntime->GetDisplay().Invalidate();
-
-		fRuntime->DispatchEvent(ResizeEvent());
 
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			//EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
+			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
-		// refresh native elements
-		jsContextResizeNativeObjects();
+
 		return true;
 	}
 
