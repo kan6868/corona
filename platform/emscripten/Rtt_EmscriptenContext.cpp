@@ -38,6 +38,7 @@ extern "C"
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
 	extern int jsContextGetWindowWidth();
 	extern int jsContextGetWindowHeight();
+	extern void jsContextDebug(const char* str);
 	extern void jsContextUnlockAudio();
 	extern void jsContextSyncFS();
 	extern void jsContextResizeNativeObjects();
@@ -52,6 +53,7 @@ static int appWidth, appHeight;
 int jsContextInit(int w, int h, int fOrientation) { appWidth = w; appHeight = h; return 0; }
 int jsContextGetWindowWidth() { return appWidth; }
 int jsContextGetWindowHeight() { return appHeight; }
+void jsContextDebug(const char* str) {}
 void jsContextUnlockAudio() {}
 void jsContextSyncFS() {}
 void jsContextResizeNativeObjects() {}
@@ -523,7 +525,9 @@ namespace Rtt
 			fHeight *= scale;
 		}
 
-		SDL_Log("Window create width: %d height: %d", fWidth, fHeight);
+		//SDL_Log("Window create width: %d height: %d", fWidth, fHeight);
+		jsContextDebug(fWidth);
+		jsContextDebug(fHeight);
 
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
@@ -974,7 +978,8 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-					SDL_Log("Window width: %d height: %d", w, h);
+					jsContextDebug(w);
+					jsContextDebug(h);
 					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
