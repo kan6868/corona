@@ -808,6 +808,14 @@ var platformLibrary =
 	// text render
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
+		if (!fontSize) {
+			fontSize = 16;        // default font size if not provided
+		}
+
+		if (fontSize <= 0)
+		{
+			fontSize = 16;
+		}
 		var text = UTF8ToString(_text);
 		var alignment = UTF8ToString(_alignment);
 
@@ -849,7 +857,7 @@ var platformLibrary =
 		fontExist = newSize != baselineSize;
 
 		if (fontName === '' || fontExist == false) {
-		//	console.log(fontName + ' not found, using sans-serif');
+			console.log(fontName + ' not found, using sans-serif');
 			fontName = 'sans-serif';		// Default value
 		}
 		ctx.font = String(fontSize) + 'px ' + fontName;
