@@ -770,6 +770,8 @@ var platformLibrary =
 	$measureText: function (text, bold, font, size) {
 		// This global variable is used to cache repeated calls with the same arguments
 		var str = text + ':' + bold + ':' + font + ':' + size;
+		console.log("String: " + str);
+
 		if (Module.appTextMeters.hasOwnProperty(str)) {
 			console.log("hasOwnProperty: " + Module.appTextMeters[str]);
 			return Module.appTextMeters[str];
@@ -777,7 +779,9 @@ var platformLibrary =
 
 		var divMain = document.createElement('span');
 		var div = document.createElement('span');
+
 		div.innerHTML = text;
+		
 		div.style.display = "inline-block";
 		div.style.position = 'absolute';
 		div.style.top = '-100px';
@@ -816,8 +820,8 @@ var platformLibrary =
 		var ext = a[1];
 
 		var canva = document.createElement('canvas');
-		canva.width = canvas.clientWidth;
-		canva.height = canvas.clientHeight;
+		canva.width = canvas.width;
+		canva.height = canvas.height;
 		canva.style.position = "absolute";
 		var ctx = canva.getContext("2d");
 
