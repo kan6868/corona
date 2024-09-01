@@ -770,10 +770,10 @@ var platformLibrary =
 	$measureText: function (text, bold, font, size) {
 		// This global variable is used to cache repeated calls with the same arguments
 		var str = text + ':' + bold + ':' + font + ':' + size;
-		console.log("String: " + str);
+		//console.log("String: " + str);
 
 		if (Module.appTextMeters.hasOwnProperty(str)) {
-			console.log("hasOwnProperty: " + Module.appTextMeters[str]);
+			//console.log("hasOwnProperty: " + Module.appTextMeters[str]);
 			return Module.appTextMeters[str];
 		}
 
@@ -794,9 +794,9 @@ var platformLibrary =
 
 		divMain.appendChild(div);
 		document.body.appendChild(divMain);
-		console.log("Div offset: " + div.offsetWidth + ", " + div.offsetHeight);
+		//console.log("Div offset: " + div.offsetWidth + ", " + div.offsetHeight);
 		var size = [div.offsetWidth, div.offsetHeight];
-		console.log("Size: " + size)
+		//console.log("Size: " + size)
 		document.body.removeChild(divMain);
 
 		// Add the sizes to the cache as adding DOM elements is costly and can cause slow downs
@@ -857,7 +857,7 @@ var platformLibrary =
 		fontExist = newSize != baselineSize;
 
 		if (fontName === '' || fontExist == false) {
-			console.log(fontName + ' not found, using sans-serif');
+			//console.log(fontName + ' not found, using sans-serif');
 			fontName = 'sans-serif';		// Default value
 		}
 		ctx.font = String(fontSize) + 'px ' + fontName;
@@ -867,7 +867,7 @@ var platformLibrary =
 
 		var b = measureText(testtext, false, fontName, fontSize);
 		var lineHeight = b[1];
-		console.log("Line Height: " + lineHeight);
+		//console.log("Line Height: " + lineHeight);
 		if (w == 0) {
 			// calc width
 			var line = '';

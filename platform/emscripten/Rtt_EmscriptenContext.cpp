@@ -513,7 +513,7 @@ namespace Rtt
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
 		int jsWindowHeight = jsContextGetWindowHeight();
-
+		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
@@ -526,11 +526,13 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
+		SDL_Log("Window size init: width = %d , height = %d ", fWidth, fHeight);
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		
+
+
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -564,22 +566,17 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		SDL_SetWindowSize(fWindow, fWidth, fHeight);
-		fRuntime->GetDisplay().Invalidate();
-
-		fRuntime->DispatchEvent(ResizeEvent());
 
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			//EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
+			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
-		// refresh native elements
-		jsContextResizeNativeObjects();
+
 		return true;
 	}
 
@@ -944,6 +941,7 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
+				SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 				emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
@@ -953,6 +951,7 @@ namespace Rtt
 				{
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
+					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 					// keep ratio
 					float scaleX = (w * 2) / (float)fWidth;
 					float scaleY = (h * 2) / (float)fHeight;
@@ -971,7 +970,7 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-
+					SDL_Log("Window resize: width = %d , height = %d ", w, h);
 					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
