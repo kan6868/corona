@@ -522,6 +522,9 @@ namespace Rtt
 			fWidth *= scale;
 			fHeight *= scale;
 		}
+
+		SDL_Log("Window create width: %d height: %d", fWidth, fHeight);
+
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
@@ -971,7 +974,7 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-
+					SDL_Log("Window width: %d height: %d", w, h);
 					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
