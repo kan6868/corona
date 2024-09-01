@@ -27,8 +27,6 @@ namespace Rtt
 
 		mutable int fContentWidth;
 		mutable int fContentHeight;
-		mutable int fActualContentWidth;
-		mutable int fActualContentHeight;
 		mutable std::string fScaleMode;
 
 

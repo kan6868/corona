@@ -22,8 +22,6 @@ namespace Rtt
 		: RuntimeDelegate()
 		, fContentWidth(0)
 		, fContentHeight(0)
-		, fActualContentWidth(0)
-		, fActualContentHeight(0)
 	{
 	}
 
@@ -57,8 +55,6 @@ namespace Rtt
 
 	void EmscriptenRuntimeDelegate::DidLoadConfig( const Runtime& sender, lua_State *L ) const
 	{
-		fActualContentWidth = sender->GetDisplay().ActualContentWidth();
-		fActualContentHeight = sender->GetDisplay().ActualContentHeight();
 		lua_getglobal(L, "application"); // application
 		if (lua_istable(L, -1))
 		{
