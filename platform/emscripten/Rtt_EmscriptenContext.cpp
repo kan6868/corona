@@ -578,7 +578,8 @@ namespace Rtt
 
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
-
+		// refresh native elements
+		jsContextResizeNativeObjects();
 		return true;
 	}
 
