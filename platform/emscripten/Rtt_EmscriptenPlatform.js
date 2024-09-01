@@ -616,12 +616,7 @@ var platformLibrary =
 		});
 
 	},
-	jsContextDebug: function (str){
-		if (str)
-		{
-			console.log(str);
-		}
-	},
+
 	jsContextConfig: function(w, h)	{
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
@@ -813,7 +808,14 @@ var platformLibrary =
 	// text render
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
+		if (!fontSize) {
+			fontSize = 16;        // default font size if not provided
+		}
 
+		if (fontSize <= 0)
+		{
+			fontSize = 16;
+		}
 		var text = UTF8ToString(_text);
 		var alignment = UTF8ToString(_alignment);
 
