@@ -511,13 +511,13 @@ namespace Rtt
 
 
 		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
+		float jsWindowWidth = (float)jsContextGetWindowWidth();
+		float jsWindowHeight = (float)jsContextGetWindowHeight();
 
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
-			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth * 2) / (fWidth);
+			float scaleY = (float)(jsWindowHeight * 2) / (fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -564,22 +564,18 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		SDL_SetWindowSize(fWindow, fWidth, fHeight);
-		fRuntime->GetDisplay().Invalidate();
 
-		fRuntime->DispatchEvent(ResizeEvent());
 
 		// hack
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			//EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
+			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
-		// refresh native elements
-		jsContextResizeNativeObjects();
+
 		return true;
 	}
 
