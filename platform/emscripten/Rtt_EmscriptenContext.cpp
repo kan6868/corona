@@ -530,7 +530,7 @@ namespace Rtt
 
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		//SDL_SetWindowSize(fWindow, fWidth, fHeight);
+		
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -564,7 +564,7 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-
+		SDL_SetWindowSize(fWindow, fWidth, fHeight);
 		fRuntime->GetDisplay().Invalidate();
 
 		fRuntime->DispatchEvent(ResizeEvent());
