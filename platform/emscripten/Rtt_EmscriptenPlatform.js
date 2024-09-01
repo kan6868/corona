@@ -771,6 +771,7 @@ var platformLibrary =
 		// This global variable is used to cache repeated calls with the same arguments
 		var str = text + ':' + bold + ':' + font + ':' + size;
 		if (Module.appTextMeters.hasOwnProperty(str)) {
+			console.log("hasOwnProperty: " + Module.appTextMeters[str]);
 			return Module.appTextMeters[str];
 		}
 
@@ -789,8 +790,9 @@ var platformLibrary =
 
 		divMain.appendChild(div);
 		document.body.appendChild(divMain);
-
+		console.log("Div offset: " + div.offsetWidth + ", " + div.offsetHeight);
 		var size = [div.offsetWidth, div.offsetHeight];
+		console.log("Size: " + size)
 		document.body.removeChild(divMain);
 
 		// Add the sizes to the cache as adding DOM elements is costly and can cause slow downs
@@ -814,8 +816,8 @@ var platformLibrary =
 		var ext = a[1];
 
 		var canva = document.createElement('canvas');
-		canva.width = canvas.width;
-		canva.height = canvas.height;
+		canva.width = canvas.clientWidth;
+		canva.height = canvas.clientHeight;
 		canva.style.position = "absolute";
 		var ctx = canva.getContext("2d");
 
