@@ -407,7 +407,7 @@ namespace Rtt
 #if defined(EMSCRIPTEN)
 		emscripten_set_blur_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, blurCallback);
 		emscripten_set_focus_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, focusCallback);
-		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, resizeCallback);
+		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, false, resizeCallback);
 		emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_DOCUMENT, this, true, mouseupCallback);		// for OSX
 		emscripten_set_touchend_callback(EMSCRIPTEN_EVENT_TARGET_DOCUMENT, this, true, touchCallback);		// for iOS
 		emscripten_set_beforeunload_callback(this, beforeunloadCallback);
@@ -944,13 +944,15 @@ namespace Rtt
 					return fullscreenElement != null ? true : false;
 					});
 					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
-					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-				
+					if (event.window.windowID != 0)
+					{
+						emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+					}
 #endif
 				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-				if (fullScreen == false && fMode == "maximized")
+				if (fullScreen == false && fMode == "maximized" && event.window.windowID == 0)
 				{
 					int w = event.window.data1;
 					int h = event.window.data2;
