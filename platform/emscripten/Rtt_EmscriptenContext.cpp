@@ -572,7 +572,7 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			SDL_Log("Resize hack");
+			//SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
@@ -987,7 +987,7 @@ namespace Rtt
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
 
-					//fRuntime->DispatchEvent(ResizeEvent());
+					fRuntime->DispatchEvent(ResizeEvent());
 
 #ifdef EMSCRIPTEN
 			
