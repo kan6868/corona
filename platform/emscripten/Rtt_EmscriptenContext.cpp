@@ -513,23 +513,22 @@ namespace Rtt
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
 		int jsWindowHeight = jsContextGetWindowHeight();
-		float tempWidth = fWidth;
-		float tempHeight = fHeight;
+	
 		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
 			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
-			tempWidth *= scale;
-			tempHeight *= scale;
+			fWidth *= scale;
+			fHeight *= scale;
 		}
 		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		SDL_Log("Window size init: width = %d , height = %d ", tempWidth, tempHeight);
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, tempWidth, tempHeight, flags);
+		SDL_Log("Window size init: width = %d , height = %d ", fWidth, fHeight);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -576,8 +575,8 @@ namespace Rtt
 			SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
-		SDL_Log("Window after re-size init: width = %d , height = %d ", tempWidth / 2, tempHeight / 2);
-		emscripten_set_element_css_size("canvas", tempWidth / 2, tempHeight / 2);
+		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 
 		return true;
@@ -953,23 +952,10 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
-					if (w == 0 || h == 0)
-					{
-						SDL_Log("Re-get size.");
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
-					}
-
-					if (w == 0 || h == 0)
-					{
-						SDL_Log("After Re-get size width = %d, height = %d", fWidth, fHeight);
-						w = fWidth;
-						h = fHeight;
-					}
+					int w = event.window.data1;
+					int h = event.window.data2;
+			
 					
-					SDL_Log("Window Resize: fWidth = %d, fHeight = %d ", fWidth, fHeight);
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
@@ -1000,15 +986,10 @@ namespace Rtt
 					fRuntime->DispatchEvent(ResizeEvent());
 
 #ifdef EMSCRIPTEN
-					if (w == 0 || h == 0)
-					{
-						SDL_Log("Window resize in resize: fwidth = %d , fheight = %d ", fWidth / 2, fHeight / 2);
-						//emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-					}
-					else
-					{
+			
+					
 						emscripten_set_element_css_size("canvas", w / 2, h / 2);
-					}
+					
 					
 #endif
 				}
