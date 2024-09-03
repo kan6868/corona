@@ -527,7 +527,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		SDL_Log("Window size init: width = %d , height = %d ", fWidth, fHeight);
+		//SDL_Log("Window size init: width = %d , height = %d ", fWidth, fHeight);
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 
 		SDL_GL_CreateContext(fWindow);
@@ -575,7 +575,7 @@ namespace Rtt
 			//SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
-		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+		//SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 
@@ -679,7 +679,7 @@ namespace Rtt
 	{
 		if (GetRuntime()->IsSuspended())
 		{
-			SDL_Log("Resize on Resume");
+			//SDL_Log("Resize on Resume");
 			fRuntime->DispatchEvent(ResizeEvent());
 			fRuntime->Resume();
 		}
@@ -944,11 +944,11 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
-					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+					//SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 					
 					
 #endif
-				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
@@ -961,7 +961,7 @@ namespace Rtt
 						w = fWidth / 2;
 						h = fHeight / 2;
 					}
-					SDL_Log("Window inner: width = %d , height = %d ", w, h);
+					//SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
 					float scaleX = (w * 2) / (float)fWidth;
@@ -981,7 +981,7 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-					SDL_Log("Window resize: width = %d , height = %d ", w, h);
+					//SDL_Log("Window resize: width = %d , height = %d ", w, h);
 					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
