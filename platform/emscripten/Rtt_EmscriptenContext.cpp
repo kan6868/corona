@@ -710,7 +710,7 @@ namespace Rtt
 
 	bool 	CoronaAppContext::ProcessEvent(SDL_Event& event)
 	{
-		//printf("sdl event %X, %s\n", event.type);
+		SDL_Log("sdl event %X, %s\n", event.type);
 		switch (event.type)
 		{
 		case SDL_FINGERDOWN:
@@ -946,7 +946,9 @@ namespace Rtt
 					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 					if (event.window.windowID != 0)
 					{
+						SDL_Log("BREAK");
 						emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+						break;
 					}
 #endif
 				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
