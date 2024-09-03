@@ -964,12 +964,14 @@ namespace Rtt
 
 					if (w == 0 || h == 0)
 					{
-						SDL_Log("After Re-get size.");
+						SDL_Log("After Re-get size width = %d, height = %d", fWidth, fHeight);
 						w = fWidth;
 						h = fHeight;
 					}
+					
 					SDL_Log("Window Resize: fWidth = %d, fHeight = %d ", fWidth, fHeight);
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
+
 					// keep ratio
 					float scaleX = (w * 2) / (float)fWidth;
 					float scaleY = (h * 2) / (float)fHeight;
