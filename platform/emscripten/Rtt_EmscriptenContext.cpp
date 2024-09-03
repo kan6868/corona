@@ -945,17 +945,13 @@ namespace Rtt
 					return fullscreenElement != null ? true : false;
 					});
 					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
-					if (event.window.windowID != 0)
-					{
-						SDL_Log("BREAK");
-						emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-						break;
-					}
+					
+					
 #endif
 				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-				if (fullScreen == false && fMode == "maximized" && event.window.windowID == 0)
+				if (fullScreen == false && fMode == "maximized")
 				{
 					int w = event.window.data1;
 					int h = event.window.data2;
@@ -995,11 +991,14 @@ namespace Rtt
 					fRuntime->DispatchEvent(ResizeEvent());
 
 #ifdef EMSCRIPTEN
-			
 					
-						emscripten_set_element_css_size("canvas", w / 2, h / 2);
-					
-					
+						emscripten_set_element_css_size("canvas", w / 2, h / 2);			
+#endif
+				}
+				else 
+				{
+#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 				}
 
