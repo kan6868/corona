@@ -956,11 +956,12 @@ namespace Rtt
 					int w = event.window.data1;
 					int h = event.window.data2;
 			
-					if (w == 0 || h == 0) 
+#ifdef EMSCRIPTEN
+					if (w == 0 || h == 0)
 					{
-						w = fWidth / 2;
-						h = fHeight / 2;
+						emscripten_get_element_css_size("#canvas", &w, &h);
 					}
+#endif
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
