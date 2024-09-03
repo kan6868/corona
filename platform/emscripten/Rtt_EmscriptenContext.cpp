@@ -958,8 +958,8 @@ namespace Rtt
 			
 					if (w == 0 || h == 0) 
 					{
-						w = fWidth;
-						h = fHeight;
+						w = fWidth / 2;
+						h = fHeight / 2;
 					}
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
