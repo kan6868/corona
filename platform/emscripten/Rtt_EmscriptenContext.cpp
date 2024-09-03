@@ -679,6 +679,7 @@ namespace Rtt
 	{
 		if (GetRuntime()->IsSuspended())
 		{
+			SDL_Log("Resize on Resume");
 			fRuntime->DispatchEvent(ResizeEvent());
 			fRuntime->Resume();
 		}
@@ -1008,7 +1009,7 @@ namespace Rtt
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				//SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
