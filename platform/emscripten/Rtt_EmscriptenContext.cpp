@@ -396,8 +396,6 @@ namespace Rtt
 			Rtt_LogException("SDL_Init: %s(%d)\n", SDL_GetError(), rc);
 		}
 
-		SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
-
 		SDL_version compiled;
 		SDL_version linked;
 		SDL_VERSION(&compiled);
