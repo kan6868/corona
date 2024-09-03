@@ -576,8 +576,8 @@ namespace Rtt
 			SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
-		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
-		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+		SDL_Log("Window after re-size init: width = %d , height = %d ", tempWidth / 2, tempHeight / 2);
+		emscripten_set_element_css_size("canvas", tempWidth / 2, tempHeight / 2);
 #endif
 
 		return true;
