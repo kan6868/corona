@@ -1002,8 +1002,8 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 					if (w == 0 || h == 0)
 					{
-						SDL_Log("Window resize: fwidth = %d , fheight = %d ", fWidth / 2, fHeight / 2);
-						emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+						SDL_Log("Window resize in resize: fwidth = %d , fheight = %d ", fWidth / 2, fHeight / 2);
+						//emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 					}
 					else
 					{
