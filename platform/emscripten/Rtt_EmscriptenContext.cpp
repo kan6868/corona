@@ -680,7 +680,7 @@ namespace Rtt
 		if (GetRuntime()->IsSuspended())
 		{
 			SDL_Log("Resize on Resume");
-			fRuntime->DispatchEvent(ResizeEvent());
+			//fRuntime->DispatchEvent(ResizeEvent());
 			fRuntime->Resume();
 		}
 	}
