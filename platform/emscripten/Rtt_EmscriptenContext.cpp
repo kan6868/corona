@@ -572,7 +572,7 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			SDL_Log("Resize hack");
+			//SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
@@ -947,7 +947,7 @@ namespace Rtt
 					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 				
 #endif
-				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
@@ -955,7 +955,11 @@ namespace Rtt
 					int w = event.window.data1;
 					int h = event.window.data2;
 			
-					
+					if (w == 0 || h == 0) 
+					{
+						w = fWidth;
+						h = fHeight;
+					}
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
