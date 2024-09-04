@@ -510,12 +510,15 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-	
+
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+		fWidth = jsWindowWidth;
+		fHeight = jsWindowHeight;
+
 		jsContextInit(fWidth, fHeight, fOrientation);
 
-
-
-		float scale = 1.0;
 		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
