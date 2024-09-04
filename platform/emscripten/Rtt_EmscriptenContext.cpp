@@ -443,7 +443,7 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-
+		
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -506,7 +506,8 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-
+		SDL_Log("Actual Content Width: %d", fRuntime->GetDisplay().ActualContentWidth());
+		SDL_Log("Actual Content Height: %d", fRuntime->GetDisplay().ActualContentHeight());
 		jsContextInit(fWidth, fHeight, fOrientation);
 
 
@@ -562,6 +563,8 @@ namespace Rtt
 		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
+		
+
 
 		DisplayDefaults& defaults = fRuntime->GetDisplay().GetDefaults();
 		ColorUnion c;
