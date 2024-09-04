@@ -632,12 +632,6 @@ namespace Rtt
 
 	int CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent* uiEvent, void* userData)
 	{
-		static bool _isFirstTime = true;
-		if (_isFirstTime)
-		{
-			_isFirstTime = false;
-			return 0;
-		}
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
 		sdlevent.window.data1 = uiEvent->windowInnerWidth;
@@ -664,7 +658,7 @@ namespace Rtt
 	{
 
 #if defined(EMSCRIPTEN)
-		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
+		emscripten_set_main_loop_arg(&TimerTickShim, this, 60, 1); // Never returns
 #else
 		bool closeApp = false;
 		while (closeApp == false)
@@ -719,7 +713,7 @@ namespace Rtt
 
 	bool 	CoronaAppContext::ProcessEvent(SDL_Event& event)
 	{
-		SDL_Log("sdl event %X, %s\n", event.type);
+		//SDL_Log("sdl event %X, %s\n", event.type);
 		switch (event.type)
 		{
 		case SDL_FINGERDOWN:
@@ -952,7 +946,7 @@ namespace Rtt
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true : false;
 					});
-					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+					//SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
 					
 					
 #endif
@@ -966,8 +960,8 @@ namespace Rtt
 			
 					if (w == 0 || h == 0) 
 					{
-						w = fWidth / 2;
-						h = fHeight / 2;
+						w = fWidth;
+						h = fHeight;
 					}
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
