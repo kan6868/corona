@@ -22,12 +22,12 @@
 #include "Rtt_KeyName.h"
 
 #ifdef WIN32
-	#define strncasecmp _strnicmp
-	#define strcasecmp stricmp
-	#define strtok_r strtok_s
-	#define snprintf _snprintf
+#define strncasecmp _strnicmp
+#define strcasecmp stricmp
+#define strtok_r strtok_s
+#define snprintf _snprintf
 #else
-	#define stricmp strcasecmp
+#define stricmp strcasecmp
 #endif
 
 // #define Rtt_DEBUG_TOUCH 1
@@ -48,27 +48,27 @@ extern "C"
 	extern void jsContextConfig(int w, int h);
 }
 #else
-	static int appWidth, appHeight;
-	int jsContextInit(int w, int h, int fOrientation) { appWidth = w; appHeight = h; return 0; }
-	int jsContextGetWindowWidth() { return appWidth; }
-	int jsContextGetWindowHeight() { return appHeight; }
-	void jsContextUnlockAudio() {}
-	void jsContextSyncFS() {}
-	void jsContextResizeNativeObjects() {}
-	int jsContextMountFS() { return 1; }
-	int jsContextGetIntModuleItem(const char* name) { return 1; }
-	int jsContextLoadFonts(const char* name, void* buf, int size)  { return 0; }
-	void jsContextSetClearColor(int r, int g, int b, int a) {}
-	void jsContextConfig(int w, int h) {}
+static int appWidth, appHeight;
+int jsContextInit(int w, int h, int fOrientation) { appWidth = w; appHeight = h; return 0; }
+int jsContextGetWindowWidth() { return appWidth; }
+int jsContextGetWindowHeight() { return appHeight; }
+void jsContextUnlockAudio() {}
+void jsContextSyncFS() {}
+void jsContextResizeNativeObjects() {}
+int jsContextMountFS() { return 1; }
+int jsContextGetIntModuleItem(const char* name) { return 1; }
+int jsContextLoadFonts(const char* name, void* buf, int size) { return 0; }
+void jsContextSetClearColor(int r, int g, int b, int a) {}
+void jsContextConfig(int w, int h) {}
 #endif
 
 namespace Rtt
 {
 	static U64 s_tick = 0;
-	void TimerTickShim(void *userdata)
+	void TimerTickShim(void* userdata)
 	{
-		CoronaAppContext *context = (CoronaAppContext*) userdata;
-		float frameDuration = 1000.0f / (float) context->getFPS();
+		CoronaAppContext* context = (CoronaAppContext*)userdata;
+		float frameDuration = 1.0f / (float)context->getFPS();
 
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
 		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
@@ -78,7 +78,7 @@ namespace Rtt
 		}
 	}
 
-	MouseListener::MouseListener(Runtime &runtime)
+	MouseListener::MouseListener(Runtime& runtime)
 		: fRuntime(runtime)
 	{
 	}
@@ -99,13 +99,13 @@ namespace Rtt
 
 		fStartPoint[fid] = pt(x, y);
 
-		TouchEvent t((float) x, (float) y, (float) x, (float) y, TouchEvent::kBegan);
+		TouchEvent t((float)x, (float)y, (float)x, (float)y, TouchEvent::kBegan);
 
 		// it must not be ZERO!
-		t.SetId((void*) (fid + 1));
+		t.SetId((void*)(fid + 1));
 
 #if Rtt_DEBUG_TOUCH
-		printf("TouchDown %d(%d, %d)\n", (int) fid, x, y);
+		printf("TouchDown %d(%d, %d)\n", (int)fid, x, y);
 #endif
 
 		if (notifyMultitouch)
@@ -134,10 +134,10 @@ namespace Rtt
 			return;
 		}
 
-		TouchEvent t((float) x, (float) y, (float) fStartPoint[fid].x, (float) fStartPoint[fid].y, TouchEvent::kMoved);
+		TouchEvent t((float)x, (float)y, (float)fStartPoint[fid].x, (float)fStartPoint[fid].y, TouchEvent::kMoved);
 
 		// it must not be ZERO!
-		t.SetId((void*) (fid + 1));
+		t.SetId((void*)(fid + 1));
 
 		if (notifyMultitouch)
 		{
@@ -160,13 +160,13 @@ namespace Rtt
 			return;
 		}
 
-		TouchEvent t((float) x, (float) y, (float) fStartPoint[fid].x, (float) fStartPoint[fid].y, TouchEvent::kEnded);
+		TouchEvent t((float)x, (float)y, (float)fStartPoint[fid].x, (float)fStartPoint[fid].y, TouchEvent::kEnded);
 
 		// it must not be ZERO!
-		t.SetId((void*) (fid + 1));
+		t.SetId((void*)(fid + 1));
 
 #if Rtt_DEBUG_TOUCH
-		printf( "TouchUp %d(%d, %d)\n", (int) fid, x, y );
+		printf("TouchUp %d(%d, %d)\n", (int)fid, x, y);
 #endif
 
 		if (notifyMultitouch)
@@ -194,7 +194,7 @@ namespace Rtt
 		fRuntime.DispatchEvent(e);
 	}
 
-	KeyListener::KeyListener(Runtime &runtime)
+	KeyListener::KeyListener(Runtime& runtime)
 		: fRuntime(runtime)
 	{
 		fKeyName["A"] = KeyName::kA;
@@ -339,7 +339,7 @@ namespace Rtt
 
 		SDL_Keycode	key = e.key.keysym.sym;
 		S32 nativeKeyCode = key;
-		PlatformInputDevice *dev = NULL;
+		PlatformInputDevice* dev = NULL;
 
 		const char* sdlKeyName = SDL_GetKeyName(key);
 		auto it = fKeyName.find(sdlKeyName);
@@ -396,8 +396,6 @@ namespace Rtt
 			Rtt_LogException("SDL_Init: %s(%d)\n", SDL_GetError(), rc);
 		}
 
-		SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
-
 		SDL_version compiled;
 		SDL_version linked;
 		SDL_VERSION(&compiled);
@@ -407,11 +405,11 @@ namespace Rtt
 		printf("linked version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 
 #if defined(EMSCRIPTEN)
-		emscripten_set_blur_callback("#window", this, true, blurCallback);
-		emscripten_set_focus_callback("#window", this, true, focusCallback);
-		emscripten_set_resize_callback("#window", this, false, resizeCallback);
-		emscripten_set_mouseup_callback("#document", this, true, mouseupCallback);		// for OSX
-		emscripten_set_touchend_callback("#document", this, true, touchCallback);		// for iOS
+		emscripten_set_blur_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, blurCallback);
+		emscripten_set_focus_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, focusCallback);
+		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, false, resizeCallback);
+		emscripten_set_mouseup_callback(EMSCRIPTEN_EVENT_TARGET_DOCUMENT, this, true, mouseupCallback);		// for OSX
+		emscripten_set_touchend_callback(EMSCRIPTEN_EVENT_TARGET_DOCUMENT, this, true, touchCallback);		// for iOS
 		emscripten_set_beforeunload_callback(this, beforeunloadCallback);
 
 		// resourceDir, documentsDir, temporaryDir,	cachesDir, systemCachesDir 
@@ -445,6 +443,7 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
+
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -509,25 +508,31 @@ namespace Rtt
 		}
 
 		jsContextInit(fWidth, fHeight, fOrientation);
+
+
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+	
+		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
-
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
+			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
+			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}
-
+		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
+		SDL_Log("Window size init: width = %d , height = %d ", fWidth, fHeight);
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
+
 
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
@@ -542,7 +547,7 @@ namespace Rtt
 		fMouseListener = new MouseListener(*fRuntime);
 		fKeyListener = new KeyListener(*fRuntime);
 
-		if (Runtime::kSuccess != fRuntime->LoadApplication(Runtime::kHTML5LaunchOption, fOrientation)) 
+		if (Runtime::kSuccess != fRuntime->LoadApplication(Runtime::kHTML5LaunchOption, fOrientation))
 		{
 			delete fRuntime;
 			delete fPlatform;
@@ -567,8 +572,11 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
+			//SDL_Log("Resize hack");
+			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
+		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 #endif
 
 		return true;
@@ -577,9 +585,9 @@ namespace Rtt
 #if defined(EMSCRIPTEN)
 
 	// iOS Web Audio Unlocker
-	int CoronaAppContext::mouseupCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void * userData) 
+	int CoronaAppContext::mouseupCallback(int eventType, const EmscriptenMouseEvent* mouseEvent, void* userData)
 	{
-		CoronaAppContext* ctx = (CoronaAppContext*) userData;
+		CoronaAppContext* ctx = (CoronaAppContext*)userData;
 		jsContextUnlockAudio();
 
 		// request fullScreen from mouse gesture
@@ -588,39 +596,39 @@ namespace Rtt
 		{
 			//printf("requestFullscreen: mode=%s, ctx=%p\n", ctx->fMode.c_str(), ctx);
 			isFirstTime = false;
-			ctx->requestFullscreen(EMSCRIPTEN_FULLSCREEN_SCALE_ASPECT, EMSCRIPTEN_FULLSCREEN_CANVAS_SCALE_STDDEF, EMSCRIPTEN_FULLSCREEN_FILTERING_DEFAULT); 
+			ctx->requestFullscreen(EMSCRIPTEN_FULLSCREEN_SCALE_ASPECT, EMSCRIPTEN_FULLSCREEN_CANVAS_SCALE_STDDEF, EMSCRIPTEN_FULLSCREEN_FILTERING_DEFAULT);
 		}
-	  return 0;
+		return 0;
 	}
 
-	int CoronaAppContext::touchCallback(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
+	int CoronaAppContext::touchCallback(int eventType, const EmscriptenTouchEvent* touchEvent, void* userData)
 	{
 		return mouseupCallback(0, 0, 0);
 	}
 
-	int CoronaAppContext::blurCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
+	int CoronaAppContext::blurCallback(int eventType, const EmscriptenFocusEvent* focusEvent, void* userData)
 	{
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
 		{
-			CoronaAppContext* ctx = (CoronaAppContext*) userData;
+			CoronaAppContext* ctx = (CoronaAppContext*)userData;
 			ctx->pause();
 		}
-	  return 0;
+		return 0;
 	}
 
-	int CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
+	int CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent* focusEvent, void* userData)
 	{
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
 		{
-			CoronaAppContext* ctx = (CoronaAppContext*) userData;
+			CoronaAppContext* ctx = (CoronaAppContext*)userData;
 			ctx->resume();
 		}
 		return 0;
 	}
 
-	int CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
+	int CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent* uiEvent, void* userData)
 	{
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
@@ -632,11 +640,11 @@ namespace Rtt
 		return 0;
 	}
 
-	const char* CoronaAppContext::beforeunloadCallback(int eventType, const void *reserved, void *userData)
+	const char* CoronaAppContext::beforeunloadCallback(int eventType, const void* reserved, void* userData)
 	{
 		jsContextSyncFS();
 
-		CoronaAppContext* ctx = (CoronaAppContext*) userData;
+		CoronaAppContext* ctx = (CoronaAppContext*)userData;
 		Rtt::jsSystemEvent ev("applicationExit");
 		ctx->GetRuntime()->DispatchEvent(ev);
 		return NULL;
@@ -646,6 +654,7 @@ namespace Rtt
 
 	void CoronaAppContext::Start()
 	{
+
 #if defined(EMSCRIPTEN)
 		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
 #else
@@ -670,6 +679,7 @@ namespace Rtt
 	{
 		if (GetRuntime()->IsSuspended())
 		{
+			SDL_Log("Resize on Resume");
 			fRuntime->DispatchEvent(ResizeEvent());
 			fRuntime->Resume();
 		}
@@ -701,14 +711,14 @@ namespace Rtt
 
 	bool 	CoronaAppContext::ProcessEvent(SDL_Event& event)
 	{
-		//printf("sdl event %X, %s\n", event.type);
+		SDL_Log("sdl event %X, %s\n", event.type);
 		switch (event.type)
 		{
 		case SDL_FINGERDOWN:
 		{
 			int w, h;
 			SDL_GetWindowSize(fWindow, &w, &h);
-			SDL_TouchFingerEvent &ef = event.tfinger;
+			SDL_TouchFingerEvent& ef = event.tfinger;
 			GetMouseListener()->TouchDown(w * ef.x, h * ef.y, ef.fingerId);
 			break;
 		}
@@ -716,7 +726,7 @@ namespace Rtt
 		{
 			int w, h;
 			SDL_GetWindowSize(fWindow, &w, &h);
-			SDL_TouchFingerEvent &ef = event.tfinger;
+			SDL_TouchFingerEvent& ef = event.tfinger;
 			GetMouseListener()->TouchUp(w * ef.x, h * ef.y, ef.fingerId);
 			break;
 		}
@@ -724,7 +734,7 @@ namespace Rtt
 		{
 			int w, h;
 			SDL_GetWindowSize(fWindow, &w, &h);
-			SDL_TouchFingerEvent &ef = event.tfinger;
+			SDL_TouchFingerEvent& ef = event.tfinger;
 			GetMouseListener()->TouchMoved(w * ef.x, h * ef.y, ef.fingerId);
 			break;
 		}
@@ -878,7 +888,7 @@ namespace Rtt
 				event.type = SDL_QUIT;
 				return true;		// close app
 			}
-			
+
 			// ignore key repeat
 			if (event.key.repeat == 0)
 			{
@@ -932,20 +942,30 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-					return fullscreenElement != null ? true: false;
-				});
+					return fullscreenElement != null ? true : false;
+					});
+					SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
+					
+					
 #endif
-				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
+					int w = event.window.data1;
+					int h = event.window.data2;
+			
+					if (w == 0 || h == 0) 
+					{
+						w = fWidth / 2;
+						h = fHeight / 2;
+					}
+					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
-					float scaleX = w / fWidth;
-					float scaleY = h / fHeight;
+					float scaleX = (w * 2) / (float)fWidth;
+					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -953,8 +973,7 @@ namespace Rtt
 						w = fWidth * scaleX;
 						h = fHeight * scaleY;
 					}
-					else
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
 					}
 					else
@@ -962,7 +981,7 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-
+					SDL_Log("Window resize: width = %d , height = %d ", w, h);
 					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
@@ -970,14 +989,26 @@ namespace Rtt
 					fRuntime->GetDisplay().Invalidate();
 
 					fRuntime->DispatchEvent(ResizeEvent());
+
+#ifdef EMSCRIPTEN
+					
+						emscripten_set_element_css_size("canvas", w / 2, h / 2);			
+#endif
 				}
+				else 
+				{
+#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+#endif
+				}
+
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				//SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
@@ -1119,7 +1150,7 @@ namespace Rtt
 							//Rtt_Log("Creating sandbox: %s to %s\n", files[i].c_str(), dst.c_str());
 						}
 					}
-				
+
 					if (copiedFiles > 0)
 					{
 						jsContextSyncFS();
@@ -1190,7 +1221,7 @@ namespace Rtt
 				fAppState = INIT_APP;
 			}
 #else
-				fAppState = INIT_APP;
+			fAppState = INIT_APP;
 #endif
 			break;
 		}
@@ -1222,7 +1253,7 @@ namespace Rtt
 		return false;
 	}
 
-	bool EmscriptenRuntime::readTable(lua_State *L, const char* table, int* w, int* h, std::string* title, std::string* mode) const
+	bool EmscriptenRuntime::readTable(lua_State* L, const char* table, int* w, int* h, std::string* title, std::string* mode) const
 	{
 		bool rc = false;
 		int top = lua_gettop(L);
@@ -1274,7 +1305,7 @@ namespace Rtt
 	{
 		Rtt_ASSERT(w != NULL && h != NULL);
 
-		lua_State *L = VMContext().L();
+		lua_State* L = VMContext().L();
 		int status = 0;
 		const MPlatform& p = Platform();
 		int top = lua_gettop(L);
@@ -1285,7 +1316,7 @@ namespace Rtt
 		const char kBuildSettings[] = "build.settings";
 		String filePath(&p.GetAllocator());
 		p.PathForFile(kBuildSettings, MPlatform::kResourceDir, MPlatform::kTestFileExists, filePath);
-		const char *path = filePath.GetString();
+		const char* path = filePath.GetString();
 		if (path)
 		{
 			status = VMContext().DoFile(path, 0, true);
@@ -1335,15 +1366,14 @@ namespace Rtt
 		lua_settop(L, top);
 	}
 
-	int jsSystemEvent::Push( lua_State *L ) const
+	int jsSystemEvent::Push(lua_State* L) const
 	{
-		if ( Rtt_VERIFY( VirtualEvent::Push( L ) ) )
+		if (Rtt_VERIFY(VirtualEvent::Push(L)))
 		{
-			lua_pushstring( L, fEventName.c_str() );
-			lua_setfield( L, -2, kTypeKey );
+			lua_pushstring(L, fEventName.c_str());
+			lua_setfield(L, -2, kTypeKey);
 		}
 		return 1;
 	}
 
 }
-

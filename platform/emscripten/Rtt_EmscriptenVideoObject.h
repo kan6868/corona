@@ -28,7 +28,7 @@ namespace Rtt
 			void dispatch(int elementID, int eventID);
 
 			CoronaLuaRef fLuaReference;
-			tu_string fEventName;
+			std::string fEventName;
 			ResourceHandle<lua_State> fLuaState;
 		};
 

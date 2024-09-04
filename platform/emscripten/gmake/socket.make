@@ -23,7 +23,7 @@ ifeq ($(config),Debug)
   OBJDIR     = obj/Debug/socket
   # TARGETDIR  = ../../../Build/gmake/bin/Debug
   TARGETDIR  = obj/Debug
-  TARGET     = $(TARGETDIR)/libsocket.o
+  TARGET     = $(TARGETDIR)/libsocket.a
   DEFINES   += -DRtt_DEBUG -DLUA_USE_APICHECK
   INCLUDES  += -I../../../external/luasocket/src -I../../../external/lua-5.1.3/src -I../../../librtt/Corona
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
@@ -33,8 +33,8 @@ ifeq ($(config),Debug)
   ALL_LDFLAGS   += $(LDFLAGS)
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  #LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -47,7 +47,7 @@ ifeq ($(config),Release)
   OBJDIR     = obj/Release/socket
   # TARGETDIR  = ../../../Build/gmake/bin/Release
   TARGETDIR  = obj/Release
-  TARGET     = $(TARGETDIR)/libsocket.o
+  TARGET     = $(TARGETDIR)/libsocket.a
   DEFINES   += -DNDEBUG
   INCLUDES  += -I../../../external/luasocket/src -I../../../external/lua-5.1.3/src -I../../../librtt/Corona
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
@@ -57,8 +57,8 @@ ifeq ($(config),Release)
   ALL_LDFLAGS   += $(LDFLAGS) -Wl,-x
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  #LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS

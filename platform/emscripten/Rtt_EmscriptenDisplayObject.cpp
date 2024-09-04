@@ -180,7 +180,7 @@ namespace Rtt
 	void EmscriptenDisplayObject::setBackgroundColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 	{
 		char rgba[16];
-		snprintf(rgba, sizeof(rgba), "#%02X%02X%02X", r, g, b, a);
+		snprintf(rgba, sizeof(rgba), "#%02X%02X%02X", r, g, b, 255);
 		jsDisplayObjectsetBackgroundColor(fElementID, rgba);
 	}
 

@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <string>
 #include "Core/Rtt_Build.h"
 #include "Core/Rtt_Geometry.h"
 #include "Rtt_PlatformDisplayObject.h"
@@ -59,7 +60,7 @@ namespace Rtt
 
 	protected:
 		int fElementID;		// html id
-		tu_string fType;		// type of elementряћхэъјђя
+		std::string fType;		// type of elementряћхэъјђя
 
 	private:
 		Rect fSelfBounds;

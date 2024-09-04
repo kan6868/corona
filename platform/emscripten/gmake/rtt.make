@@ -23,7 +23,7 @@ ifeq ($(config),Debug)
   OBJDIR     = obj/Debug/rtt
   # TARGETDIR  = ../../../Build/gmake/bin/Debug
   TARGETDIR  = obj/Debug
-  TARGET     = $(TARGETDIR)/librtt.o
+  TARGET     = $(TARGETDIR)/librtt.a
   DEFINES   += -DRtt_DEBUG -DLUA_USE_APICHECK -DRtt_EMSCRIPTEN_ENV
   INCLUDES  += -I../ -I../../../librtt -I../../../librtt/Corona -I../../../external/b2Separator-cpp -I../../../external/Box2D -I../../../external/fft -I../../../external/lua-5.1.3/src -I../../../external/luasocket/src -I../../../external/smoothpolygon -I../system/include
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
@@ -33,8 +33,8 @@ ifeq ($(config),Debug)
   ALL_LDFLAGS   += $(LDFLAGS)
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  #LINKCMD    = $(CC) $(OBJECTS) -o $(TARGET)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -47,7 +47,7 @@ ifeq ($(config),Release)
   OBJDIR     = obj/Release/rtt
   # TARGETDIR  = ../../../Build/gmake/bin/Release
   TARGETDIR  = obj/Release
-  TARGET     = $(TARGETDIR)/librtt.o
+  TARGET     = $(TARGETDIR)/librtt.a
   DEFINES   += -DNDEBUG -DRtt_EMSCRIPTEN_ENV
   INCLUDES  += -I../ -I../../../librtt -I../../../librtt/Corona -I../../../external/b2Separator-cpp -I../../../external/Box2D -I../../../external/fft -I../../../external/lua-5.1.3/src -I../../../external/luasocket/src -I../../../external/smoothpolygon -I../system/include
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
@@ -57,8 +57,8 @@ ifeq ($(config),Release)
   ALL_LDFLAGS   += $(LDFLAGS) -Wl,-x
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  #LINKCMD    = $(CC) $(OBJECTS) -o $(TARGET)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -144,6 +144,7 @@ OBJECTS := \
 	$(OBJDIR)/Rtt_PlatformVideoPlayer.o \
 	$(OBJDIR)/Rtt_PlatformVideoProvider.o \
 	$(OBJDIR)/Rtt_PlatformWebPopup.o \
+	$(OBJDIR)/Rtt_Profiling.o \
 	$(OBJDIR)/Rtt_RenderingStream.o \
 	$(OBJDIR)/Rtt_Resource.o \
 	$(OBJDIR)/Rtt_Runtime.o \
@@ -171,6 +172,7 @@ OBJECTS := \
 	$(OBJDIR)/CoronaEvent.o \
 	$(OBJDIR)/CoronaLibrary.o \
 	$(OBJDIR)/CoronaLua.o \
+	$(OBJDIR)/CoronaMemory.o \
 	$(OBJDIR)/Rtt_BitmapMask.o \
 	$(OBJDIR)/Rtt_BitmapPaint.o \
 	$(OBJDIR)/Rtt_BitmapPaintAdapter.o \
@@ -303,6 +305,9 @@ OBJECTS := \
 	$(OBJDIR)/kernel_filter_bloom_gl.o \
 	$(OBJDIR)/kernel_filter_blur_gl.o \
 	$(OBJDIR)/kernel_filter_blurGaussian_gl.o \
+	$(OBJDIR)/kernel_filter_blurLinearVertical_gl.o \
+	$(OBJDIR)/kernel_filter_blurLinearHorizontal_gl.o \
+	$(OBJDIR)/kernel_filter_blurGaussianLinear_gl.o \
 	$(OBJDIR)/kernel_filter_blurHorizontal_gl.o \
 	$(OBJDIR)/kernel_filter_blurVertical_gl.o \
 	$(OBJDIR)/kernel_filter_brightness_gl.o \
@@ -756,6 +761,10 @@ $(OBJDIR)/Rtt_PlatformWebPopup.o: ../../../librtt/Rtt_PlatformWebPopup.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
+$(OBJDIR)/Rtt_Profiling.o: ../../../librtt/Rtt_Profiling.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+
 $(OBJDIR)/Rtt_RenderingStream.o: ../../../librtt/Rtt_RenderingStream.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
@@ -861,6 +870,10 @@ $(OBJDIR)/CoronaLibrary.o: ../../../librtt/Corona/CoronaLibrary.cpp
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
 $(OBJDIR)/CoronaLua.o: ../../../librtt/Corona/CoronaLua.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+
+$(OBJDIR)/CoronaMemory.o: ../../../librtt/Corona/CoronaMemory.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
@@ -1389,6 +1402,18 @@ $(OBJDIR)/kernel_filter_blur_gl.o: ../lua/kernel_filter_blur_gl.cpp
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
 $(OBJDIR)/kernel_filter_blurGaussian_gl.o: ../lua/kernel_filter_blurGaussian_gl.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+
+$(OBJDIR)/kernel_filter_blurLinearVertical_gl.o: ../lua/kernel_filter_blurLinearVertical_gl.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+
+$(OBJDIR)/kernel_filter_blurLinearHorizontal_gl.o: ../lua/kernel_filter_blurLinearHorizontal_gl.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
+
+$(OBJDIR)/kernel_filter_blurGaussianLinear_gl.o: ../lua/kernel_filter_blurGaussianLinear_gl.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF $(@:%.o=%.d) -c "$<"
 
