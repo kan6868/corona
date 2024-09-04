@@ -348,6 +348,7 @@ namespace Rtt
 		, fWrapWidth(width)
 		, fAlignment(&context, alignment)
 	{
+		SDL_Log("Font size: %d", inFont.Size());
 		jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
 		baselineOffset = fHeight * 0.5f - inFont.Size();
 	}
