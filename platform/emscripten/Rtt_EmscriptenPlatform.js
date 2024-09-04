@@ -479,6 +479,7 @@ var platformLibrary =
 
 	jsContextLoadFonts: function(_name, buf, size)
 	{
+		console.log("Loading font with size " + size);
 		var name = UTF8ToString(_name);
 		var body = new Uint8Array(size);
 		for (var i = 0; i < size; i++) {
@@ -507,7 +508,7 @@ var platformLibrary =
 		document.head.appendChild(fontface);
 
 		function onFontLoaded() {
-			//console.log('font ' + fontName + ' loaded');
+			console.log('font ' + fontName + ' loaded');
 			Module.loadingFonts--;
 		};
 
@@ -798,6 +799,12 @@ var platformLibrary =
 		div.style.margin = "0px 0px 0px 0px";
 		div.style.padding = "0px 0px 0px 0px";
 		//	div.style.fontWeight = bold ? 'bold' : 'normal';
+		if (size <= 0)
+		{
+			size = 32;
+			console.log("Resize to size: " + size);
+		}
+
 		div.style.fontSize = size + 'px';
 
 		divMain.appendChild(div);
