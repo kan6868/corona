@@ -515,13 +515,14 @@ namespace Rtt
 
 
 
-	
+		float scale = 1.0;
 		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
 			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
-			float scale = fmin(scaleX, scaleY);				// keep ratio
+							// keep ratio
+			scale = fmin(scaleX, scaleY);
 			fWidth *= scale;
 			fHeight *= scale;
 		}
@@ -561,7 +562,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * (jsWindowWidth / fRuntimeDelegate->fContentWidth), fRuntimeDelegate->fContentHeight * (jsWindowHeight / fRuntimeDelegate->fContentHeight));
 
 		fRuntime->BeginRunLoop();
 		
