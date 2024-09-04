@@ -634,6 +634,12 @@ namespace Rtt
 
 	int CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent* uiEvent, void* userData)
 	{
+		static bool _isFirstTime = true;
+		if (_isFirstTime)
+		{
+			_isFirstTime = false;
+			return 0;
+		}
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
 		sdlevent.window.data1 = uiEvent->windowInnerWidth;
