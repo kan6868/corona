@@ -524,8 +524,7 @@ namespace Rtt
 		{
 			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
 			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
-							// keep ratio
-			scale = fmin(scaleX, scaleY);
+			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}
@@ -565,7 +564,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * (jsWindowWidth / fRuntimeDelegate->fContentWidth), fRuntimeDelegate->fContentHeight * (jsWindowHeight / fRuntimeDelegate->fContentHeight));
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 		
