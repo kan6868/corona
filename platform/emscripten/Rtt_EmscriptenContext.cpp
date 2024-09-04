@@ -960,8 +960,8 @@ namespace Rtt
 			
 					if (w == 0 || h == 0) 
 					{
-						w = fWidth;
-						h = fHeight;
+						w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
 					}
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
