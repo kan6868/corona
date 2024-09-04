@@ -637,7 +637,7 @@ namespace Rtt
 		sdlevent.window.data1 = uiEvent->windowInnerWidth;
 		sdlevent.window.data2 = uiEvent->windowInnerHeight;
 		sdlevent.window.windowID = 0;
-		sdlevent.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;//SDL_WINDOWEVENT_RESIZED;
+		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;//SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent);
 
 		return 0;
@@ -995,7 +995,7 @@ namespace Rtt
 
 #ifdef EMSCRIPTEN
 					
-						emscripten_set_element_css_size("canvas", w / 2, h / 2);			
+					emscripten_set_element_css_size("canvas", w / 2, h / 2);			
 #endif
 				}
 				else 
@@ -1012,69 +1012,6 @@ namespace Rtt
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			{
-				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				bool fullScreen = false;
-#ifdef EMSCRIPTEN
-				fullScreen = EM_ASM_INT({
-					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-					return fullscreenElement != null ? true : false;
-					});
-				//SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
-
-
-#endif
-				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				// resize only for 'maximized' to fill fit browers's window
-//				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-				if (fullScreen == false && fMode == "maximized")
-				{
-					int w = event.window.data1;
-					int h = event.window.data2;
-
-					SDL_Log("Window inner: width = %d , height = %d ", w, h);
-
-					// keep ratio
-					float scaleX = (w) / (float)fWidth;
-					float scaleY = (h) / (float)fHeight;
-
-					float scale = fmin(scaleX, scaleY);
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-					{
-						w = fWidth * scaleX;
-						h = fHeight * scaleY;
-					}
-					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-					{
-					}
-					else
-					{
-						w = fWidth * scale;
-						h = fHeight * scale;
-					}
-					SDL_Log("Window resize: width = %d , height = %d ", w, h);
-					SDL_SetWindowSize(fWindow, w, h);
-
-					fRuntime->WindowSizeChanged();
-					fRuntime->RestartRenderer(fOrientation);
-					fRuntime->GetDisplay().Invalidate();
-
-					fRuntime->DispatchEvent(ResizeEvent());
-
-#ifdef EMSCRIPTEN
-
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);
-#endif
-				}
-				else
-				{
-#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-#endif
-				}
-
-
-				// refresh native elements
-				jsContextResizeNativeObjects();
 				break;
 			}
 			case SDL_WINDOWEVENT_MINIMIZED:
