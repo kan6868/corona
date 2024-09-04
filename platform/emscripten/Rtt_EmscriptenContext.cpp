@@ -640,6 +640,14 @@ namespace Rtt
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;//SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent);
 
+		SDL_Event sdlevent2;
+		sdlevent2.type = SDL_WINDOWEVENT;
+		sdlevent2.window.data1 = uiEvent->windowInnerWidth;
+		sdlevent2.window.data2 = uiEvent->windowInnerHeight;
+		sdlevent2.window.windowID = 0;
+		sdlevent2.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;//SDL_WINDOWEVENT_RESIZED;
+		SDL_PushEvent(&sdlevent2);
+
 		return 0;
 	}
 
@@ -939,6 +947,11 @@ namespace Rtt
 			case SDL_WINDOWEVENT_MOVED:
 				//SDL_Log("Window %d moved to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+			{
+				SDL_Log("Window %d size changed to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
+				break;
+			}
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				bool fullScreen = false;
@@ -1008,10 +1021,6 @@ namespace Rtt
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
-				break;
-			}
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-			{
 				break;
 			}
 			case SDL_WINDOWEVENT_MINIMIZED:
