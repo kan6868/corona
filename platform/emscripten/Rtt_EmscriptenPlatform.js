@@ -801,11 +801,11 @@ var platformLibrary =
 		div.style.margin = "0px 0px 0px 0px";
 		div.style.padding = "0px 0px 0px 0px";
 		//	div.style.fontWeight = bold ? 'bold' : 'normal';
-		if (size <= 0)
-		{
-			size = 32;
-			console.log("Resize to size: " + size);
-		}
+		//if (size <= 0)
+		//{
+		//	size = 32;
+		//	console.log("Resize to size: " + size);
+		//}
 
 		div.style.fontSize = size + 'px';
 
