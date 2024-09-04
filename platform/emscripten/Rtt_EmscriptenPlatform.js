@@ -267,6 +267,7 @@ var platformLibrary =
 	},
 
 	jsDisplayObjectCreate: function (x, y, w, h, etype, thiz) {
+		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		var fType = UTF8ToString(etype);
 		var obj = document.createElement(fType);
 		obj.id = Module.appElementCounter++;
@@ -284,7 +285,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 		
 		window.refreshNativeObject(obj.id);
-		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
+		
 		return obj.id;
 	},
 
@@ -538,8 +539,8 @@ var platformLibrary =
 		Module.appInitWidth = appWidth;
 		Module.appInitHeight = appHeight;
 		Module.appOrientation = orientation;
-		Module.appContentWidth = 0;
-		Module.appContentHeight = 0;
+		Module.appContentWidth = 320;
+		Module.appContentHeight = 480;
 		Module.documentsDirLoaded = 0;
 		Module.appTextMeters = {};
 
@@ -619,6 +620,7 @@ var platformLibrary =
 	},
 
 	jsContextConfig: function(w, h)	{
+		console.log("Set appContent Size: " + w + ", " + h);
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
 	},
@@ -826,11 +828,7 @@ var platformLibrary =
 		if (!fontSize) {
 			fontSize = 16;        // default font size if not provided
 		}
-
-		if (fontSize <= 0)
-		{
-			fontSize = 16;
-		}
+		
 		var text = UTF8ToString(_text);
 		var alignment = UTF8ToString(_alignment);
 
