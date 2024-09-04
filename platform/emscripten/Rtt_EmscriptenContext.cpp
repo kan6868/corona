@@ -506,14 +506,16 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		SDL_Log("Actual Content Width: %d", fRuntime->GetDisplay().ActualContentWidth());
-		SDL_Log("Actual Content Height: %d", fRuntime->GetDisplay().ActualContentHeight());
-		jsContextInit(fWidth, fHeight, fOrientation);
-
+	
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
 		int jsWindowHeight = jsContextGetWindowHeight();
+
+		jsContextInit(jsWindowWidth, jsWindowHeight, fOrientation);
+
+
+
 	
 		SDL_Log("Window inner init: width = %d , height = %d ", jsWindowWidth, jsWindowHeight);
 		if (fMode == "maximized" || fMode == "fullscreen")
