@@ -3,7 +3,7 @@ name: Build Test
 on:
   push:
     tags:
-      - '*'
+      - '3595'
   workflow_dispatch:
     inputs:
       buildNumber:
