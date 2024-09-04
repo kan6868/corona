@@ -1,6 +1,6 @@
 #!/bin/sh
 
-path=$(dirname "$0")
+path=`dirname $0`
 CORONA_PROJECT_DIR=$1
 OUTPUT_HTML=$2
 CONFIG=$3
@@ -14,7 +14,7 @@ BIN_DIR=$path/../../../bin/mac
 usage() {
 	echo ""
 	echo "USAGE: $0 CORONA_PROJECT_DIR [OUTPUT_HTML [CONFIG]]"
-	exit 255
+	exit -1
 }
 
 #
@@ -24,7 +24,7 @@ checkError() {
 	if [ $? -ne 0 ]
 	then
 		echo "Exiting due to errors (above)"
-		exit 233
+		exit -1
 	fi
 }
 
@@ -54,12 +54,32 @@ popd > /dev/null
 
 echo "Using following settings:"
 
-if which emcc >/dev/null; then
-    echo "\t Emscripten path = '$(dirname "$(which emcc)")'"
-else
-	echo "\t ERROR: Unable to find EMSCRIPTEN_ROOT."
-	exit 200
+if [ -z "$EMSDK" ]
+then
+	# Detect for defaults
+	if [ -e ~/.emscripten ]
+	then
+		export $(grep EMSCRIPTEN_ROOT ~/.emscripten | tr -d \')
+		if [ -d "$EMSCRIPTEN_ROOT" ]
+		then
+			EMSDK=$EMSCRIPTEN_ROOT
+		fi
+	fi
 fi
+
+if [ -z "$EMSDK" ]
+then
+	# Fallback to symlink
+	EMSDK=$path/emsdk
+
+	if [ ! -d "$EMSDK" ]
+	then
+		echo "\t ERROR: The symlink ($path/emsdk) does not point to a directory. You should point it to the version of Emscripten you are using, e.g. it should contain 'emcc' among others."
+		exit -1
+	fi
+fi
+export EMSDK
+echo "\t Emscripten path = '$EMSDK'"
 
 if [ -z "$CONFIG" ]
 then
@@ -99,8 +119,8 @@ pushd $path > /dev/null
 	echo " "
 	echo "Building Corona libraries:"
 
-	echo '\t' make AR=emar CC=emcc CXX=em++ verbose=1 config="$CONFIG" CXXFLAGS="-s LEGACY_VM_SUPPORT=1 -s USE_SDL=2"
-	make AR=emar CC=emcc CXX=em++ verbose=1 config="$CONFIG" CXXFLAGS="-s LEGACY_VM_SUPPORT=1 -s USE_SDL=2 -I\"$path/hack_includes\""
+	echo '\t' make CC="$EMSDK"/emcc CXX="$EMSDK"/em++ verbose=1 config="$CONFIG" CXXFLAGS="-s LEGACY_VM_SUPPORT=1 -s USE_SDL=2"
+	make CC="$EMSDK"/emcc CXX="$EMSDK"/em++ verbose=1 config="$CONFIG" CXXFLAGS="-s LEGACY_VM_SUPPORT=1 -s USE_SDL=2 -I\"$path/hack_includes\""
 	checkError
 
 	echo " "
@@ -114,7 +134,7 @@ pushd $path > /dev/null
 	then
 		echo " "
 		echo "Generate resource.car:"
-		find "$TMP_DIR" -mindepth 1 -maxdepth 1 -iname "*.lu" | "$path"/../../../bin/mac/car -f - "$TMP_DIR/resource.car"
+		find "$TMP_DIR" -mindepth 1 -maxdepth 1 -iname "*.lu" | $path/car -f - "$TMP_DIR/resource.car"
 		checkError
 		find "$TMP_DIR" -mindepth 1 -maxdepth 1 -iname "*.lu" -print0 | xargs -0 rm -f 
 		checkError
@@ -124,20 +144,20 @@ pushd $path > /dev/null
 
 	echo " "
 	echo "Building HTML:"
-	echo '\t' emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s LEGACY_VM_SUPPORT=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
-	emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s LEGACY_VM_SUPPORT=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js -lidbfs.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	echo '\t' "$EMSDK"/emcc $CC_FLAGS obj/"$CONFIG"/libcorona.o -s LEGACY_VM_SUPPORT=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' -s ALLOW_MEMORY_GROWTH=1 -O3 -s USE_SDL=2 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	"$EMSDK"/emcc $CC_FLAGS obj/"$CONFIG"/libcorona.o -s LEGACY_VM_SUPPORT=1 -s EXTRA_EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
 	checkError
 
 
 	echo "SUCCESS! Run with command:"
-	echo '\t' emrun $OUTPUT_HTML
+	echo '\t' $EMSDK/emrun $OUTPUT_HTML
 	
 	# pushd `dirname "$OUTPUT_HTML"` > /dev/null
 	# OUT_PATH=`pwd`
 	# OUT_FILE=`basename "$OUTPUT_HTML"`
 	# FULL_OUTPUT_PATH="$OUT_PATH/$OUT_FILE"
 	# popd > /dev/null
-	# echo '\t' "\"$EMSCRIPTEN_ROOT/emrun\" \"$FULL_OUTPUT_PATH\""
+	# echo '\t' "\"$EMSDK/emrun\" \"$FULL_OUTPUT_PATH\""
 
 popd $path > /dev/null
 

@@ -1,0 +1,261 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C200AAD319623FB4005828AA /* HISTORY in Resources */ = {isa = PBXBuildFile; fileRef = C200AAC719623FB4005828AA /* HISTORY */; };
+		C200AAD419623FB4005828AA /* lpeg-128.gif in Resources */ = {isa = PBXBuildFile; fileRef = C200AAC819623FB4005828AA /* lpeg-128.gif */; };
+		C200AAD519623FB4005828AA /* lpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = C200AAC919623FB4005828AA /* lpeg.c */; };
+		C200AAD619623FB4005828AA /* lpeg.html in Resources */ = {isa = PBXBuildFile; fileRef = C200AACB19623FB4005828AA /* lpeg.html */; };
+		C200AAD719623FB4005828AA /* makefile in Sources */ = {isa = PBXBuildFile; fileRef = C200AACF19623FB4005828AA /* makefile */; };
+		C200AAD819623FB4005828AA /* re.html in Resources */ = {isa = PBXBuildFile; fileRef = C200AAD019623FB4005828AA /* re.html */; };
+		C200AAD919623FB4005828AA /* re.lua in Resources */ = {isa = PBXBuildFile; fileRef = C200AAD119623FB4005828AA /* re.lua */; };
+		C200AADA19623FB4005828AA /* test.lua in Resources */ = {isa = PBXBuildFile; fileRef = C200AAD219623FB4005828AA /* test.lua */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		625356193E2A6189126C7CB4 /* liblpeg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblpeg.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C200AAC719623FB4005828AA /* HISTORY */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HISTORY; sourceTree = "<group>"; };
+		C200AAC819623FB4005828AA /* lpeg-128.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "lpeg-128.gif"; sourceTree = "<group>"; };
+		C200AAC919623FB4005828AA /* lpeg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lpeg.c; sourceTree = "<group>"; };
+		C200AACA19623FB4005828AA /* lpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lpeg.h; sourceTree = "<group>"; };
+		C200AACB19623FB4005828AA /* lpeg.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = lpeg.html; sourceTree = "<group>"; };
+		C200AACF19623FB4005828AA /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = makefile; sourceTree = "<group>"; };
+		C200AAD019623FB4005828AA /* re.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = re.html; sourceTree = "<group>"; };
+		C200AAD119623FB4005828AA /* re.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = re.lua; sourceTree = "<group>"; };
+		C200AAD219623FB4005828AA /* test.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.lua; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		530E619240896A9D09CA610B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		077F2ACE4D6077FC74674242 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				625356193E2A6189126C7CB4 /* liblpeg.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		675A4D94390043C33FF171DE /* external */ = {
+			isa = PBXGroup;
+			children = (
+				C200AAC619623FB4005828AA /* lpeg */,
+			);
+			name = external;
+			sourceTree = "<group>";
+		};
+		72D23EC25C77454E1C903BDB /* lpeg */ = {
+			isa = PBXGroup;
+			children = (
+				675A4D94390043C33FF171DE /* external */,
+				077F2ACE4D6077FC74674242 /* Products */,
+			);
+			name = lpeg;
+			sourceTree = "<group>";
+		};
+		C200AAC619623FB4005828AA /* lpeg */ = {
+			isa = PBXGroup;
+			children = (
+				C200AAC719623FB4005828AA /* HISTORY */,
+				C200AAC819623FB4005828AA /* lpeg-128.gif */,
+				C200AAC919623FB4005828AA /* lpeg.c */,
+				C200AACA19623FB4005828AA /* lpeg.h */,
+				C200AACB19623FB4005828AA /* lpeg.html */,
+				C200AACF19623FB4005828AA /* makefile */,
+				C200AAD019623FB4005828AA /* re.html */,
+				C200AAD119623FB4005828AA /* re.lua */,
+				C200AAD219623FB4005828AA /* test.lua */,
+			);
+			name = lpeg;
+			path = ../../external/lpeg;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1BC5618B08B9339B33D91B7E /* lpeg */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 379121FA5F7676A75DDA2377 /* Build configuration list for PBXNativeTarget "lpeg" */;
+			buildPhases = (
+				644025D6156743B3594C469C /* Resources */,
+				524020952C7F768B360D2A09 /* Sources */,
+				530E619240896A9D09CA610B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = lpeg;
+			productName = lpeg;
+			productReference = 625356193E2A6189126C7CB4 /* liblpeg.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "lpeg" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 72D23EC25C77454E1C903BDB /* lpeg */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1BC5618B08B9339B33D91B7E /* lpeg */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		644025D6156743B3594C469C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C200AAD919623FB4005828AA /* re.lua in Resources */,
+				C200AAD419623FB4005828AA /* lpeg-128.gif in Resources */,
+				C200AAD819623FB4005828AA /* re.html in Resources */,
+				C200AAD619623FB4005828AA /* lpeg.html in Resources */,
+				C200AADA19623FB4005828AA /* test.lua in Resources */,
+				C200AAD319623FB4005828AA /* HISTORY in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		524020952C7F768B360D2A09 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C200AAD719623FB4005828AA /* makefile in Sources */,
+				C200AAD519623FB4005828AA /* lpeg.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		02A25F5B545F368E62E07A0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Debug;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = lpeg;
+			};
+			name = Debug;
+		};
+		1DDF2EA16C8855B5051A7628 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = NDEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../external/lpeg,
+					"../../external/lua-5.1.3/src",
+				);
+				OBJROOT = obj/Release/lpeg;
+				ONLY_ACTIVE_ARCH = NO;
+				SYMROOT = ../../Build/xcode4/bin/Release;
+			};
+			name = Release;
+		};
+		52D95BD309CC628B5157374F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					Rtt_DEBUG,
+					LUA_USE_APICHECK,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../external/lpeg,
+					"../../external/lua-5.1.3/src",
+				);
+				OBJROOT = obj/Debug/lpeg;
+				ONLY_ACTIVE_ARCH = YES;
+				SYMROOT = ../../Build/xcode4/bin/Debug;
+			};
+			name = Debug;
+		};
+		5AD776BC5A75745B2E542E11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Release;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = lpeg;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "lpeg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52D95BD309CC628B5157374F /* Debug */,
+				1DDF2EA16C8855B5051A7628 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		379121FA5F7676A75DDA2377 /* Build configuration list for PBXNativeTarget "lpeg" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02A25F5B545F368E62E07A0A /* Debug */,
+				5AD776BC5A75745B2E542E11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

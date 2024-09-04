@@ -1,0 +1,238 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6D597C7860BD41771B7B567F /* lfs.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B10E882DC845E2375802D1 /* lfs.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04B10E882DC845E2375802D1 /* lfs.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "lfs.c"; path = "../../external/luafilesystem/src/lfs.c"; sourceTree = "<group>"; };
+		0B571D7C53336C4B6D144AB8 /* liblfs.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "liblfs.a"; path = "liblfs.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		62D46650233B095D66886BD9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		17395D1055216BAE6ECA1A72 /* lfs */ = {
+			isa = PBXGroup;
+			children = (
+				418F304457EF2C7B735020EF /* external */,
+				64B21097535A445B649727A9 /* Products */,
+			);
+			name = "lfs";
+			sourceTree = "<group>";
+		};
+		418F304457EF2C7B735020EF /* external */ = {
+			isa = PBXGroup;
+			children = (
+				4AB225D606961BB806784994 /* luafilesystem */,
+			);
+			name = "external";
+			sourceTree = "<group>";
+		};
+		4AB225D606961BB806784994 /* luafilesystem */ = {
+			isa = PBXGroup;
+			children = (
+				462208984D6A1910276313DC /* src */,
+			);
+			name = "luafilesystem";
+			sourceTree = "<group>";
+		};
+		462208984D6A1910276313DC /* src */ = {
+			isa = PBXGroup;
+			children = (
+				04B10E882DC845E2375802D1 /* lfs.c */,
+			);
+			name = "src";
+			sourceTree = "<group>";
+		};
+		64B21097535A445B649727A9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0B571D7C53336C4B6D144AB8 /* liblfs.a */,
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1753655273EA22CF63B12E01 /* lfs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4F4B76226123429A12945723 /* Build configuration list for PBXNativeTarget "lfs" */;
+			buildPhases = (
+				3D3D7B7E1DE66E714DAE6CBD /* Resources */,
+				73C73BE94C1B23E93C36218F /* Sources */,
+				62D46650233B095D66886BD9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "lfs";
+			productName = "lfs";
+			productReference = 0B571D7C53336C4B6D144AB8 /* liblfs.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "lfs" */;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 1;
+			mainGroup = 17395D1055216BAE6ECA1A72 /* lfs */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1753655273EA22CF63B12E01 /* liblfs.a */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3D3D7B7E1DE66E714DAE6CBD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		73C73BE94C1B23E93C36218F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D597C7860BD41771B7B567F /* lfs.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		554C015F3E2C5B2912C90219 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Debug;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "lfs";
+			};
+			name = "Debug";
+		};
+		13013FF5257343EF234C0DDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Release;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "lfs";
+			};
+			name = "Release";
+		};
+		76F9042473940B862F674BB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"Rtt_DEBUG",
+					"LUA_USE_APICHECK",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../external/luafilesystem/src",
+					"../../external/lua-5.1.3/src",
+				);
+				OBJROOT = "obj/Debug/lfs";
+				ONLY_ACTIVE_ARCH = YES;
+				SYMROOT = "../../Build/xcode4/bin/Debug";
+			};
+			name = "Debug";
+		};
+		7F615638054A3D805FD51CBE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../external/luafilesystem/src",
+					"../../external/lua-5.1.3/src",
+				);
+				OBJROOT = "obj/Release/lfs";
+				ONLY_ACTIVE_ARCH = NO;
+				SYMROOT = "../../Build/xcode4/bin/Release";
+			};
+			name = "Release";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4F4B76226123429A12945723 /* Build configuration list for PBXNativeTarget "liblfs.a" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				554C015F3E2C5B2912C90219 /* Debug */,
+				13013FF5257343EF234C0DDE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "lfs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76F9042473940B862F674BB3 /* Debug */,
+				7F615638054A3D805FD51CBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

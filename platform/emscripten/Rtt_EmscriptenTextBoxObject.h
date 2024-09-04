@@ -33,7 +33,7 @@ class EmscriptenTextBoxObject : public EmscriptenDisplayObject
 			void dispatch(int elementID, int eventID, LuaProxy* proxy);
 
 			CoronaLuaRef fLuaReference;
-			std::string fEventName;
+			tu_string fEventName;
 			ResourceHandle<lua_State> fLuaState;
 		};
 

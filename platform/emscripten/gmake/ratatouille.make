@@ -23,9 +23,9 @@ ifeq ($(config),Debug)
   OBJDIR     = obj/Debug/ratatouille
   # TARGETDIR  = ../../../Build/gmake/bin/Debug
   TARGETDIR  = obj/Debug
-  TARGET     = $(TARGETDIR)/libratatouille.a
+  TARGET     = $(TARGETDIR)/libratatouille.o
   DEFINES   += -DRtt_DEBUG -DLUA_USE_APICHECK -DRtt_EMSCRIPTEN_ENV
-  INCLUDES  += -I../../../librtt -I../../../librtt/Core -I../../../external/lua-5.1.3/src -I.. -I../../../external/libpng1243b01 -I../../../external/zlib123 -I../../../external/libjpeg -I../../shared
+  INCLUDES  += -I../../../librtt -I../../../external/lua-5.1.3/src -I.. -I../../../external/libpng1243b01 -I../../../external/zlib123 -I../../../external/libjpeg -I../../shared
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -g
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
@@ -33,8 +33,8 @@ ifeq ($(config),Debug)
   ALL_LDFLAGS   += $(LDFLAGS)
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  #LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -47,9 +47,9 @@ ifeq ($(config),Release)
   OBJDIR     = obj/Release/ratatouille
   # TARGETDIR  = ../../../Build/gmake/bin/Release
   TARGETDIR  = obj/Release
-  TARGET     = $(TARGETDIR)/libratatouille.a
+  TARGET     = $(TARGETDIR)/libratatouille.o
   DEFINES   += -DNDEBUG -DRtt_EMSCRIPTEN_ENV
-  INCLUDES  += -I../../../librtt -I../../../librtt/Core -I../../../external/lua-5.1.3/src -I.. -I../../../external/libpng1243b01 -I../../../external/zlib123 -I../../../external/libjpeg -I../../shared
+  INCLUDES  += -I../../../librtt -I../../../external/lua-5.1.3/src -I.. -I../../../external/libpng1243b01 -I../../../external/zlib123 -I../../../external/libjpeg -I../../shared
   ALL_CPPFLAGS  += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS    += $(CFLAGS) $(ALL_CPPFLAGS) $(ARCH) -O2
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
@@ -57,8 +57,8 @@ ifeq ($(config),Release)
   ALL_LDFLAGS   += $(LDFLAGS) -Wl,-x
   LDDEPS    +=
   LIBS      += $(LDDEPS)
-  LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
-  #LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
+  # LINKCMD    = $(AR) -rcs $(TARGET) $(OBJECTS)
+  LINKCMD    = $(CC) -o $(TARGET) $(OBJECTS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS

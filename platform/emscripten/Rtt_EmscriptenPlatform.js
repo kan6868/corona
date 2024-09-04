@@ -36,6 +36,8 @@ var platformLibrary =
 		var msg = UTF8ToString(_msg);
 		var resource = _resource;
 
+		var jsAlertCallback = Module.cwrap('jsAlertCallback', 'null', ['number', 'number']);
+
 		// sanity check, close old popup window
 		var obj = document.getElementById('showAlert');
 		if (obj) {
@@ -45,7 +47,7 @@ var platformLibrary =
 		var awindow = document.createElement('div');
 		awindow.id = 'showAlert';
 		awindow.close = function () {
-			_jsAlertCallback(-1, resource);
+			jsAlertCallback(-1, resource);
 			awindow.remove();
 		};
 
@@ -80,7 +82,7 @@ var platformLibrary =
 		b.style = "top:0;right:0;position:absolute;z-index: 9999"
 		b.appendChild(document.createTextNode("X"));
 		b.addEventListener("click", function () {
-			_jsAlertCallback(-1, resource);
+			jsAlertCallback(-1, resource);
 			awindow.remove();
 		});
 
@@ -98,7 +100,7 @@ var platformLibrary =
 			b.appendChild(document.createTextNode(caption));
 			b.index = i;
 			b.addEventListener("click", function () {
-				_jsAlertCallback(this.index, resource);
+				jsAlertCallback(this.index, resource);
 				awindow.remove();
 			});
 		}
@@ -181,7 +183,7 @@ var platformLibrary =
 	{
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
-		var s = a[1] || localization;
+		var s = a[1];
 
 		var maxBytesToWrite = 64;
 		if (jsLocaleCountry == null)
@@ -197,7 +199,7 @@ var platformLibrary =
 	{
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
-		var s = a[0] + '_' + (a[1] || a[0]).toUpperCase();
+		var s = a[0] + '_' + a[1];
 
 		var maxBytesToWrite = 64;
 		if (jsLanguage == null)
@@ -267,7 +269,6 @@ var platformLibrary =
 	},
 
 	jsDisplayObjectCreate: function (x, y, w, h, etype, thiz) {
-		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		var fType = UTF8ToString(etype);
 		var obj = document.createElement(fType);
 		obj.id = Module.appElementCounter++;
@@ -285,7 +286,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 		
 		window.refreshNativeObject(obj.id);
-		
+		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -310,21 +311,28 @@ var platformLibrary =
 			// disable SDL keyboard handler and enable native JS handler 
 			obj.onfocus = function (e) {
 				// dispatch event
-				_jsEnableKeyboard(0);
-				_jsTextBoxCallback(this.thiz, 1);		// began
+				var jsEnableKeyboard = Module.cwrap('jsEnableKeyboard', 'null', ['number']);
+				jsEnableKeyboard(0);
+
+				var jsTextBoxCallback = Module.cwrap('jsTextBoxCallback', 'null', ['number', 'number']);
+				jsTextBoxCallback(this.thiz, 1);		// began
 			}
 
 			// enable SDL keyboard handler and disable native JS handler
 			obj.onblur = function (e) {
 				// dispatch event
-				_jsTextBoxCallback(this.thiz, 3);		// ended
-				_jsEnableKeyboard(1);
+				var jsTextBoxCallback = Module.cwrap('jsTextBoxCallback', 'null', ['number', 'number']);
+				jsTextBoxCallback(this.thiz, 3);		// ended
+
+				var jsEnableKeyboard = Module.cwrap('jsEnableKeyboard', 'null', ['number']);
+				jsEnableKeyboard(1);
 			}
 
 			// the input event triggers every time a value is modified.
 			obj.oninput = function (e) {
 				// dispatch event
-				_jsTextBoxCallback(this.thiz, 2);		// editing
+				var jsTextBoxCallback = Module.cwrap('jsTextBoxCallback', 'null', ['number', 'number']);
+				jsTextBoxCallback(this.thiz, 2);		// editing
 			}
 
 			obj.onkeydown = function (e) {
@@ -334,7 +342,8 @@ var platformLibrary =
 			obj.onkeyup = function (e) {
 				if (e.keyCode === 13) {
 					// dispatch event
-					_jsTextBoxCallback(this.thiz, 4);		// submit
+					var jsTextBoxCallback = Module.cwrap('jsTextBoxCallback', 'null', ['number', 'number']);
+					jsTextBoxCallback(this.thiz, 4);		// submit
 				}
 			}
 		}
@@ -480,7 +489,6 @@ var platformLibrary =
 
 	jsContextLoadFonts: function(_name, buf, size)
 	{
-		console.log("Loading font with size " + size);
 		var name = UTF8ToString(_name);
 		var body = new Uint8Array(size);
 		for (var i = 0; i < size; i++) {
@@ -509,7 +517,7 @@ var platformLibrary =
 		document.head.appendChild(fontface);
 
 		function onFontLoaded() {
-			console.log('font ' + fontName + ' loaded');
+			//console.log('font ' + fontName + ' loaded');
 			Module.loadingFonts--;
 		};
 
@@ -539,25 +547,10 @@ var platformLibrary =
 		Module.appInitWidth = appWidth;
 		Module.appInitHeight = appHeight;
 		Module.appOrientation = orientation;
-		Module.appContentWidth = 320;
-		Module.appContentHeight = 480;
+		Module.appContentWidth = 0;
+		Module.appContentHeight = 0;
 		Module.documentsDirLoaded = 0;
 		Module.appTextMeters = {};
-
-		// JS string to C string
-		Module.jstr2cstr = function (jstr) {
-			var len = lengthBytesUTF8(jstr) + 1;
-			var cstr = _malloc(len + 1);
-			stringToUTF8(jstr, cstr, len + 1);
-			return cstr;
-		}
-
-		// JS array to C array
-		Module.jarray2carray = function (jarr) {
-			var carr = _malloc(jarr.byteLength);
-			HEAPU8.set(jarr, carr);
-			return carr;
-		}
 
 		var parent = document.getElementById('canvas').parentNode;
 		parent.id = 'emscripten_border';
@@ -620,21 +613,12 @@ var platformLibrary =
 	},
 
 	jsContextConfig: function(w, h)	{
-		console.log("Set appContent Size: " + w + ", " + h);
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function() {	return window.innerWidth && document.documentElement.clientWidth ? 
-		Math.min(window.innerWidth, document.documentElement.clientWidth) : 
-		window.innerWidth || 
-		document.documentElement.clientWidth || 
-		document.getElementsByTagName('body')[0].clientWidth;	},
-	jsContextGetWindowHeight: function() { return window.innerHeight && document.documentElement.clientHeight ? 
-		Math.min(window.innerHeight, document.documentElement.clientHeight) : 
-		window.innerHeight || 
-		document.documentElement.clientHeight || 
-		document.getElementsByTagName('body')[0].clientHeight;	},
+	jsContextGetWindowWidth: function() {	return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -739,17 +723,16 @@ var platformLibrary =
 					if (this.response) {
 						body = new Uint8Array(this.response);
 					}
+					len = body.byteLength;
 
 					var headers = this.getAllResponseHeaders();
 					if (!headers) {
 						headers = "";
 					}
 
-					var cheaders = Module.jstr2cstr(headers);
-					var cbody = Module.jarray2carray(body);
-					_jsNetworkDispatch(_requestPtr, this.readyState, this.status, body.byteLength, cbody, cheaders);
-					_free(cbody);
-					_free(cheaders);
+					//var ct = this.getResponseHeader('content-type') ? this.getResponseHeader('content-type') : "";
+					var callbackFunc = Module.cwrap('jsNetworkDispatch', 'null', ['number', 'number', 'number', 'number', 'array', 'string']);
+					callbackFunc(_requestPtr, this.readyState, this.status, len, body, headers);
 					break;
 
 				default:
@@ -781,18 +764,13 @@ var platformLibrary =
 	$measureText: function (text, bold, font, size) {
 		// This global variable is used to cache repeated calls with the same arguments
 		var str = text + ':' + bold + ':' + font + ':' + size;
-		//console.log("String: " + str);
-
 		if (Module.appTextMeters.hasOwnProperty(str)) {
-			//console.log("hasOwnProperty: " + Module.appTextMeters[str]);
 			return Module.appTextMeters[str];
 		}
 
 		var divMain = document.createElement('span');
 		var div = document.createElement('span');
-
 		div.innerHTML = text;
-		
 		div.style.display = "inline-block";
 		div.style.position = 'absolute';
 		div.style.top = '-100px';
@@ -801,19 +779,12 @@ var platformLibrary =
 		div.style.margin = "0px 0px 0px 0px";
 		div.style.padding = "0px 0px 0px 0px";
 		//	div.style.fontWeight = bold ? 'bold' : 'normal';
-		if (size <= 0)
-		{
-			size = 32;
-			console.log("Resize to size: " + size);
-		}
-
 		div.style.fontSize = size + 'px';
 
 		divMain.appendChild(div);
 		document.body.appendChild(divMain);
-		//console.log("Div offset: " + div.offsetWidth + ", " + div.offsetHeight);
+
 		var size = [div.offsetWidth, div.offsetHeight];
-		//console.log("Size: " + size)
 		document.body.removeChild(divMain);
 
 		// Add the sizes to the cache as adding DOM elements is costly and can cause slow downs
@@ -825,10 +796,6 @@ var platformLibrary =
 	// text render
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
-		if (!fontSize) {
-			fontSize = 16;        // default font size if not provided
-		}
-		
 		var text = UTF8ToString(_text);
 		var alignment = UTF8ToString(_alignment);
 
@@ -870,7 +837,7 @@ var platformLibrary =
 		fontExist = newSize != baselineSize;
 
 		if (fontName === '' || fontExist == false) {
-			//console.log(fontName + ' not found, using sans-serif');
+		//	console.log(fontName + ' not found, using sans-serif');
 			fontName = 'sans-serif';		// Default value
 		}
 		ctx.font = String(fontSize) + 'px ' + fontName;
@@ -878,9 +845,9 @@ var platformLibrary =
 		ctx.textBaseline = 'top';
 		ctx.textAlign = alignment;
 
-		var b = measureText(testtext, false, fontName, fontSize);
-		var lineHeight = b[1];
-		//console.log("Line Height: " + lineHeight);
+		var a = measureText(testtext, false, fontName, fontSize);
+		var lineHeight = a[1];
+
 		if (w == 0) {
 			// calc width
 			var line = '';
@@ -958,7 +925,7 @@ var platformLibrary =
 		ctx.fillText(line, x, y);
 
 		hh = h > 0 ? h : y + lineHeight;
-		ww = w > 0 ? w : 1;
+		ww = w;
 
 		// it's needs for corona ?
 		if ((ww & 0x3) != 0) {
@@ -968,9 +935,8 @@ var platformLibrary =
 		//console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
 
 		var myImageData = ctx.getImageData(0, 0, ww, hh);
-		var img = Module.jarray2carray(myImageData.data);
-		_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
-		_free(img);
+		var saveImage = Module.cwrap('jsEmscriptenBitmapSaveImage', 'null', ['number', 'number', 'array', 'number', 'number', 'number']);
+		saveImage(thiz, myImageData.data.length, myImageData.data, myImageData.width, myImageData.height, Module.isSafari);
 
 		//var body = document.getElementsByTagName("body")[0];
 		//body.appendChild(canva);

@@ -967,10 +967,391 @@
     <ClCompile Include="..\..\..\librtt\Input\Rtt_ReadOnlyInputDeviceCollection.cpp">
       <Filter>rtt</Filter>
     </ClCompile>
+    <ClCompile Include="..\lua\CoronaPrototype.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\CoronaProvider.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\CoronaLibrary-lua.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\composer_scene.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\composer.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\external\b2Separator-cpp\b2Separator.cpp">
       <Filter>rtt</Filter>
     </ClCompile>
+    <ClCompile Include="..\lua\easing.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\init.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\json.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\dkjson.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_radialGradient_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_random_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_stripes_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_sunbeams_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_add_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_average_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_color_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_colorBurn_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_colorDodge_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_darken_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_difference_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_exclusion_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_glow_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_hardLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_hardMix_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_hue_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_lighten_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_linearLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_luminosity_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_multiply_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_negation_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_normalMapWith1DirLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_normalMapWith1PointLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_overlay_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_phoenix_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_pinLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_reflect_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_saturation_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_screen_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_softLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_subtract_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_vividLight_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_composite_yuv420f_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_default_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_bloom_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_blur_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_blurGaussian_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_brightness_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_bulge_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_chromaKey_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_color_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_colorChannelOffset_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_colorMatrix_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_colorPolynomial_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_contrast_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_crosshatch_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_crystallize_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_desaturate_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_dissolve_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_duotone_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_emboss_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_exposure_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_frostedGlass_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_grayscale_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_hue_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_invert_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_iris_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_levels_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_linearWipe_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_median_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_monotone_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_opTile_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_pixelate_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_polkaDots_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_posterize_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_radialWipe_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_saturate_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_scatter_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_sepia_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_sharpenLuminance_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_sobel_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_step_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_straighten_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_swirl_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_vignette_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_vignetteMask_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_water_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_wobble_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_woodCut_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_zoomBlur_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_checkerboard_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_lenticularHalo_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_linearGradient_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_marchingAnts_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_generator_perlinNoise_gl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\launchpad.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\loader_callback.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\loader_ccdata.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\re.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\librtt\Rtt_LuaAssert.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\runtime.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\shell.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\timer.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\transition.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\transition_v1.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_button.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_momentumScrolling.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_pickerWheel.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_progressView.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_scrollview.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_searchField.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_segmentedControl.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_slider.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_spinner.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_stepper.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_switch.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_tabbar.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android_holo_dark.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android_holo_dark_sheet.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android_holo_light.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android_holo_light_sheet.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android_sheet.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_ios.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_ios_sheet.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_ios7.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_ios7_sheet.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_tableview.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\widget_theme_android.cpp">
       <Filter>rtt</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\external\smoothpolygon\SmoothPolygon.cpp">
@@ -1004,6 +1385,9 @@
     <ClCompile Include="..\..\..\plugins\network\emscripten\NetworkLibrary.cpp">
       <Filter>network</Filter>
     </ClCompile>
+    <ClCompile Include="..\network_luaload.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\plugins\network\emscripten\EmscriptenNetworkSupport.cpp">
       <Filter>network</Filter>
     </ClCompile>
@@ -1011,6 +1395,9 @@
       <Filter>emscripten</Filter>
     </ClCompile>
     <ClCompile Include="..\Rtt_EmscriptenContainer.cpp">
+      <Filter>emscripten</Filter>
+    </ClCompile>
+    <ClCompile Include="..\win32\Rtt_EmscriptenPlatformWin.cpp">
       <Filter>emscripten</Filter>
     </ClCompile>
     <ClCompile Include="..\Rtt_LuaLibWebAudio.cpp">
@@ -1024,6 +1411,15 @@
     </ClCompile>
     <ClCompile Include="..\Rtt_EmscriptenCPluginLoader.cpp">
       <Filter>emscripten</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_blurHorizontal_gl_luaload.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\kernel_filter_blurVertical_gl_luaload.cpp">
+      <Filter>rtt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lua\shell_default_gl_luaload.cpp">
+      <Filter>rtt</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\external\libpng1243b01\png.c">
       <Filter>libpng</Filter>
@@ -1252,411 +1648,6 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\Rtt_BitmapUtils.cpp">
       <Filter>rtt</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\loader_callback_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\loader_ccdata_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\network_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\re_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\runtime_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\shell_default_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\shell_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\timer_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\transition_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\transition_v1_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_button_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_momentumScrolling_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_pickerWheel_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_progressView_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_scrollview_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_searchField_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_segmentedControl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_slider_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_spinner_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_stepper_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_switch_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_tabbar_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_tableview_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_holo_dark_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_holo_dark_sheet_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_holo_light_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_holo_light_sheet_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_android_sheet_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_ios_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_ios_sheet_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_ios7_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\widget_theme_ios7_sheet_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\composer_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\composer_scene_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\CoronaLibrary_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\CoronaPrototype_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\CoronaProvider_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\dkjson_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\easing_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\init_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\json_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_add_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_average_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_color_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_colorBurn_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_colorDodge_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_darken_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_difference_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_exclusion_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_glow_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_hardLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_hardMix_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_hue_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_lighten_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_linearLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_luminosity_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_multiply_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_negation_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_normalMapWith1DirLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_normalMapWith1PointLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_overlay_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_phoenix_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_pinLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_reflect_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_saturation_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_screen_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_softLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_subtract_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_vividLight_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_yuv420f_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_composite_yuv420v_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_default_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_bloom_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blur_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurGaussian_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurHorizontal_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurVertical_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_brightness_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_bulge_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_chromaKey_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_color_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_colorChannelOffset_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_colorMatrix_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_colorPolynomial_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_contrast_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_crosshatch_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_crystallize_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_desaturate_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_dissolve_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_duotone_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_emboss_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_exposure_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_frostedGlass_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_grayscale_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_hue_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_invert_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_iris_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_levels_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_linearWipe_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_median_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_monotone_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_opTile_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_pixelate_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_polkaDots_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_posterize_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_radialWipe_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_saturate_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_scatter_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_sepia_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_sharpenLuminance_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_sobel_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_step_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_straighten_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_swirl_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_vignette_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_vignetteMask_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_water_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_wobble_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_woodCut_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_zoomBlur_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_checkerboard_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_lenticularHalo_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_linearGradient_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_marchingAnts_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_perlinNoise_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_radialGradient_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_random_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_stripes_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_generator_sunbeams_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\launchpad_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurGaussianLinear_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurLinearHorizontal_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\kernel_filter_blurLinearVertical_gl_luaload.cpp">
-      <Filter>GeneratedFiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2734,6 +2725,9 @@
     <ClInclude Include="..\Rtt_EmscriptenContainer.h">
       <Filter>emscripten</Filter>
     </ClInclude>
+    <ClInclude Include="..\win32\Rtt_EmscriptenPlatformWin.h">
+      <Filter>emscripten</Filter>
+    </ClInclude>
     <ClInclude Include="..\Rtt_LuaLibWebAudio.h">
       <Filter>emscripten</Filter>
     </ClInclude>
@@ -2859,429 +2853,10 @@
     <Filter Include="libjpeg">
       <UniqueIdentifier>{f088d52c-e4ff-49ed-bcdc-e15304269581}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LuaFiles">
-      <UniqueIdentifier>{25a52948-5451-4cab-b987-02e78f75e1d6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaFiles\resources">
-      <UniqueIdentifier>{380c9602-b358-4c20-b80b-aa3d1924d9c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaFiles\composer">
-      <UniqueIdentifier>{ed59994e-6065-46d4-84a0-46e73fcd07fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaFiles\corona">
-      <UniqueIdentifier>{13f73a80-6df8-47da-9196-ea81451473f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaFiles\shader">
-      <UniqueIdentifier>{07b54e08-4fa1-4bd5-a26e-8e130bb595f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaFiles\widgert">
-      <UniqueIdentifier>{a3f174be-27d4-421f-bdfa-5089e7ef1304}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GeneratedFiles">
-      <UniqueIdentifier>{b3988b5b-0227-467c-a883-334577daa429}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Rtt_PlatformWebAudioPlayer.js" />
     <None Include="..\Rtt_EmscriptenPlatform.js" />
     <None Include="..\Rtt_EmscriptenVideo.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <LuaToCpp Include="..\..\resources\dkjson.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\init.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\json.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\launchpad.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\loader_callback.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\loader_ccdata.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\resources\runtime.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\easing\easing.lua">
-      <Filter>LuaFiles\resources</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\composer\composer.lua">
-      <Filter>LuaFiles\composer</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\composer\composer_scene.lua">
-      <Filter>LuaFiles\composer</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Corona\CoronaLibrary.lua">
-      <Filter>LuaFiles\corona</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Corona\CoronaPrototype.lua">
-      <Filter>LuaFiles\corona</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Corona\CoronaProvider.lua">
-      <Filter>LuaFiles\corona</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_monotone_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_opTile_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_pixelate_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_polkaDots_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_posterize_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_radialWipe_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_saturate_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_scatter_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_sepia_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_sharpenLuminance_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_sobel_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_step_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_straighten_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_swirl_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_vignette_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_vignetteMask_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_water_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_wobble_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_woodCut_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_zoomBlur_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_checkerboard_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_lenticularHalo_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_linearGradient_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_marchingAnts_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_perlinNoise_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_radialGradient_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_random_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_stripes_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_generator_sunbeams_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\shell_default_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_add_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_average_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_color_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_colorBurn_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_colorDodge_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_darken_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_difference_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_exclusion_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_glow_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_hardLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_hardMix_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_hue_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_lighten_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_linearLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_luminosity_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_multiply_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_negation_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_normalMapWith1DirLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_normalMapWith1PointLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_overlay_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_phoenix_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_pinLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_reflect_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_saturation_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_screen_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_softLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_subtract_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_vividLight_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_yuv420f_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_composite_yuv420v_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_default_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_bloom_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_blur_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_blurGaussian_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_blurHorizontal_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_blurVertical_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_brightness_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_bulge_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_chromaKey_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_color_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_colorChannelOffset_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_colorMatrix_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_colorPolynomial_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_contrast_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_crosshatch_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_crystallize_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_desaturate_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_dissolve_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_duotone_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_emboss_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_exposure_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_frostedGlass_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_grayscale_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_hue_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_invert_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_iris_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_levels_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_linearWipe_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\librtt\Display\Shader\kernel_filter_median_gl.lua">
-      <Filter>LuaFiles\shader</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android_holo_dark.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android_holo_dark_sheet.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android_holo_light.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android_holo_light_sheet.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_android_sheet.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_ios.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_ios_sheet.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_ios7.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widget_theme_ios7_sheet.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_button.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_momentumScrolling.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_pickerWheel.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_progressView.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_scrollview.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_searchField.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_segmentedControl.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_slider.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_spinner.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_stepper.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_switch.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_tabbar.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget_tableview.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\widget\widgetLibrary\widget.lua">
-      <Filter>LuaFiles\widgert</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\plugins\network\shared\network.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\timer\timer.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\transition\transition.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\subrepos\transition\transition_v1.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\shell.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
-    <LuaToCpp Include="..\..\..\external\lpeg\re.lua">
-      <Filter>LuaFiles</Filter>
-    </LuaToCpp>
   </ItemGroup>
 </Project>

@@ -19,6 +19,8 @@ var videoLibrary =
 		if (navigator.mediaDevices) {
 			var constraints = { video: true };
 			var chunks = [];
+			var jsVideoRecorderCallback = Module.cwrap('jsVideoRecorderCallback', 'null', ['number', 'number', 'number', 'number', 'number']);
+
 			var promise = navigator.mediaDevices.getUserMedia(constraints);
 			promise.then(
 				function (stream) {
@@ -83,7 +85,7 @@ var videoLibrary =
 							Module.writeArrayToMemory(body, body_buffer);
 
 							//console.log('captue', img, body);
-							_jsVideoRecorderCallback(thiz, 5, img.width, img.height, body_buffer);			// onDataAvailable
+							jsVideoRecorderCallback(thiz, 5, img.width, img.height, body_buffer);			// onDataAvailable
 
 							Module._free(body_buffer);
 						}
@@ -93,13 +95,13 @@ var videoLibrary =
 					mediaRecorder.btn = btn;		// save
 
 					//console.log('media recorder created');
-					_jsVideoRecorderCallback(thiz, 7, objID, 0, 0);			// 7 ==> 'onCreated'
+					jsVideoRecorderCallback(thiz, 7, objID, 0, 0);			// 7 ==> 'onCreated'
 				})
 				.catch(
 				function (err) {
 					// async
 					Module.printErr('Error: Failed to start media recorder\n', err.name);
-					//_jsVideoRecorderCallback(thiz, 1, 0, 0, 0);			// 1 ==> 'onerror'
+					//jsVideoRecorderCallback(thiz, 1, 0, 0, 0);			// 1 ==> 'onerror'
 				});
 		}
 		else {
@@ -150,13 +152,15 @@ var videoLibrary =
 		if (obj) {
 			// unsafe
 			obj.thiz = thiz;
+			var jsVideoCallback = Module.cwrap('jsVideoCallback', 'null', ['number', 'number']);
+
 			obj.onloadeddata = function () {
 				// unsafe obj.thiz
-				_jsVideoCallback(obj.thiz, 1); // 1 ==>'ready'
+				jsVideoCallback(obj.thiz, 1); // 1 ==>'ready'
 			};
 
 			obj.onended = function () {
-				_jsVideoCallback(obj.thiz, 2);			// 2 ==> 'ended'
+				jsVideoCallback(obj.thiz, 2);			// 2 ==> 'ended'
 			};
 			return true;
 		}
@@ -230,6 +234,8 @@ var videoLibrary =
 			var fileName = UTF8ToString(file);
 			var constraints = { audio: true };
 			var chunks = [];
+			var jsAudioRecorderCallback = Module.cwrap('jsAudioRecorderCallback', 'null', ['number', 'number', 'number', 'number']);
+
 			var promise = navigator.mediaDevices.getUserMedia(constraints);
 			promise.then(
 				function (stream) {
@@ -240,23 +246,23 @@ var videoLibrary =
 
 					mediaRecorder.ondataavailable = function (e) {
 						chunks.push(e.data);
-						_jsAudioRecorderCallback(thiz, 5, 0, 0);			// 5 ==> 'ondataavailable'
+						jsAudioRecorderCallback(thiz, 5, 0, 0);			// 5 ==> 'ondataavailable'
 					};
 
 					mediaRecorder.onresume = function (e) {
-						_jsAudioRecorderCallback(thiz, 4, 0, 0);			// 4 ==> 'onresume'
+						jsAudioRecorderCallback(thiz, 4, 0, 0);			// 4 ==> 'onresume'
 					};
 
 					mediaRecorder.onpause = function (e) {
-						_jsAudioRecorderCallback(thiz, 6, 0, 0);			// 6 ==> 'onpause'
+						jsAudioRecorderCallback(thiz, 6, 0, 0);			// 6 ==> 'onpause'
 					};
 
 					mediaRecorder.onerror = function (e) {
-						_jsAudioRecorderCallback(thiz, 1, 0, 0);			// 1 ==> 'onerror'
+						jsAudioRecorderCallback(thiz, 1, 0, 0);			// 1 ==> 'onerror'
 					};
 
 					mediaRecorder.onstart = function (e) {
-						_jsAudioRecorderCallback(thiz, 2, 0, 0);			// 2 ==> 'onstart'
+						jsAudioRecorderCallback(thiz, 2, 0, 0);			// 2 ==> 'onstart'
 					};
 
 					mediaRecorder.onstop = function (e) {
@@ -267,18 +273,18 @@ var videoLibrary =
 						reader.addEventListener("loadend", function () {
 							var body = new Uint8Array(reader.result, 0, reader.result.byteLength);
 							FS.writeFile(fileName, body, { encoding: 'binary' });
-							_jsAudioRecorderCallback(thiz, 3, 0, 0);			// 3 ==> 'onstop'
+							jsAudioRecorderCallback(thiz, 3, 0, 0);			// 3 ==> 'onstop'
 						});
 						reader.readAsArrayBuffer(blob);
 					};
 
-					_jsAudioRecorderCallback(thiz, 7, objID, 0);			// 7 ==> 'onCreated'
+					jsAudioRecorderCallback(thiz, 7, objID, 0);			// 7 ==> 'onCreated'
 				})
 				.catch(
 				function (err) {
 					// async
 					console.log('Could not start media recorder', err.name);
-						_jsAudioRecorderCallback(thiz, 1, 0, 0);			// 1 ==> 'onerror'
+					jsAudioRecorderCallback(thiz, 1, 0, 0);			// 1 ==> 'onerror'
 				});
 		}
 		else {

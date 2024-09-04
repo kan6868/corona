@@ -348,8 +348,6 @@ int Rtt::EmscriptenJSPluginLoader::Loader(lua_State *L)
 	Rtt_LUA_STACK_GUARD(L, 1);
 
 	const char* packageName = luaL_checkstring(L, 1);
-	std::string subdirModule(luaL_gsub( L, packageName, ".", "/" ));
-	lua_pop(L, 1);
 	packageName = luaL_gsub( L, packageName, ".", "_" );
 	lua_remove(L, 1);
 
@@ -359,13 +357,7 @@ int Rtt::EmscriptenJSPluginLoader::Loader(lua_State *L)
 	FILE* fi = fopen(jsFileName.c_str(), "rb");
 	if (fi == NULL)
 	{
-		jsFileName = subdirModule + ".js"; 
-		fi = fopen(jsFileName.c_str(), "rb");
-	}
-
-	if (fi == NULL)
-	{
-		lua_pushfstring(L, "\n\tno file '%s.js' or '%s.js'", module.c_str(), subdirModule.c_str());
+		lua_pushnil(L);
 		return 1;
 	}
 
@@ -457,7 +449,8 @@ int Rtt::EmscriptenJSPluginLoader::Loader(lua_State *L)
 	} 
 	else
 	{
-		lua_pushfstring(L, "\n\tJS library is loaded, but object '%s' is not found!", module.c_str());
+		Rtt_LogException("Module file is loaded, but object '%s' is not found!", packageName);
+		lua_pushnil(L);
 	}
 	return 1;
 }

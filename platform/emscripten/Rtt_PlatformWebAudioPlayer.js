@@ -84,7 +84,8 @@ var audioLibrary =
 
 				ch.fStartedAt = 0;
 				if (ch.fLoops == 0) {
-					_jsOnSoundEnded(ch.fChannel, ch.fLuaCallback);
+					var jsCallback = Module.cwrap('jsOnSoundEnded', 'null', ['number', 'number']);
+					jsCallback(ch.fChannel, ch.fLuaCallback);
 
 					// free channel
 					ch.clear();

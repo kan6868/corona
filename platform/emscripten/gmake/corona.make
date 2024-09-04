@@ -23,7 +23,7 @@ ifeq ($(config),Debug)
   OBJDIR     = obj/Debug/corona
   # TARGETDIR  = ../../../Build/gmake/bin/Debug
   TARGETDIR  = obj/Debug
-  TARGET     = $(TARGETDIR)/libcorona.a
+  TARGET     = $(TARGETDIR)/libcorona.o
   TARGET_JS  = $(TARGETDIR)/libcorona.js
   DEFINES   += -DRtt_DEBUG -DLUA_USE_APICHECK -DRtt_EMSCRIPTEN_ENV
   INCLUDES  += -I../../../librtt -I../../../external/lua-5.1.3/src -I..
@@ -32,10 +32,9 @@ ifeq ($(config),Debug)
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
   ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS   += $(LDFLAGS) -L../../../Build/gmake/bin/Debug
-#  LDDEPS    += obj/Debug/libBox2D.a obj/Debug/libRenderer.a obj/Debug/liblfs.a obj/Debug/liblpeg.a obj/Debug/liblua.a obj/Debug/libratatouille.a obj/Debug/librtt.a obj/Debug/libz.a obj/Debug/libjpeg.a obj/Debug/libpng.a
-#  LIBS      += $(LDDEPS)
-  LINKCMD    = $(AR) -rcs $(TARGET) obj/Debug/libBox2D.a obj/Debug/libRenderer.a obj/Debug/liblfs.a obj/Debug/liblpeg.a obj/Debug/liblua.a obj/Debug/libratatouille.a obj/Debug/librtt.a obj/Debug/libz.a obj/Debug/libjpeg.a obj/Debug/libpng.a
-  #LINKCMD    = $(CXX) -g -o $(TARGET) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
+  LDDEPS    += obj/Debug/libBox2D.o obj/Debug/libRenderer.o obj/Debug/liblfs.o obj/Debug/liblpeg.o obj/Debug/liblua.o obj/Debug/libratatouille.o obj/Debug/librtt.o obj/Debug/libz.o obj/Debug/libjpeg.o obj/Debug/libpng.o
+  LIBS      += $(LDDEPS)
+  LINKCMD    = $(CXX) -g -o $(TARGET) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -49,7 +48,7 @@ ifeq ($(config),Release)
   OBJDIR     = obj/Release/corona
   # TARGETDIR  = ../../../Build/gmake/bin/Release
   TARGETDIR  = obj/Release
-  TARGET     = $(TARGETDIR)/libcorona.a
+  TARGET     = $(TARGETDIR)/libcorona.o
   TARGET_JS  = $(TARGETDIR)/libcorona.js
   DEFINES   += -DNDEBUG -DRtt_EMSCRIPTEN_ENV
   INCLUDES  += -I../../../librtt -I../../../external/lua-5.1.3/src -I..
@@ -58,10 +57,9 @@ ifeq ($(config),Release)
   ALL_CXXFLAGS  += $(CXXFLAGS) $(ALL_CFLAGS) -fno-exceptions -fno-rtti
   ALL_RESFLAGS  += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   ALL_LDFLAGS   += $(LDFLAGS) -L../../../Build/gmake/bin/Release -Wl,-x
-#  LDDEPS    += obj/Debug/libBox2D.a obj/Debug/libRenderer.a obj/Debug/liblfs.a obj/Debug/liblpeg.a obj/Debug/liblua.a obj/Debug/libratatouille.a obj/Debug/librtt.a obj/Debug/libz.a obj/Debug/libjpeg.a obj/Debug/libpng.a
-#  LIBS      += $(LDDEPS)
-  LINKCMD    = $(AR) -rcs $(TARGET) obj/Release/libBox2D.a obj/Release/libRenderer.a obj/Release/liblfs.a obj/Release/liblpeg.a obj/Release/liblua.a obj/Release/libratatouille.a obj/Release/librtt.a obj/Release/libz.a obj/Release/libjpeg.a obj/Release/libpng.a
-  #LINKCMD    = $(CXX) -O2 -o $(TARGET) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
+  LDDEPS    += obj/Release/libBox2D.o obj/Release/libRenderer.o obj/Release/liblfs.o obj/Release/liblpeg.o obj/Release/liblua.o obj/Release/libratatouille.o obj/Release/librtt.o obj/Release/libz.o obj/Release/libjpeg.o obj/Release/libpng.o
+  LIBS      += $(LDDEPS)
+  LINKCMD    = $(CXX) -O2 -o $(TARGET) $(RESOURCES) $(ARCH) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS

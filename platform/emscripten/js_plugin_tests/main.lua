@@ -260,14 +260,3 @@ r:addEventListener( "tap", function(  )
 		end )
 	end
 end )
-
-require('scripts.s1').test()
-require('scripts.s2').test()
-
-timer.performWithDelay(100, function() 
-	require('scripts.undefined').test()
-end)
-
-timer.performWithDelay(100, function() 
-	require('scripts.missing').test()
-end)

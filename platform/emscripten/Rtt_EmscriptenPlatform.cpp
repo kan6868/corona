@@ -64,27 +64,13 @@ extern "C"
 		extern bool jsGetPreference(const char* key, char* val);
 		extern bool jsSetPreference(const char* key, const char* val);
 		extern bool jsDeletePreference(const char* key);
-
-		const char* jsGetLocaleLanguageStatic() {
-			static std::string ret(jsGetLocaleLanguage());
-			return ret.c_str();
-		}
-		const char* jsGetLocaleCountryStatic() {
-			static std::string ret(jsGetLocaleCountry());
-			return ret.c_str();
-		}
-		const char* jsGetLanguageStatic() {
-			static std::string ret(jsGetLanguage());
-			return ret.c_str();
-		}
-
 }
 #else
 extern "C"
 {
-		extern const char* jsGetLocaleLanguageStatic() { return ""; }
-		extern const char* jsGetLocaleCountryStatic() { return ""; }
-		extern const char* jsGetLanguageStatic() { return ""; }
+		extern const char* jsGetLocaleLanguage() { return ""; }
+		extern const char* jsGetLocaleCountry() { return ""; }
+		extern const char* jsGetLanguage() { return ""; }
 		bool jsOpenURL(const char* url) { return false; }
 		int jsShowAlert(const char* title, const char* msg, const char **buttonLabels, U32 numButtons, Rtt::LuaResource* resource, int pointerSize) { return 0; }
 		void	jsSetActivityIndicator(bool visible) {}
@@ -543,15 +529,15 @@ namespace Rtt
 		switch (category)
 		{
 		case kLocaleLanguage:
-			resultPointer = jsGetLocaleLanguageStatic();
+			resultPointer = "en"; // fixme: jsGetLocaleLanguage();
 			break;
 		case kLocaleCountry:
-			resultPointer = jsGetLocaleCountryStatic();
+			resultPointer = "US"; // fixme: jsGetLocaleCountry();
 			break;
 		case kLocaleIdentifier:
 		case kUILanguage:
 		{
-			resultPointer = jsGetLanguageStatic();
+			resultPointer = "en_US"; // fixme: jsGetLanguage();
 			break;
 		}
 		case kDefaultStatusBarFile:

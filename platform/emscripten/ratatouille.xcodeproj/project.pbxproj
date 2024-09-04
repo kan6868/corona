@@ -1,0 +1,776 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		056B524424007D441B550AD0 /* librtt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64C350CD64317F5015906290 /* librtt.a */; };
+		0A7A76284EF56A8228CA1F10 /* Rtt_EmscriptenFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4172314076A63AA76A092C43 /* Rtt_EmscriptenFont.cpp */; };
+		0B0A5B12045E65ED3E104313 /* Rtt_EmscriptenPlatform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0D77353F4AD109CB7A11151C /* Rtt_EmscriptenPlatform.cpp */; };
+		0BBD591C785E71F2554E1523 /* libRenderer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 476003DE1A6639E244A15D7E /* libRenderer.a */; };
+		148215611CCA27BB78944373 /* Rtt_EmscriptenStore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4F997D63100D5F690EB52FDD /* Rtt_EmscriptenStore.cpp */; };
+		1A8671364506168A69BA6D3C /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30A2101B06C30372631449F7 /* main.cpp */; };
+		1F6BA31D1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BA31B1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.cpp */; };
+		1F6BA3201F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BA31E1F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.cpp */; };
+		1F6BA3231F77F4D300DBF33E /* Rtt_EmscriptenContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F6BA3211F77F4D300DBF33E /* Rtt_EmscriptenContainer.cpp */; };
+		1FD1290B1F6641DE00FF4F89 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD129081F6641DE00FF4F89 /* SDL2_image.framework */; };
+		1FD1290C1F6641DE00FF4F89 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD129091F6641DE00FF4F89 /* SDL2_ttf.framework */; };
+		1FD1290D1F6641DE00FF4F89 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FD1290A1F6641DE00FF4F89 /* SDL2.framework */; };
+		1FDCB0BF1F6C1F5A0099DF19 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FDCB0BE1F6C1F5A0099DF19 /* SDL2_mixer.framework */; };
+		2175410679AD522D1A4F3E20 /* Rtt_EmscriptenPlatformMac.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5BFF433F1E501A651A86704A /* Rtt_EmscriptenPlatformMac.mm */; };
+		22C972637A166EDD26986BFB /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 382E57181AA9756F7BA94A07 /* libBox2D.a */; };
+		311519A811E90C311CED111D /* Rtt_EmscriptenStoreProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FF710AD0137015B1DF15474 /* Rtt_EmscriptenStoreProvider.cpp */; };
+		34B96E3A3F740DDB3838745A /* Rtt_EmscriptenMapViewObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B307F113E2F383274262498 /* Rtt_EmscriptenMapViewObject.cpp */; };
+		360C5831017B675A64EA5FF4 /* liblpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B576C5C1C3378CC437C4296 /* liblpeg.a */; };
+		37121A697C9F58B36F8A7675 /* Rtt_EmscriptenFBConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 206E556F223165284FDE1C0F /* Rtt_EmscriptenFBConnect.cpp */; };
+		37750127374147D86E851A77 /* Rtt_EmscriptenTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 470604F03276635F049907A6 /* Rtt_EmscriptenTimer.cpp */; };
+		3B874FD157C000365CFB002A /* Rtt_EmscriptenScreenSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 45EF7FE0601B3A3E59246C0E /* Rtt_EmscriptenScreenSurface.cpp */; };
+		467601B51FDB76D25ED2525E /* Rtt_EmscriptenWebPopup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 589724766FD2565F32860290 /* Rtt_EmscriptenWebPopup.cpp */; };
+		473A32523329754A64470F36 /* Rtt_EmscriptenViewCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 418A0A5E21914E8D4ABB44DB /* Rtt_EmscriptenViewCallback.cpp */; };
+		4B9406B967497B4A39C3546B /* Rtt_EmscriptenWebViewObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 187C0EAE60522B2A58DF2BDB /* Rtt_EmscriptenWebViewObject.cpp */; };
+		4CAF258E3D425484583C7506 /* Rtt_EmscriptenAudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B7F04133AD70CA67C2423DC /* Rtt_EmscriptenAudioPlayer.cpp */; };
+		4D2C1C483B87374B1F79421E /* Rtt_EmscriptenRuntimeDelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD96FF8275F6D807C8A05D8 /* Rtt_EmscriptenRuntimeDelegate.cpp */; };
+		522D14AF041F40470ACA73BA /* Rtt_EmscriptenVideoProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 066B6B3B075F11AD78457C20 /* Rtt_EmscriptenVideoProvider.cpp */; };
+		55286C0339417392193F2A13 /* Rtt_EmscriptenVideoPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 245226B47FF35FB36A134126 /* Rtt_EmscriptenVideoPlayer.cpp */; };
+		557C4454782A312466854ED8 /* Rtt_EmscriptenEventSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 680C02C63991036A3D336A04 /* Rtt_EmscriptenEventSound.cpp */; };
+		57917D68692F44F7437F7259 /* Rtt_EmscriptenStoreTransaction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 25A66265727A602F585B50E2 /* Rtt_EmscriptenStoreTransaction.cpp */; };
+		57E73F96137B26F25B0403A1 /* Rtt_EmscriptenVideoObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35234C65043D4B002106277A /* Rtt_EmscriptenVideoObject.cpp */; };
+		5FBF1D4A0E8D7E0D3F1B1FDC /* liblfs.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 67395591388F751A0D14466C /* liblfs.a */; };
+		5FCC7E030AF217F81EF108AD /* Rtt_EmscriptenImageProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 23492BBD2EB31354295743E0 /* Rtt_EmscriptenImageProvider.cpp */; };
+		63112A8F42875972608D53D6 /* Rtt_EmscriptenTextBoxObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7678623A0D475F3D24306551 /* Rtt_EmscriptenTextBoxObject.cpp */; };
+		640048103F2E702F58E00C1A /* Rtt_EmscriptenData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FFC49BE0A035DD628017A7A /* Rtt_EmscriptenData.cpp */; };
+		67092210591A78D51AC068EC /* Rtt_EmscriptenBitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F37A14896154430F1327B /* Rtt_EmscriptenBitmap.cpp */; };
+		74D70783695E1CFE14DE2340 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C703E8B4F7745090DC33085 /* liblua.a */; };
+		7A4905DB165158C23A96655F /* Rtt_EmscriptenCrypto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 49860AB0301200D066213645 /* Rtt_EmscriptenCrypto.cpp */; };
+		7B321A25196E17327B8E4022 /* Rtt_EmscriptenDisplayObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3A391E3B678B16953F7B62C7 /* Rtt_EmscriptenDisplayObject.cpp */; };
+		7B510B13311C3B4007E03867 /* Rtt_EmscriptenAudioRecorder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 650D5F94056F72F33272011E /* Rtt_EmscriptenAudioRecorder.cpp */; };
+		7F8D431954426A0C4F8F54BF /* Rtt_EmscriptenDevice.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 125B2B8078805CAB07EF1293 /* Rtt_EmscriptenDevice.cpp */; };
+		A45EBE3118EB45CA0010C678 /* OpenSans-Regular.ttf in CopyFiles */ = {isa = PBXBuildFile; fileRef = A45EBE3018EB45BD0010C678 /* OpenSans-Regular.ttf */; };
+		A4D612A518B81D4800A7E443 /* network.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = A4D612A418B81D4800A7E443 /* network.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		098E67A743F0477F1CF86590 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A9E12B53F894C691CEC037E /* Renderer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 60DF6AD57A091ABE356D3064;
+			remoteInfo = libRenderer.a;
+		};
+		2FB12D1F739F4EE956611999 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 48D6174C195077F30DE16210 /* Box2D.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 277455A4032F0C59438D64B9;
+			remoteInfo = libBox2D.a;
+		};
+		36E45EEC5BE6601F17366346 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 494901147AB11FEE6C771A8A /* lfs.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1753655273EA22CF63B12E01;
+			remoteInfo = liblfs.a;
+		};
+		3F577C211B010B9025BA69A7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0E341B441E1926FB571275F6 /* lua.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C1E36A333C77E403760204E;
+			remoteInfo = liblua.a;
+		};
+		41385E5C1B4C4A0C747D569D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 734F663527F9583712B42291 /* rtt.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 58E965A42F2558FF01EA41F1;
+			remoteInfo = librtt.a;
+		};
+		4CE447B168CA2AB95DEC32C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 48D6174C195077F30DE16210 /* Box2D.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 435F2EED666443CB4F2C0C48;
+			remoteInfo = libBox2D.a;
+		};
+		512762C7368B148C049B7443 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 33D83F930C743A8936700493 /* lpeg.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 625356193E2A6189126C7CB4;
+			remoteInfo = liblpeg.a;
+		};
+		5C6F29BE065C1370516238A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0E341B441E1926FB571275F6 /* lua.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0ABF419879B50397701B2A65;
+			remoteInfo = liblua.a;
+		};
+		61505E7823B617B4358F645C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 33D83F930C743A8936700493 /* lpeg.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BC5618B08B9339B33D91B7E;
+			remoteInfo = liblpeg.a;
+		};
+		632A19CC5E2652332B6B3D49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 734F663527F9583712B42291 /* rtt.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 5882512760B115BD5C99600F;
+			remoteInfo = librtt.a;
+		};
+		69ED5C794508254312B75981 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 494901147AB11FEE6C771A8A /* lfs.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0B571D7C53336C4B6D144AB8;
+			remoteInfo = liblfs.a;
+		};
+		7F804AEF490C5A5A0024474E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3A9E12B53F894C691CEC037E /* Renderer.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1E0970095F9F64D632647F46;
+			remoteInfo = libRenderer.a;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A4BDA26D18B8104500B3851E /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A4D612A318B81D2300A7E443 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				A45EBE3118EB45CA0010C678 /* OpenSans-Regular.ttf in CopyFiles */,
+				A4D612A518B81D4800A7E443 /* network.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		066B6B3B075F11AD78457C20 /* Rtt_EmscriptenVideoProvider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenVideoProvider.cpp; sourceTree = "<group>"; };
+		0D77353F4AD109CB7A11151C /* Rtt_EmscriptenPlatform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenPlatform.cpp; sourceTree = "<group>"; };
+		0DA009532F645C0A38A95FE6 /* ratatouille */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ratatouille; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E341B441E1926FB571275F6 /* lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = lua.xcodeproj; sourceTree = SOURCE_ROOT; };
+		0F736C2A405E73A418D9529B /* Rtt_EmscriptenDisplayObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenDisplayObject.h; sourceTree = "<group>"; };
+		11132C2341C125700DB83C87 /* Rtt_EmscriptenAudioPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenAudioPlayer.h; sourceTree = "<group>"; };
+		125B2B8078805CAB07EF1293 /* Rtt_EmscriptenDevice.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenDevice.cpp; sourceTree = "<group>"; };
+		187C0EAE60522B2A58DF2BDB /* Rtt_EmscriptenWebViewObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenWebViewObject.cpp; sourceTree = "<group>"; };
+		1AAF602E772202B478BA38B7 /* Rtt_EmscriptenStoreProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenStoreProvider.h; sourceTree = "<group>"; };
+		1B307F113E2F383274262498 /* Rtt_EmscriptenMapViewObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenMapViewObject.cpp; sourceTree = "<group>"; };
+		1F6BA31B1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_LuaLibSDLAudio.cpp; sourceTree = "<group>"; };
+		1F6BA31C1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rtt_LuaLibSDLAudio.h; sourceTree = "<group>"; };
+		1F6BA31E1F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_PlatformSDLAudioPlayer.cpp; sourceTree = "<group>"; };
+		1F6BA31F1F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rtt_PlatformSDLAudioPlayer.h; sourceTree = "<group>"; };
+		1F6BA3211F77F4D300DBF33E /* Rtt_EmscriptenContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenContainer.cpp; sourceTree = "<group>"; };
+		1F6BA3221F77F4D300DBF33E /* Rtt_EmscriptenContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenContainer.h; sourceTree = "<group>"; };
+		1F6BA3241F77F4FA00DBF33E /* Rtt_EmscriptenSmartPtr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenSmartPtr.h; sourceTree = "<group>"; };
+		1FD129081F6641DE00FF4F89 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = mac/SDL2_image.framework; sourceTree = "<group>"; };
+		1FD129091F6641DE00FF4F89 /* SDL2_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_ttf.framework; path = mac/SDL2_ttf.framework; sourceTree = "<group>"; };
+		1FD1290A1F6641DE00FF4F89 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = mac/SDL2.framework; sourceTree = "<group>"; };
+		1FD96FF8275F6D807C8A05D8 /* Rtt_EmscriptenRuntimeDelegate.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenRuntimeDelegate.cpp; sourceTree = "<group>"; };
+		1FDCB0BE1F6C1F5A0099DF19 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = mac/SDL2_mixer.framework; sourceTree = "<group>"; };
+		206E556F223165284FDE1C0F /* Rtt_EmscriptenFBConnect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenFBConnect.cpp; sourceTree = "<group>"; };
+		218C137579BB79BE54A46D08 /* Rtt_EmscriptenTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenTimer.h; sourceTree = "<group>"; };
+		23492BBD2EB31354295743E0 /* Rtt_EmscriptenImageProvider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenImageProvider.cpp; sourceTree = "<group>"; };
+		245226B47FF35FB36A134126 /* Rtt_EmscriptenVideoPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenVideoPlayer.cpp; sourceTree = "<group>"; };
+		25A66265727A602F585B50E2 /* Rtt_EmscriptenStoreTransaction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenStoreTransaction.cpp; sourceTree = "<group>"; };
+		29B73029757F78CD0FCD19A8 /* Rtt_EmscriptenWebPopup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenWebPopup.h; sourceTree = "<group>"; };
+		2C5B2C2B4490520E324E4856 /* Rtt_EmscriptenData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenData.h; sourceTree = "<group>"; };
+		2FF710AD0137015B1DF15474 /* Rtt_EmscriptenStoreProvider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenStoreProvider.cpp; sourceTree = "<group>"; };
+		30A2101B06C30372631449F7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		31137C890C3B16D91F7E20D0 /* Rtt_EmscriptenTextBoxObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenTextBoxObject.h; sourceTree = "<group>"; };
+		33D83F930C743A8936700493 /* lpeg.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = lpeg.xcodeproj; sourceTree = SOURCE_ROOT; };
+		35234C65043D4B002106277A /* Rtt_EmscriptenVideoObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenVideoObject.cpp; sourceTree = "<group>"; };
+		39AB256E0A68727627C321B6 /* Rtt_EmscriptenFBConnect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenFBConnect.h; sourceTree = "<group>"; };
+		3A2837474ADF37C2239A0922 /* Rtt_EmscriptenViewCallback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenViewCallback.h; sourceTree = "<group>"; };
+		3A391E3B678B16953F7B62C7 /* Rtt_EmscriptenDisplayObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenDisplayObject.cpp; sourceTree = "<group>"; };
+		3A9E12B53F894C691CEC037E /* Renderer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Renderer.xcodeproj; sourceTree = SOURCE_ROOT; };
+		3D8F37A14896154430F1327B /* Rtt_EmscriptenBitmap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenBitmap.cpp; sourceTree = "<group>"; };
+		3FFB2751641D2D98667F3493 /* Rtt_EmscriptenPlatform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenPlatform.h; sourceTree = "<group>"; };
+		3FFC49BE0A035DD628017A7A /* Rtt_EmscriptenData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenData.cpp; sourceTree = "<group>"; };
+		4172314076A63AA76A092C43 /* Rtt_EmscriptenFont.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenFont.cpp; sourceTree = "<group>"; };
+		418A0A5E21914E8D4ABB44DB /* Rtt_EmscriptenViewCallback.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenViewCallback.cpp; sourceTree = "<group>"; };
+		45EF7FE0601B3A3E59246C0E /* Rtt_EmscriptenScreenSurface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenScreenSurface.cpp; sourceTree = "<group>"; };
+		470604F03276635F049907A6 /* Rtt_EmscriptenTimer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenTimer.cpp; sourceTree = "<group>"; };
+		4876722A53A25240069667BE /* Rtt_EmscriptenImageProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenImageProvider.h; sourceTree = "<group>"; };
+		48D6174C195077F30DE16210 /* Box2D.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Box2D.xcodeproj; sourceTree = SOURCE_ROOT; };
+		494901147AB11FEE6C771A8A /* lfs.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = lfs.xcodeproj; sourceTree = SOURCE_ROOT; };
+		49860AB0301200D066213645 /* Rtt_EmscriptenCrypto.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenCrypto.cpp; sourceTree = "<group>"; };
+		4A2C2A70578440F66AA8670B /* Rtt_EmscriptenCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenCrypto.h; sourceTree = "<group>"; };
+		4C302168743768C30F127B3C /* Rtt_EmscriptenRuntimeDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenRuntimeDelegate.h; sourceTree = "<group>"; };
+		4F997D63100D5F690EB52FDD /* Rtt_EmscriptenStore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenStore.cpp; sourceTree = "<group>"; };
+		51D470B937046DAC428A7228 /* Rtt_EmscriptenStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenStore.h; sourceTree = "<group>"; };
+		544715212E0C317D2AEE7EC6 /* Rtt_EmscriptenMapViewObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenMapViewObject.h; sourceTree = "<group>"; };
+		55BF0BF24E0F5F057B4A3B25 /* Rtt_EmscriptenVideoPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenVideoPlayer.h; sourceTree = "<group>"; };
+		57C54E4F619D169D50F723E4 /* Rtt_EmscriptenScreenSurface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenScreenSurface.h; sourceTree = "<group>"; };
+		589724766FD2565F32860290 /* Rtt_EmscriptenWebPopup.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenWebPopup.cpp; sourceTree = "<group>"; };
+		5B7F04133AD70CA67C2423DC /* Rtt_EmscriptenAudioPlayer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenAudioPlayer.cpp; sourceTree = "<group>"; };
+		5BFF433F1E501A651A86704A /* Rtt_EmscriptenPlatformMac.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objc; path = Rtt_EmscriptenPlatformMac.mm; sourceTree = "<group>"; };
+		5D14524616AF68DD16BD5D20 /* Rtt_EmscriptenStoreTransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenStoreTransaction.h; sourceTree = "<group>"; };
+		608E315D602A2495560029F5 /* Rtt_EmscriptenFont.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenFont.h; sourceTree = "<group>"; };
+		650D5F94056F72F33272011E /* Rtt_EmscriptenAudioRecorder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenAudioRecorder.cpp; sourceTree = "<group>"; };
+		657A49747C536CBF026D5476 /* Rtt_EmscriptenBitmap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenBitmap.h; sourceTree = "<group>"; };
+		680C02C63991036A3D336A04 /* Rtt_EmscriptenEventSound.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenEventSound.cpp; sourceTree = "<group>"; };
+		6DD34A1F39DD7F580C303E68 /* Rtt_EmscriptenWebViewObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenWebViewObject.h; sourceTree = "<group>"; };
+		703A1173289638541AF16BA5 /* Rtt_EmscriptenVideoObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenVideoObject.h; sourceTree = "<group>"; };
+		70697FDD47970B80260F23B3 /* Rtt_EmscriptenPlatformMac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenPlatformMac.h; sourceTree = "<group>"; };
+		709F66434F8219716C163A45 /* Rtt_EmscriptenDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenDevice.h; sourceTree = "<group>"; };
+		723520D3168301C14E75776D /* Rtt_EmscriptenEventSound.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenEventSound.h; sourceTree = "<group>"; };
+		734F663527F9583712B42291 /* rtt.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = rtt.xcodeproj; sourceTree = SOURCE_ROOT; };
+		746860A10047386C5CBE6205 /* Rtt_EmscriptenAudioRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenAudioRecorder.h; sourceTree = "<group>"; };
+		74AE4D073A4E09825A530385 /* Rtt_EmscriptenVideoProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Rtt_EmscriptenVideoProvider.h; sourceTree = "<group>"; };
+		7678623A0D475F3D24306551 /* Rtt_EmscriptenTextBoxObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Rtt_EmscriptenTextBoxObject.cpp; sourceTree = "<group>"; };
+		A45EBE3018EB45BD0010C678 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
+		A4D612A418B81D4800A7E443 /* network.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = network.dylib; path = "../../plugins/build-core/network/mac/network.dylib"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5EF6704D55C531CE4F463A44 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1FDCB0BF1F6C1F5A0099DF19 /* SDL2_mixer.framework in Frameworks */,
+				1FD1290B1F6641DE00FF4F89 /* SDL2_image.framework in Frameworks */,
+				1FD1290C1F6641DE00FF4F89 /* SDL2_ttf.framework in Frameworks */,
+				1FD1290D1F6641DE00FF4F89 /* SDL2.framework in Frameworks */,
+				22C972637A166EDD26986BFB /* libBox2D.a in Frameworks */,
+				0BBD591C785E71F2554E1523 /* libRenderer.a in Frameworks */,
+				5FBF1D4A0E8D7E0D3F1B1FDC /* liblfs.a in Frameworks */,
+				360C5831017B675A64EA5FF4 /* liblpeg.a in Frameworks */,
+				74D70783695E1CFE14DE2340 /* liblua.a in Frameworks */,
+				056B524424007D441B550AD0 /* librtt.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0AFF6E24311D20F352B85E61 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0DA009532F645C0A38A95FE6 /* ratatouille */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0BFA55C242C0500E4CFF383A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				67395591388F751A0D14466C /* liblfs.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		24537CFD00E567F25434351E /* ratatouille */ = {
+			isa = PBXGroup;
+			children = (
+				1F6BA3241F77F4FA00DBF33E /* Rtt_EmscriptenSmartPtr.h */,
+				1F6BA3211F77F4D300DBF33E /* Rtt_EmscriptenContainer.cpp */,
+				1F6BA3221F77F4D300DBF33E /* Rtt_EmscriptenContainer.h */,
+				1F6BA31B1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.cpp */,
+				1F6BA31C1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.h */,
+				1F6BA31E1F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.cpp */,
+				1F6BA31F1F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.h */,
+				5B7F04133AD70CA67C2423DC /* Rtt_EmscriptenAudioPlayer.cpp */,
+				11132C2341C125700DB83C87 /* Rtt_EmscriptenAudioPlayer.h */,
+				650D5F94056F72F33272011E /* Rtt_EmscriptenAudioRecorder.cpp */,
+				746860A10047386C5CBE6205 /* Rtt_EmscriptenAudioRecorder.h */,
+				3D8F37A14896154430F1327B /* Rtt_EmscriptenBitmap.cpp */,
+				657A49747C536CBF026D5476 /* Rtt_EmscriptenBitmap.h */,
+				49860AB0301200D066213645 /* Rtt_EmscriptenCrypto.cpp */,
+				4A2C2A70578440F66AA8670B /* Rtt_EmscriptenCrypto.h */,
+				3FFC49BE0A035DD628017A7A /* Rtt_EmscriptenData.cpp */,
+				2C5B2C2B4490520E324E4856 /* Rtt_EmscriptenData.h */,
+				125B2B8078805CAB07EF1293 /* Rtt_EmscriptenDevice.cpp */,
+				709F66434F8219716C163A45 /* Rtt_EmscriptenDevice.h */,
+				3A391E3B678B16953F7B62C7 /* Rtt_EmscriptenDisplayObject.cpp */,
+				0F736C2A405E73A418D9529B /* Rtt_EmscriptenDisplayObject.h */,
+				680C02C63991036A3D336A04 /* Rtt_EmscriptenEventSound.cpp */,
+				723520D3168301C14E75776D /* Rtt_EmscriptenEventSound.h */,
+				206E556F223165284FDE1C0F /* Rtt_EmscriptenFBConnect.cpp */,
+				39AB256E0A68727627C321B6 /* Rtt_EmscriptenFBConnect.h */,
+				4172314076A63AA76A092C43 /* Rtt_EmscriptenFont.cpp */,
+				608E315D602A2495560029F5 /* Rtt_EmscriptenFont.h */,
+				23492BBD2EB31354295743E0 /* Rtt_EmscriptenImageProvider.cpp */,
+				4876722A53A25240069667BE /* Rtt_EmscriptenImageProvider.h */,
+				1B307F113E2F383274262498 /* Rtt_EmscriptenMapViewObject.cpp */,
+				544715212E0C317D2AEE7EC6 /* Rtt_EmscriptenMapViewObject.h */,
+				0D77353F4AD109CB7A11151C /* Rtt_EmscriptenPlatform.cpp */,
+				3FFB2751641D2D98667F3493 /* Rtt_EmscriptenPlatform.h */,
+				1FD96FF8275F6D807C8A05D8 /* Rtt_EmscriptenRuntimeDelegate.cpp */,
+				4C302168743768C30F127B3C /* Rtt_EmscriptenRuntimeDelegate.h */,
+				45EF7FE0601B3A3E59246C0E /* Rtt_EmscriptenScreenSurface.cpp */,
+				57C54E4F619D169D50F723E4 /* Rtt_EmscriptenScreenSurface.h */,
+				4F997D63100D5F690EB52FDD /* Rtt_EmscriptenStore.cpp */,
+				51D470B937046DAC428A7228 /* Rtt_EmscriptenStore.h */,
+				2FF710AD0137015B1DF15474 /* Rtt_EmscriptenStoreProvider.cpp */,
+				1AAF602E772202B478BA38B7 /* Rtt_EmscriptenStoreProvider.h */,
+				25A66265727A602F585B50E2 /* Rtt_EmscriptenStoreTransaction.cpp */,
+				5D14524616AF68DD16BD5D20 /* Rtt_EmscriptenStoreTransaction.h */,
+				7678623A0D475F3D24306551 /* Rtt_EmscriptenTextBoxObject.cpp */,
+				31137C890C3B16D91F7E20D0 /* Rtt_EmscriptenTextBoxObject.h */,
+				470604F03276635F049907A6 /* Rtt_EmscriptenTimer.cpp */,
+				218C137579BB79BE54A46D08 /* Rtt_EmscriptenTimer.h */,
+				35234C65043D4B002106277A /* Rtt_EmscriptenVideoObject.cpp */,
+				703A1173289638541AF16BA5 /* Rtt_EmscriptenVideoObject.h */,
+				245226B47FF35FB36A134126 /* Rtt_EmscriptenVideoPlayer.cpp */,
+				55BF0BF24E0F5F057B4A3B25 /* Rtt_EmscriptenVideoPlayer.h */,
+				066B6B3B075F11AD78457C20 /* Rtt_EmscriptenVideoProvider.cpp */,
+				74AE4D073A4E09825A530385 /* Rtt_EmscriptenVideoProvider.h */,
+				3A2837474ADF37C2239A0922 /* Rtt_EmscriptenViewCallback.h */,
+				418A0A5E21914E8D4ABB44DB /* Rtt_EmscriptenViewCallback.cpp */,
+				589724766FD2565F32860290 /* Rtt_EmscriptenWebPopup.cpp */,
+				29B73029757F78CD0FCD19A8 /* Rtt_EmscriptenWebPopup.h */,
+				187C0EAE60522B2A58DF2BDB /* Rtt_EmscriptenWebViewObject.cpp */,
+				6DD34A1F39DD7F580C303E68 /* Rtt_EmscriptenWebViewObject.h */,
+				34B70B9C538F6791005F1E49 /* mac */,
+				30A2101B06C30372631449F7 /* main.cpp */,
+				4E5B604442882E7D322520F9 /* Projects */,
+				A4D612A618B81D5500A7E443 /* Frameworks */,
+				0AFF6E24311D20F352B85E61 /* Products */,
+			);
+			name = ratatouille;
+			sourceTree = "<group>";
+		};
+		34B70B9C538F6791005F1E49 /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				70697FDD47970B80260F23B3 /* Rtt_EmscriptenPlatformMac.h */,
+				5BFF433F1E501A651A86704A /* Rtt_EmscriptenPlatformMac.mm */,
+				A45EBE3018EB45BD0010C678 /* OpenSans-Regular.ttf */,
+			);
+			path = mac;
+			sourceTree = "<group>";
+		};
+		3E1E40C17BA7462E182D3488 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5B576C5C1C3378CC437C4296 /* liblpeg.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3FB710284EDC558D38961FB4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				476003DE1A6639E244A15D7E /* libRenderer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4E5B604442882E7D322520F9 /* Projects */ = {
+			isa = PBXGroup;
+			children = (
+				48D6174C195077F30DE16210 /* Box2D.xcodeproj */,
+				3A9E12B53F894C691CEC037E /* Renderer.xcodeproj */,
+				494901147AB11FEE6C771A8A /* lfs.xcodeproj */,
+				33D83F930C743A8936700493 /* lpeg.xcodeproj */,
+				0E341B441E1926FB571275F6 /* lua.xcodeproj */,
+				734F663527F9583712B42291 /* rtt.xcodeproj */,
+			);
+			name = Projects;
+			sourceTree = "<group>";
+		};
+		4EA01D9C1FD3795419A06C04 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				382E57181AA9756F7BA94A07 /* libBox2D.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		58580EFF3BA56DEF264F15AD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				64C350CD64317F5015906290 /* librtt.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5C97742210644D14729A1DDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0C703E8B4F7745090DC33085 /* liblua.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4D612A618B81D5500A7E443 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1FDCB0BE1F6C1F5A0099DF19 /* SDL2_mixer.framework */,
+				1FD129081F6641DE00FF4F89 /* SDL2_image.framework */,
+				1FD129091F6641DE00FF4F89 /* SDL2_ttf.framework */,
+				1FD1290A1F6641DE00FF4F89 /* SDL2.framework */,
+				A4D612A418B81D4800A7E443 /* network.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1B017294118625D237EC6B6F /* ratatouille */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 112454D925C1232832362C20 /* Build configuration list for PBXNativeTarget "ratatouille" */;
+			buildPhases = (
+				181F54AB42C4707719803A5B /* Sources */,
+				5EF6704D55C531CE4F463A44 /* Frameworks */,
+				A4BDA26D18B8104500B3851E /* Copy Frameworks */,
+				A4D612A318B81D2300A7E443 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				36DA43C94D072E9E254C26C0 /* PBXTargetDependency */,
+				6D6B419E79D6662F3C232C97 /* PBXTargetDependency */,
+				1F33569A251669DC751B7EBF /* PBXTargetDependency */,
+				63293BF22D6A1F8964640EAC /* PBXTargetDependency */,
+				65CA3A5C0D155F6F7DE4175C /* PBXTargetDependency */,
+				2D24302976A16C1A3BFE323A /* PBXTargetDependency */,
+			);
+			name = ratatouille;
+			productInstallPath = "$(HOME)/bin";
+			productName = ratatouille;
+			productReference = 0DA009532F645C0A38A95FE6 /* ratatouille */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+			};
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "ratatouille" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 24537CFD00E567F25434351E /* ratatouille */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4EA01D9C1FD3795419A06C04 /* Products */;
+					ProjectRef = 48D6174C195077F30DE16210 /* Box2D.xcodeproj */;
+				},
+				{
+					ProductGroup = 0BFA55C242C0500E4CFF383A /* Products */;
+					ProjectRef = 494901147AB11FEE6C771A8A /* lfs.xcodeproj */;
+				},
+				{
+					ProductGroup = 3E1E40C17BA7462E182D3488 /* Products */;
+					ProjectRef = 33D83F930C743A8936700493 /* lpeg.xcodeproj */;
+				},
+				{
+					ProductGroup = 5C97742210644D14729A1DDC /* Products */;
+					ProjectRef = 0E341B441E1926FB571275F6 /* lua.xcodeproj */;
+				},
+				{
+					ProductGroup = 3FB710284EDC558D38961FB4 /* Products */;
+					ProjectRef = 3A9E12B53F894C691CEC037E /* Renderer.xcodeproj */;
+				},
+				{
+					ProductGroup = 58580EFF3BA56DEF264F15AD /* Products */;
+					ProjectRef = 734F663527F9583712B42291 /* rtt.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				1B017294118625D237EC6B6F /* ratatouille */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		0C703E8B4F7745090DC33085 /* liblua.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblua.a;
+			remoteRef = 5C6F29BE065C1370516238A8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		382E57181AA9756F7BA94A07 /* libBox2D.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBox2D.a;
+			remoteRef = 2FB12D1F739F4EE956611999 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		476003DE1A6639E244A15D7E /* libRenderer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRenderer.a;
+			remoteRef = 098E67A743F0477F1CF86590 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5B576C5C1C3378CC437C4296 /* liblpeg.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblpeg.a;
+			remoteRef = 512762C7368B148C049B7443 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		64C350CD64317F5015906290 /* librtt.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = librtt.a;
+			remoteRef = 41385E5C1B4C4A0C747D569D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		67395591388F751A0D14466C /* liblfs.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblfs.a;
+			remoteRef = 69ED5C794508254312B75981 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		181F54AB42C4707719803A5B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CAF258E3D425484583C7506 /* Rtt_EmscriptenAudioPlayer.cpp in Sources */,
+				7B510B13311C3B4007E03867 /* Rtt_EmscriptenAudioRecorder.cpp in Sources */,
+				67092210591A78D51AC068EC /* Rtt_EmscriptenBitmap.cpp in Sources */,
+				7A4905DB165158C23A96655F /* Rtt_EmscriptenCrypto.cpp in Sources */,
+				640048103F2E702F58E00C1A /* Rtt_EmscriptenData.cpp in Sources */,
+				7F8D431954426A0C4F8F54BF /* Rtt_EmscriptenDevice.cpp in Sources */,
+				7B321A25196E17327B8E4022 /* Rtt_EmscriptenDisplayObject.cpp in Sources */,
+				557C4454782A312466854ED8 /* Rtt_EmscriptenEventSound.cpp in Sources */,
+				37121A697C9F58B36F8A7675 /* Rtt_EmscriptenFBConnect.cpp in Sources */,
+				0A7A76284EF56A8228CA1F10 /* Rtt_EmscriptenFont.cpp in Sources */,
+				5FCC7E030AF217F81EF108AD /* Rtt_EmscriptenImageProvider.cpp in Sources */,
+				1F6BA3231F77F4D300DBF33E /* Rtt_EmscriptenContainer.cpp in Sources */,
+				1F6BA31D1F77F49F00DBF33E /* Rtt_LuaLibSDLAudio.cpp in Sources */,
+				34B96E3A3F740DDB3838745A /* Rtt_EmscriptenMapViewObject.cpp in Sources */,
+				1F6BA3201F77F4B800DBF33E /* Rtt_PlatformSDLAudioPlayer.cpp in Sources */,
+				0B0A5B12045E65ED3E104313 /* Rtt_EmscriptenPlatform.cpp in Sources */,
+				4D2C1C483B87374B1F79421E /* Rtt_EmscriptenRuntimeDelegate.cpp in Sources */,
+				3B874FD157C000365CFB002A /* Rtt_EmscriptenScreenSurface.cpp in Sources */,
+				148215611CCA27BB78944373 /* Rtt_EmscriptenStore.cpp in Sources */,
+				311519A811E90C311CED111D /* Rtt_EmscriptenStoreProvider.cpp in Sources */,
+				57917D68692F44F7437F7259 /* Rtt_EmscriptenStoreTransaction.cpp in Sources */,
+				63112A8F42875972608D53D6 /* Rtt_EmscriptenTextBoxObject.cpp in Sources */,
+				37750127374147D86E851A77 /* Rtt_EmscriptenTimer.cpp in Sources */,
+				57E73F96137B26F25B0403A1 /* Rtt_EmscriptenVideoObject.cpp in Sources */,
+				55286C0339417392193F2A13 /* Rtt_EmscriptenVideoPlayer.cpp in Sources */,
+				522D14AF041F40470ACA73BA /* Rtt_EmscriptenVideoProvider.cpp in Sources */,
+				473A32523329754A64470F36 /* Rtt_EmscriptenViewCallback.cpp in Sources */,
+				467601B51FDB76D25ED2525E /* Rtt_EmscriptenWebPopup.cpp in Sources */,
+				4B9406B967497B4A39C3546B /* Rtt_EmscriptenWebViewObject.cpp in Sources */,
+				2175410679AD522D1A4F3E20 /* Rtt_EmscriptenPlatformMac.mm in Sources */,
+				1A8671364506168A69BA6D3C /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1F33569A251669DC751B7EBF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = liblfs.a;
+			targetProxy = 36E45EEC5BE6601F17366346 /* PBXContainerItemProxy */;
+		};
+		2D24302976A16C1A3BFE323A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = librtt.a;
+			targetProxy = 632A19CC5E2652332B6B3D49 /* PBXContainerItemProxy */;
+		};
+		36DA43C94D072E9E254C26C0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libBox2D.a;
+			targetProxy = 4CE447B168CA2AB95DEC32C3 /* PBXContainerItemProxy */;
+		};
+		63293BF22D6A1F8964640EAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = liblpeg.a;
+			targetProxy = 61505E7823B617B4358F645C /* PBXContainerItemProxy */;
+		};
+		65CA3A5C0D155F6F7DE4175C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = liblua.a;
+			targetProxy = 3F577C211B010B9025BA69A7 /* PBXContainerItemProxy */;
+		};
+		6D6B419E79D6662F3C232C97 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libRenderer.a;
+			targetProxy = 7F804AEF490C5A5A0024474E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		343C543D1FB12306783E2F00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+					Rtt_EMSCRIPTEN_ENV,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../librtt,
+					"../../external/lua-5.1.3/src",
+					.,
+					mac,
+				);
+				OBJROOT = obj/Release/ratatouille;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "";
+				SYMROOT = ../../Build/xcode4/bin/Release;
+			};
+			name = Release;
+		};
+		35CB3BFB6CE364AA05147CF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					Rtt_DEBUG,
+					LUA_USE_APICHECK,
+					Rtt_EMSCRIPTEN_ENV,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../librtt,
+					"../../external/lua-5.1.3/src",
+					.,
+					mac,
+				);
+				OBJROOT = obj/Debug/ratatouille;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
+				SYMROOT = ../../Build/xcode4/bin/Debug;
+			};
+			name = Debug;
+		};
+		386109EF6A734C31384213A1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Debug;
+				FRAMEWORK_SEARCH_PATHS = (
+					./mac,
+					"$(PROJECT_DIR)/mac",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					Rtt_DEBUG,
+					LUA_USE_APICHECK,
+					Rtt_EMSCRIPTEN_ENV,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					OpenGL,
+					"-framework",
+					SDL2,
+					"-framework",
+					SDL2_image,
+				);
+				PRODUCT_NAME = ratatouille;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		436C0DA812506AA30E5B1ED3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../Build/xcode4/bin/Release;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					./mac,
+					"$(PROJECT_DIR)/mac",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NDEBUG,
+					Rtt_EMSCRIPTEN_ENV,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					OpenGL,
+					"-framework",
+					SDL2,
+					"-framework",
+					SDL2_image,
+				);
+				PRODUCT_NAME = ratatouille;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		112454D925C1232832362C20 /* Build configuration list for PBXNativeTarget "ratatouille" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				386109EF6A734C31384213A1 /* Debug */,
+				436C0DA812506AA30E5B1ED3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "ratatouille" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35CB3BFB6CE364AA05147CF3 /* Debug */,
+				343C543D1FB12306783E2F00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}
