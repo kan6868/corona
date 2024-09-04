@@ -967,8 +967,8 @@ namespace Rtt
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
-					float scaleX = (w * 2) / (float)fWidth;
-					float scaleY = (h * 2) / (float)fHeight;
+					float scaleX = (w) / (float)fWidth;
+					float scaleY = (h) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -1034,8 +1034,8 @@ namespace Rtt
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
-					float scaleX = (w * 2) / (float)fWidth;
-					float scaleY = (h * 2) / (float)fHeight;
+					float scaleX = (w) / (float)fWidth;
+					float scaleY = (h) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
