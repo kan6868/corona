@@ -633,8 +633,8 @@ namespace Rtt
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
 	
-		sdlevent.window.data1 = uiEvent->documentBodyClientWidth;
-		sdlevent.window.data2 = uiEvent->documentBodyClientHeight;
+		sdlevent.window.data1 = uiEvent->windowInnerWidth;
+		sdlevent.window.data2 = uiEvent->windowInnerHeight;
 	
 		sdlevent.window.windowID = 0;
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;//SDL_WINDOWEVENT_RESIZED;
@@ -963,11 +963,11 @@ namespace Rtt
 					int w = event.window.data1;
 					int h = event.window.data2;
 			
-					//if (w == 0 || h == 0) 
-					//{
-					//	w = jsContextGetWindowWidth();
-					//	h = jsContextGetWindowHeight();
-					//}
+					if (w == 0 || h == 0) 
+					{
+						w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
+					}
 					SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
