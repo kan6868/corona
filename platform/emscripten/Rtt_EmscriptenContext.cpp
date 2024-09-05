@@ -633,8 +633,8 @@ namespace Rtt
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
 	
-		sdlevent.window.data1 = uiEvent->windowInnerWidth == 0 ? uiEvent->windowInnerWidth : fWidth / 2;
-		sdlevent.window.data2 = uiEvent->windowInnerHeight == 0 ? uiEvent->windowInnerHeight : fHeight / 2;
+		sdlevent.window.data1 = uiEvent->windowInnerWidth == 0 ? uiEvent->windowInnerWidth : jsContextGetWindowWidth();
+		sdlevent.window.data2 = uiEvent->windowInnerHeight == 0 ? uiEvent->windowInnerHeight : jsContextGetWindowHeight();
 	
 		sdlevent.window.windowID = 0;
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;//SDL_WINDOWEVENT_RESIZED;
