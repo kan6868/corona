@@ -946,7 +946,7 @@ namespace Rtt
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				/*
+				
 				bool fullScreen = false;
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
@@ -954,8 +954,6 @@ namespace Rtt
 					return fullscreenElement != null ? true : false;
 					});
 					//SDL_Log("Window fullscreen: width = %d , height = %d ", fWidth / 2, fHeight / 2);
-					
-					
 #endif
 				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
@@ -1014,7 +1012,7 @@ namespace Rtt
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
-				*/
+				
 				break;
 			}
 			case SDL_WINDOWEVENT_MINIMIZED:
