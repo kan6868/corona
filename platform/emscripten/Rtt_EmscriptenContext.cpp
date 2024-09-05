@@ -941,6 +941,7 @@ namespace Rtt
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			{
 				SDL_Log("Window %d size changed to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
+				break;
 			}
 			case SDL_WINDOWEVENT_RESIZED:
 			{
