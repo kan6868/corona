@@ -945,6 +945,8 @@ namespace Rtt
 			}
 			case SDL_WINDOWEVENT_RESIZED:
 			{
+				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				/*
 				bool fullScreen = false;
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
@@ -1012,6 +1014,7 @@ namespace Rtt
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
+				*/
 				break;
 			}
 			case SDL_WINDOWEVENT_MINIMIZED:
