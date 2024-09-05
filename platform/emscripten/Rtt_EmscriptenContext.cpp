@@ -644,7 +644,7 @@ namespace Rtt
 		sdlevent2.type = SDL_WINDOWEVENT;
 		sdlevent2.window.data1 = uiEvent->windowInnerWidth;
 		sdlevent2.window.data2 = uiEvent->windowInnerHeight;
-		sdlevent2.window.windowID = 0;
+		sdlevent2.window.windowID = 1;
 		sdlevent2.window.event = SDL_WINDOWEVENT_SIZE_CHANGED;//SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent2);
 
