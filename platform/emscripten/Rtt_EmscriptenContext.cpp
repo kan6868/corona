@@ -562,8 +562,6 @@ namespace Rtt
 		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
-		
-
 
 		DisplayDefaults& defaults = fRuntime->GetDisplay().GetDefaults();
 		ColorUnion c;
@@ -574,7 +572,7 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
-			//SDL_Log("Resize hack");
+			SDL_Log("Resize hack");
 			EM_ASM_INT({ window.dispatchEvent(new Event('resize')); });
 		}
 		SDL_Log("Window after re-size init: width = %d , height = %d ", fWidth / 2, fHeight / 2);
@@ -634,8 +632,10 @@ namespace Rtt
 	{
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
-		sdlevent.window.data1 = uiEvent->windowInnerWidth;
-		sdlevent.window.data2 = uiEvent->windowInnerHeight;
+	
+		sdlevent.window.data1 = uiEvent->windowInnerWidth == 0 ? uiEvent->windowInnerWidth : fWidth / 2;
+		sdlevent.window.data2 = uiEvent->windowInnerHeight == 0 ? uiEvent->windowInnerHeight : fHeight / 2;
+	
 		sdlevent.window.windowID = 0;
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;//SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent);
