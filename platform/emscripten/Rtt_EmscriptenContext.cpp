@@ -523,7 +523,7 @@ namespace Rtt
 			fWidth *= scale;
 			fHeight *= scale;
 		}
-		SDL_GL_SetSwapInterval(1); // Enable vsync
+		//SDL_GL_SetSwapInterval(1); // Enable vsync
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
@@ -658,7 +658,7 @@ namespace Rtt
 	{
 
 #if defined(EMSCRIPTEN)
-		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
+		emscripten_set_main_loop_arg(&TimerTickShim, this, 60, 1); // Never returns
 #else
 		bool closeApp = false;
 		while (closeApp == false)
