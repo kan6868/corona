@@ -971,8 +971,8 @@ namespace Rtt
 					//SDL_Log("Window inner: width = %d , height = %d ", w, h);
 
 					// keep ratio
-					float scaleX = (w) / (float)fWidth;
-					float scaleY = (h) / (float)fHeight;
+					float scaleX = (w * 2) / (float)fWidth;
+					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -999,7 +999,7 @@ namespace Rtt
 
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", w, h);			
+					emscripten_set_element_css_size("canvas", w / 2, h / 2);			
 #endif
 				}
 				else 
