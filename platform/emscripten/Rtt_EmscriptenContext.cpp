@@ -71,7 +71,7 @@ namespace Rtt
 		float frameDuration = 1.0f / (float)context->getFPS();
 
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
 			s_tick = now;
 			context->TimerTick();
@@ -658,7 +658,7 @@ namespace Rtt
 	{
 
 #if defined(EMSCRIPTEN)
-		emscripten_set_main_loop_arg(&TimerTickShim, this, 60, 1); // Never returns
+		emscripten_set_main_loop_arg(&TimerTickShim, this, 0, 1); // Never returns
 #else
 		bool closeApp = false;
 		while (closeApp == false)
