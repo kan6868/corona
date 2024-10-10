@@ -71,7 +71,7 @@ namespace Rtt
 		float frameDuration = 1.0f / (float)context->getFPS();
 
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
 			s_tick = now;
 			context->TimerTick();
@@ -443,7 +443,11 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-	
+		
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+		
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -506,11 +510,9 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
-		fWidth = jsWindowWidth;
-		fHeight = jsWindowHeight;
+	
+		//fWidth = jsWindowWidth;
+		//fHeight = jsWindowHeight;
 
 		jsContextInit(fWidth, fHeight, fOrientation);
 
