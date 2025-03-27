@@ -944,6 +944,7 @@ namespace Rtt
 				{
 					int w = event.window.data1;
 					int h = event.window.data2;
+					float scaleMultiply = .5;
 
 					//Fix error zoom
 					if (w == 0 || h == 0) 
@@ -957,10 +958,14 @@ namespace Rtt
 					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
-					if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
+					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
 						h = fHeight * scaleY;
+					}
+					else if(stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					{
+						scaleMultiply = 1.0; // Not scale canvas in zoomEven mode.
 					}
 					else
 					{
@@ -978,7 +983,7 @@ namespace Rtt
 				
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);			
+					emscripten_set_element_css_size("canvas", w * scaleMultiply, h * scaleMultiply);			
 #endif
 				}
 				else 
