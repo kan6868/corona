@@ -515,8 +515,8 @@ namespace Rtt
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			//Scale double
-			float scaleX = (float)(jsWindowWidth * 2) / (float)(fWidth);
-			float scaleY = (float)(jsWindowHeight * 2) / (float)(fHeight);
+			float scaleX = (float)(jsWindowWidth) / (float)(fWidth * .5);
+			float scaleY = (float)(jsWindowHeight) / (float)(fHeight * .5);
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -570,7 +570,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+		emscripten_set_element_css_size("canvas", fWidth * .5, fHeight * .5);
 #endif
 
 		return true;
@@ -930,6 +930,7 @@ namespace Rtt
 				break;
 			case SDL_WINDOWEVENT_RESIZED:
 			{
+				printf("Resize event %d, %d\n", event.window.data1, event.window.data2);
 				bool fullScreen = false;
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
@@ -954,8 +955,8 @@ namespace Rtt
 					}
 
 					// keep ratio
-					float scaleX = (w * 2) / (float)fWidth;
-					float scaleY = (h * 2) / (float)fHeight;
+					float scaleX = w / ((float)fWidth * .5);
+					float scaleY = h / ((float)fHeight * .5);
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -989,7 +990,7 @@ namespace Rtt
 				else 
 				{
 #ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+					emscripten_set_element_css_size("canvas", fWidth * .5, fHeight * .5);
 #endif
 				}
 
