@@ -979,6 +979,14 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				}
+				elseif(fMode == "fullscreen")
+				{
+					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+					{
+						w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
+					}
+				}
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
