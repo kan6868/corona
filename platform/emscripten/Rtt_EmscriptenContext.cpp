@@ -984,10 +984,12 @@ namespace Rtt
 				}
 				else if(fMode == "fullscreen")
 				{
+					float w = (float)event.window.data1;
+					float h = (float)event.window.data2;
+
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
-						float w = (float)event.window.data1;
-						float h = (float)event.window.data2;
+						
 
 						printf("Scale to fullscreen");
 						w = jsContextGetWindowWidth();
