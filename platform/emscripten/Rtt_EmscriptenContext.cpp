@@ -956,7 +956,7 @@ namespace Rtt
 				float scaleY = h / fHeight;
 
 				float scale = fmin(scaleX, scaleY);
-				
+
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
@@ -999,7 +999,8 @@ namespace Rtt
 
 						if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
 						{
-							w = fWidth * scaleX;
+							w = fWidth;
+							h = fHeight * scaleY;
 						}
 					}
 				}
