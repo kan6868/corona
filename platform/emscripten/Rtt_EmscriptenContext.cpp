@@ -949,8 +949,6 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-
-
 					if ((w == 0) && (h == 0))
 					{
 						w = fWidth;
@@ -992,8 +990,12 @@ namespace Rtt
 					{	
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
-					}
 
+						if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
+						{
+							w = fWidth;
+						}
+					}
 				}
 
 				SDL_SetWindowSize(fWindow, w, h);
