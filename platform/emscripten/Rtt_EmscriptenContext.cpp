@@ -520,23 +520,23 @@ namespace Rtt
 		{
 			fWidth *= scale;
 			fHeight *= scale;
-			// if(fRuntimeDelegate->fScaleMode == "zoomEven")
-			// {
-			// 	// w = jsContextGetWindowWidth();
-			// 	// h = jsContextGetWindowHeight();
-			// 	if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
-			// 	{
-			// 		w = fWidth;
-			// 		h = fHeight * scaleY;
-			// 	}
-			// }
+			if(fRuntimeDelegate->fScaleMode == "zoomEven")
+			{
+				// w = jsContextGetWindowWidth();
+				// h = jsContextGetWindowHeight();
+				if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
+				{
+					w = fWidth;
+					h = fHeight * scaleY;
+				}
+			}
 		}
 
 
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * scale, fHeight * scale, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
