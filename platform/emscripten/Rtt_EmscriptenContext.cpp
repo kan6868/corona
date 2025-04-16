@@ -986,10 +986,21 @@ namespace Rtt
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
-						print("Scale to fullscreen");
+						float w = (float)event.window.data1;
+						float h = (float)event.window.data2;
+
+						printf("Scale to fullscreen");
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
 					}
+
+					SDL_SetWindowSize(fWindow, w, h);
+
+					fRuntime->WindowSizeChanged();
+					fRuntime->RestartRenderer(fOrientation);
+					fRuntime->GetDisplay().Invalidate();
+
+					fRuntime->DispatchEvent(ResizeEvent());
 				}
 
 				// refresh native elements
