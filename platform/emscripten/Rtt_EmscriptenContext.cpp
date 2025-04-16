@@ -968,9 +968,9 @@ namespace Rtt
 					else
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
-					 
-						w = fWidth * scaleY * .5;
-						h = fHeight * scaleX * .5;
+						scale = fmax(scaleX, scaleY);
+						w = fWidth * scale * .5;
+						h = fHeight * scale * .5;
 						// if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
 						// {
 						// 	Swap(w, h);
