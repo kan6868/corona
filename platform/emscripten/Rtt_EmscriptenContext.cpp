@@ -987,7 +987,7 @@ namespace Rtt
 
 
 				}
-				else if(fMode == "fullscreen")
+				else if((fMode == "fullscreen" || fullScreen) && (fRuntimeDelegate->fScaleMode == "letterBox"))
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
