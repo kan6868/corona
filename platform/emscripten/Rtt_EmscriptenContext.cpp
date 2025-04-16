@@ -519,6 +519,14 @@ namespace Rtt
 			fWidth *= scale;
 			fHeight *= scale;
 		}
+		else if(fMode == "fullscreen")
+		{
+			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+			{	
+				w = jsContextGetWindowWidth();
+				h = jsContextGetWindowHeight();
+			}
+		}
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
@@ -933,13 +941,15 @@ namespace Rtt
 					return fullscreenElement != null ? true: false;
 				});
 #endif
+
+				float w = (float)event.window.data1;
+				float h = (float)event.window.data2;
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
+
 
 					if ((w == 0) && (h == 0))
 					{
@@ -974,36 +984,25 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 
-					SDL_SetWindowSize(fWindow, w, h);
 
-					fRuntime->WindowSizeChanged();
-					fRuntime->RestartRenderer(fOrientation);
-					fRuntime->GetDisplay().Invalidate();
-
-					fRuntime->DispatchEvent(ResizeEvent());
 				}
 				else if(fMode == "fullscreen")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
-
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
-						
-
-						printf("Scale to fullscreen");
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
 					}
 
-					SDL_SetWindowSize(fWindow, w, h);
-
-					fRuntime->WindowSizeChanged();
-					fRuntime->RestartRenderer(fOrientation);
-					fRuntime->GetDisplay().Invalidate();
-
-					fRuntime->DispatchEvent(ResizeEvent());
 				}
+
+				SDL_SetWindowSize(fWindow, w, h);
+
+				fRuntime->WindowSizeChanged();
+				fRuntime->RestartRenderer(fOrientation);
+				fRuntime->GetDisplay().Invalidate();
+
+				fRuntime->DispatchEvent(ResizeEvent());
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
