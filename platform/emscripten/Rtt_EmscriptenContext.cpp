@@ -507,26 +507,37 @@ namespace Rtt
 		}
 
 		jsContextInit(fWidth, fHeight, fOrientation);
+
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+
+		float scaleX = (float) jsWindowWidth / (float) fWidth;
+		float scaleY = (float) jsWindowHeight / (float) fHeight;
+		float scale = fmin(scaleX, scaleY);				// keep ratio
+		
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
 		}
 		else if(fMode == "fullscreen")
 		{
-			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-			{	
-				w = jsContextGetWindowWidth();
-				h = jsContextGetWindowHeight();
+			if(fRuntimeDelegate->fScaleMode == "letterBox")
+			{
+
+				// w = jsContextGetWindowWidth();
+				// h = jsContextGetWindowHeight();
+
+				if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
+				{
+					w = fWidth * scale;
+					h = fHeight * scale;
+				}
 			}
 		}
+		
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
