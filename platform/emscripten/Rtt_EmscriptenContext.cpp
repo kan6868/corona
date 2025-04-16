@@ -996,7 +996,7 @@ namespace Rtt
 
 						if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
 						{
-							w = fHeight;
+							w = fWidth;
 						}
 					}
 				}
