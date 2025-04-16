@@ -973,7 +973,7 @@ namespace Rtt
 					{
 						if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
 						{
-							w = fHeight * scaleY;
+							w = fHeight;
 							// h = fHeight * scaleY * .5;
 						}
 						else
