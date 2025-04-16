@@ -997,7 +997,7 @@ namespace Rtt
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
 
-						if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
+						if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
 						{
 							w = fWidth;
 							h = fHeight * scaleY;
