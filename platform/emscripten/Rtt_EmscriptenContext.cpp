@@ -960,8 +960,9 @@ namespace Rtt
 					else
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
-						w = fWidth * scale;
-						h = fHeight * scale;
+					 
+						w = fWidth * scale * .5;
+						h = fHeight * scale * .5;
 						// if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
 						// {
 						// 	Swap(w, h);
@@ -981,10 +982,11 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				}
-				elseif(fMode == "fullscreen")
+				else if(fMode == "fullscreen")
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-					{
+					{	
+						print("Scale to fullscreen");
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
 					}
