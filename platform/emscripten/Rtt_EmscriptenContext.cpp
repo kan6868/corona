@@ -941,6 +941,12 @@ namespace Rtt
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
 
+					if ((w == 0) && (h == 0))
+					{
+						w = fWidth;
+						h = fHeight;
+					}
+
 					// keep ratio
 					float scaleX = w / fWidth;
 					float scaleY = h / fHeight;
@@ -954,6 +960,7 @@ namespace Rtt
 					else
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
+
 					}
 					else
 					{
