@@ -954,8 +954,9 @@ namespace Rtt
 				{
 					w = fWidth;
 					h = fHeight;
-				}
 
+				}
+				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
 				// keep ratio
 				float scaleX = w / fWidth;
 				float scaleY = h / fHeight;
