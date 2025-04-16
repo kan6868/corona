@@ -518,26 +518,20 @@ namespace Rtt
 		
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-
 			fWidth *= scale;
 			fHeight *= scale;
-		}
-		else if(fMode == "fullscreen")
-		{
-			if(fRuntimeDelegate->fScaleMode == "letterBox")
+			if(fRuntimeDelegate->fScaleMode == "zoomEven")
 			{
-
 				// w = jsContextGetWindowWidth();
 				// h = jsContextGetWindowHeight();
-
 				if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
 				{
-					w = fWidth * scale;
-					h = fHeight * scale;
+					w = fWidth;
+					h = fHeight * scaleY;
 				}
 			}
 		}
-		
+
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
@@ -1001,7 +995,7 @@ namespace Rtt
 
 
 				}
-				else if((fMode == "fullscreen" || fullScreen) && (fRuntimeDelegate->fScaleMode == "letterBox"))
+				else if(fullScreen == false && (fMode == "fullscreen" || fullScreen) && (fRuntimeDelegate->fScaleMode == "letterBox"))
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
