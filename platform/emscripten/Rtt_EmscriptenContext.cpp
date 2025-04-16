@@ -944,22 +944,25 @@ namespace Rtt
 
 				float w = (float)event.window.data1;
 				float h = (float)event.window.data2;
+
+				if ((w == 0) && (h == 0))
+				{
+					w = fWidth;
+					h = fHeight;
+				}
+
+				// keep ratio
+				float scaleX = w / fWidth;
+				float scaleY = h / fHeight;
+
+				float scale = fmin(scaleX, scaleY);
+				
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					if ((w == 0) && (h == 0))
-					{
-						w = fWidth;
-						h = fHeight;
-					}
 
-					// keep ratio
-					float scaleX = w / fWidth;
-					float scaleY = h / fHeight;
-
-					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
@@ -996,7 +999,7 @@ namespace Rtt
 
 						if ((fOrientation == DeviceOrientation::kUpsideDown) && (fOrientation == DeviceOrientation::kUpright))
 						{
-							w = w;
+							w = fWidth * scaleX;
 						}
 					}
 				}
