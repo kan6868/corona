@@ -68,10 +68,10 @@ namespace Rtt
 	void TimerTickShim(void *userdata)
 	{
 		CoronaAppContext *context = (CoronaAppContext*) userdata;
-		float frameDuration = 1.0f / (float) context->getFPS();
+		float frameDuration = 1000.0f / (float) context->getFPS();
 
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
 		{
 			s_tick = now;
 			context->TimerTick();
@@ -443,11 +443,6 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
-
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
-
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -514,9 +509,12 @@ namespace Rtt
 		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
-			//Scale double
-			float scaleX = (float)(jsWindowWidth) / (float)(fWidth * .5);
-			float scaleY = (float)(jsWindowHeight) / (float)(fHeight * .5);
+			// get JS window size
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
+
+			float scaleX = (float) jsWindowWidth / (float) fWidth;
+			float scaleY = (float) jsWindowHeight / (float) fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
@@ -569,8 +567,6 @@ namespace Rtt
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
-
-		emscripten_set_element_css_size("canvas", fWidth * .5, fHeight * .5);
 #endif
 
 		return true;
@@ -930,7 +926,6 @@ namespace Rtt
 				break;
 			case SDL_WINDOWEVENT_RESIZED:
 			{
-				printf("Resize event %d, %d\n", event.window.data1, event.window.data2);
 				bool fullScreen = false;
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
@@ -940,23 +935,15 @@ namespace Rtt
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
-				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-//				if (fullScreen == false && fMode == "maximized")
+//				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
+				if (fullScreen == false && fMode == "maximized")
 				{
-					int w = event.window.data1;
-					int h = event.window.data2;
-					float scaleMultiply = .5;
-
-					//Fix error zoom
-					// if (w == 0 || h == 0) 
-					// {
-					// 	w = jsContextGetWindowWidth();
-					// 	h = jsContextGetWindowHeight();
-					// }
+					float w = (float)event.window.data1;
+					float h = (float)event.window.data2;
 
 					// keep ratio
-					float scaleX = w / ((float)fWidth * .5);
-					float scaleY = h / ((float)fHeight * .5);
+					float scaleX = w / fWidth;
+					float scaleY = h / fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -964,9 +951,9 @@ namespace Rtt
 						w = fWidth * scaleX;
 						h = fHeight * scaleY;
 					}
-					else if(stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					else
+					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
-						scaleMultiply = 1.0; // Not scale canvas in zoomEven mode.
 					}
 					else
 					{
@@ -981,17 +968,6 @@ namespace Rtt
 					fRuntime->GetDisplay().Invalidate();
 
 					fRuntime->DispatchEvent(ResizeEvent());
-				
-#ifdef EMSCRIPTEN
-					
-					emscripten_set_element_css_size("canvas", w * scaleMultiply, h * scaleMultiply);			
-#endif
-				}
-				else 
-				{
-#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", fWidth * .5, fHeight * .5);
-#endif
 				}
 
 				// refresh native elements
@@ -1368,4 +1344,3 @@ namespace Rtt
 	}
 
 }
-
