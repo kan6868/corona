@@ -570,7 +570,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * scale, fRuntimeDelegate->fContentHeight * scale);
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
@@ -1000,7 +1000,7 @@ namespace Rtt
 
 
 				}
-				else if(fMode == "fullscreen")
+				else if(fullScreen == false && fMode == "fullscreen")
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
@@ -1020,6 +1020,17 @@ namespace Rtt
 					{
 						
 					}
+					else
+					{
+						w = fWidth * scale;
+						h = fHeight * scale;
+					}
+				}
+
+				if (fullScreen == true)
+				{
+					w = fWidth * scale;
+					h = fHeight * scale;
 				}
 
 				SDL_SetWindowSize(fWindow, w, h);

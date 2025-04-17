@@ -938,9 +938,9 @@ var platformLibrary =
 			ww = (ww + 3) & -4;
 		}
 
-		//console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+		console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
 
-		var myImageData = ctx.getImageData(0, 0, ww, hh);
+		var myImageData = ctx.getImageData(0, 0, Math.max(1, ww), Math.max(1, hh));
 		var img = Module.jarray2carray(myImageData.data);
 		_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
 		_free(img);
