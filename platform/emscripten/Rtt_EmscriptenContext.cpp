@@ -570,7 +570,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * scale, fRuntimeDelegate->fContentHeight * scale);
 
 		fRuntime->BeginRunLoop();
 
