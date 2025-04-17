@@ -368,8 +368,10 @@ var platformLibrary =
 		if (obj)
 		{
 			var style = window.getComputedStyle(obj, null).getPropertyValue('font-size');
+			console.log('Get font-size:', style, id);
 			return parseFloat(style);
 		}
+		console.log('Get font-size: failed', id);
 		return 0;
 	},
 
@@ -802,6 +804,7 @@ var platformLibrary =
 	// text render
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
+		
 		var text = UTF8ToString(_text);
 		var alignment = UTF8ToString(_alignment);
 

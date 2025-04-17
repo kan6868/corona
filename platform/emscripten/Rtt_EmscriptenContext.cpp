@@ -583,7 +583,7 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		// if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		// {
-			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
+		//	EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		// }
 #endif
 
