@@ -512,6 +512,11 @@ namespace Rtt
 		int jsWindowWidth = jsContextGetWindowWidth();
 		int jsWindowHeight = jsContextGetWindowHeight();
 
+		if ((fWidth == 0) || (fHeight == 0))
+		{
+			printf("Size not available!");
+		}
+		
 		float scaleX = (float) jsWindowWidth / (float) fWidth;
 		float scaleY = (float) jsWindowHeight / (float) fHeight;
 		float scale = fmin(scaleX, scaleY);				// keep ratio
@@ -535,8 +540,8 @@ namespace Rtt
 
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
-
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * scale, fHeight * scale, flags);
+		//Window canvas
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
@@ -950,11 +955,10 @@ namespace Rtt
 				float w = (float)event.window.data1;
 				float h = (float)event.window.data2;
 
-				if ((w == 0) && (h == 0))
+				if ((w == 0) || (h == 0))
 				{
 					w = fWidth;
 					h = fHeight;
-
 				}
 				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
 				// keep ratio
@@ -996,7 +1000,7 @@ namespace Rtt
 
 
 				}
-				else if(fullScreen == false && (fMode == "fullscreen" || fullScreen) && (fRuntimeDelegate->fScaleMode == "letterBox"))
+				else if(fMode == "fullscreen")
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
@@ -1011,6 +1015,10 @@ namespace Rtt
 						{
 							h = fHeight;
 						}
+					}
+					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					{
+						
 					}
 				}
 
