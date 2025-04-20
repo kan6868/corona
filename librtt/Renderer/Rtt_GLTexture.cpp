@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////
 //
 // This file is part of the Corona game engine.
 // For overview and more information on licensing please refer to README.md 
@@ -97,6 +97,22 @@ namespace Rtt
 
 // ----------------------------------------------------------------------------
 
+GLint CalculateOptimalAlignment(U32 width, GLenum format) {
+	int bytesPerPixel = 4; // giá trị mặc định an toàn nhất
+	switch (format) {
+		case GL_ALPHA:
+		case GL_LUMINANCE: bytesPerPixel = 1; break;
+		case GL_RGB: bytesPerPixel = 3; break;
+		case GL_RGBA: bytesPerPixel = 4; break;
+	}
+
+	const U32 rowBytes = width * bytesPerPixel;
+	if (rowBytes % 8 == 0) return 8;
+	if (rowBytes % 4 == 0) return 4;
+	if (rowBytes % 2 == 0) return 2;
+	return 1; // Không yêu cầu căn chỉnh
+}
+
 void 
 GLTexture::Create( CPUResource* resource )
 {
@@ -136,7 +152,7 @@ GLTexture::Create( CPUResource* resource )
 	const U8* data = texture->GetData();
 	{
 #if defined( Rtt_EMSCRIPTEN_ENV )
-		glPixelStorei( GL_UNPACK_ALIGNMENT, texture->GetByteAlignment() );
+		glPixelStorei( GL_UNPACK_ALIGNMENT, CalculateOptimalAlignment(w, internalFormat));
 		GL_CHECK_ERROR();
 #endif
 
