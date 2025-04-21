@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////
+﻿//////////////////////////////////////////////////////////////////////////////
 //
 // This file is part of the Corona game engine.
 // For overview and more information on licensing please refer to README.md 
@@ -136,7 +136,7 @@ GLTexture::Create( CPUResource* resource )
 	const U8* data = texture->GetData();
 	{
 #if defined( Rtt_EMSCRIPTEN_ENV )
-		glPixelStorei( GL_UNPACK_ALIGNMENT, texture->GetByteAlignment() );
+		glPixelStorei( GL_UNPACK_ALIGNMENT, texture->GetByteAlignment(w, h, internalFormat) );
 		GL_CHECK_ERROR();
 #endif
 

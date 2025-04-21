@@ -10,7 +10,7 @@
 #include "Renderer/Rtt_Texture.h"
 
 #include "Core/Rtt_Assert.h"
-
+#include "Renderer/Rtt_GL.h"
 // ----------------------------------------------------------------------------
 
 namespace Rtt
@@ -77,9 +77,26 @@ Texture::GetSizeInBytes() const
 }
 
 U8
-Texture::GetByteAlignment() const
+Texture::GetByteAlignment(const U32 &w, const U32 &h, const Format &format) const
 {
-	return 4;
+	int bytesPerPixel = 4;
+
+	switch (format) {
+		case GL_ALPHA:
+		case GL_LUMINANCE: bytesPerPixel = 1; break;
+		case GL_RGB: bytesPerPixel = 3; break;
+		case GL_RGBA: bytesPerPixel = 4; break;
+	}
+
+	const U8 bytes = w * h * bytesPerPixel;
+
+	if (bytes % 4 == 0)
+		return 4;
+
+	if (bytes % 2 == 0)
+		return 2;
+
+	return 1;
 }
 
 const U8*

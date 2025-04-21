@@ -86,7 +86,7 @@ class Texture : public CPUResource
 		virtual Wrap GetWrapX() const;
 		virtual Wrap GetWrapY() const;
 		virtual size_t GetSizeInBytes() const;
-		virtual U8 GetByteAlignment() const;
+		virtual U8 GetByteAlignment(const U32& w, const U32& h, const Format& format) const;
 
 		virtual const U8* GetData() const;
 		virtual void ReleaseData();
