@@ -50,7 +50,7 @@ jobs:
       - name: Set up emsdk
         run: |
           wget -q --header='Accept:application/octet-stream' https://github.com/emscripten-core/emsdk/archive/refs/tags/4.0.8.tar.gz -O emsdk.tar.gz
-          tar -xjf emsdk.tar.gz -C ~/
+          tar -xzf emsdk.tar.gz -C ~/
           xattr -r -d com.apple.quarantine ~/emsdk || true
       - name: Get processed code
         uses: actions/download-artifact@v4
