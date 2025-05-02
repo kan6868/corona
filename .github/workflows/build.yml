@@ -49,8 +49,8 @@ jobs:
       - run: CDR="$(basename "$(pwd)")" ; cd .. ; rm -rf "$CDR" ; mkdir -p "$CDR" ; cd "$CDR"
       - name: Set up emsdk
         run: |
-          wget -q --header='Accept:application/octet-stream' https://github.com/coronalabs/emsdk/releases/download/e2.0.34/emsdk.tar.xz -O emsdk.tar.xz
-          tar -xjf emsdk.tar.xz -C ~/
+          wget -q --header='Accept:application/octet-stream' https://github.com/emscripten-core/emsdk/archive/refs/tags/4.0.8.tar.gz -O emsdk.tar.gz
+          tar -xjf emsdk.tar.gz -C ~/
           xattr -r -d com.apple.quarantine ~/emsdk || true
       - name: Get processed code
         uses: actions/download-artifact@v4
