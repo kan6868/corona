@@ -506,7 +506,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit(fWidth, fHeight, fOrientation);
+
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
@@ -564,6 +564,8 @@ namespace Rtt
 			delete fPlatform;
 			return false;
 		}
+		
+		jsContextInit(fWidth, fHeight, fOrientation);
 
 		// pass config.lua to JS
 		if (orientation == "landscapeRight" || orientation == "landscapeLeft")
