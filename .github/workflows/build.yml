@@ -38,30 +38,7 @@ jobs:
         with:
           name: SourceCode
           path: ./output
-
-  native:
-    needs: source-code
-    runs-on: macos-15
-    steps:
-      - run: CDR="$(basename "$(pwd)")" ; cd .. ; rm -rf "$CDR" ; mkdir -p "$CDR" ; cd "$CDR"
-      - name: Get processed code
-        uses: actions/download-artifact@v4
-        with:
-          name: SourceCode
-          path: SourceCode
-      - name: Unpack source code
-        run: tar -xzf SourceCode/corona.tgz
-      - run: ./tools/GHAction/daily_env.sh
-      - name: Build Native
-        run: JAVA_HOME="${JAVA_HOME_17_X64:-$JAVA_HOME_17_arm64}" ./tools/GHAction/build_native.sh
-        env:
-          CERT_PASSWORD: ${{ secrets.CertPassword }}
-      - name: Upload Corona Native
-        uses: actions/upload-artifact@v4
-        with:
-          name: Native
-          path: ./output
-
+          
   webtemplate:
     needs:
       - source-code
