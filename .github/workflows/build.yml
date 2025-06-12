@@ -65,6 +65,11 @@ jobs:
         run: |
           chmod +x ~/emsdk/emsdk
           chmod +x ~/emsdk/emsdk_env.sh
+          
+          # Install and activate latest Emscripten tools
+          ./emsdk install latest
+          ./emsdk activate latest
+          
           source ~/emsdk/emsdk_env.sh
           ./build_template.sh
       - name: Copy result to output
