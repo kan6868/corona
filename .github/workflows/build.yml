@@ -63,6 +63,7 @@ jobs:
       - name: Build webtemplate
         working-directory: ./platform/emscripten/gmake
         run: |
+          chmod +x ~/emsdk/emsdk_env.sh
           source ~/emsdk/emsdk_env.sh
           ./build_template.sh
       - name: Copy result to output
