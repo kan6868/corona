@@ -592,7 +592,7 @@ namespace Rtt
 			isFirstTime = false;
 			ctx->requestFullscreen(EMSCRIPTEN_FULLSCREEN_SCALE_ASPECT, EMSCRIPTEN_FULLSCREEN_CANVAS_SCALE_STDDEF, EMSCRIPTEN_FULLSCREEN_FILTERING_DEFAULT); 
 		}
-	  return true;
+	  return false;
 	}
 
 	bool CoronaAppContext::touchCallback(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
@@ -608,7 +608,7 @@ namespace Rtt
 			CoronaAppContext* ctx = (CoronaAppContext*) userData;
 			ctx->pause();
 		}
-	  return true;
+	  return false;
 	}
 
 	bool CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
@@ -619,7 +619,7 @@ namespace Rtt
 			CoronaAppContext* ctx = (CoronaAppContext*) userData;
 			ctx->resume();
 		}
-		return true;
+		return false;
 	}
 
 	bool CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
@@ -631,7 +631,7 @@ namespace Rtt
 		sdlevent.window.windowID = 0;
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent);
-		return true;
+		return false;
 	}
 
 	const char* CoronaAppContext::beforeunloadCallback(int eventType, const void *reserved, void *userData)
