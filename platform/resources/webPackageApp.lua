@@ -717,7 +717,7 @@ function webPackageApp(options)
 
 	--generate new loadPackaghe for .js
 
-	local loadPackage = 'loadPackage({"files":[';
+	local loadPackage = 'loadPackage({files:[';
 	local pos = 0
 
 	log('.data file map (size/name)');
@@ -745,10 +745,10 @@ function webPackageApp(options)
 	' = ' .. math.floor(totalDataSize / 1024) .. 'KB = ' .. math.floor(totalDataSize / 1024 / 1024) .. 'MB');
 
 	-- ,"remote_package_size":5,"package_uuid":"134361ad-01a4-42aa-aea6-5b48c05818f7"})
-	loadPackage = loadPackage .. ',"remote_package_size":' .. pos;
+	loadPackage = loadPackage .. ',remote_package_size:' .. pos;
 
 	-- fixme UUID
-	loadPackage = loadPackage .. ',"package_uuid":"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
+	loadPackage = loadPackage .. ',package_uuid:"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
 	--log3('loadPackage:', loadPackage);
 
 	--generate new FS_createPath for .js
