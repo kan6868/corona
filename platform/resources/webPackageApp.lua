@@ -740,7 +740,7 @@ function webPackageApp(options)
 		log('Size = ' .. s .. ', ' .. dataFiles[i].name);
 		totalDataSize = totalDataSize + dataFiles[i].size;
 	end
-	log('Total data file size = ' ..
+	log('Total data file size222 = ' ..
 	totalDataSize ..
 	' = ' .. math.floor(totalDataSize / 1024) .. 'KB = ' .. math.floor(totalDataSize / 1024 / 1024) .. 'MB');
 
