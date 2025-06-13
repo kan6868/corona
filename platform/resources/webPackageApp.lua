@@ -748,13 +748,19 @@ function webPackageApp( options )
 
 	--generate new FS_createPath for .js
 	
+	-- local createPaths = ''
+	-- for i = 1, #folders do
+	-- 	createPaths = createPaths .. 'Module["FS_createPath"]("'
+	-- 	createPaths = createPaths .. folders[i].parent
+	-- 	createPaths = createPaths .. '","'
+	-- 	createPaths = createPaths .. folders[i].name
+	-- 	createPaths = createPaths .. '",true,true);'
+	-- end
 	local createPaths = ''
 	for i = 1, #folders do
-		createPaths = createPaths .. 'Module["FS_createPath"]("'
-		createPaths = createPaths .. folders[i].parent
-		createPaths = createPaths .. '","'
-		createPaths = createPaths .. folders[i].name
-		createPaths = createPaths .. '",true,true);'
+		createPaths = createPaths .. 'Module.FS.mkdirTree("'
+		createPaths = createPaths .. folders[i].parent .. '/' .. folders[i].name
+		createPaths = createPaths .. '");'
 	end
 	log3('FS_createPath:',createPaths);
 
