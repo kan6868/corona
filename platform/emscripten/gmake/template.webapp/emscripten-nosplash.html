@@ -102,29 +102,54 @@ k.p.toString(16)+", data=0x"+p.toString(16)))}return m};t.L=function(a){this.j=a
           return canvas;
         })(),
         setStatus: function(text, current, total) {
-          var a = text.split('...');
-          if (a.length > 1) {
-            var caption = a[0];
-            a = a[1].split('/');
-            if (a.length > 1)
-            {
-              var b = a[0].split('(')
-              current = isNaN(b[1]) ? 0 : Number(b[1])
-              var b = a[1].split(')')
-              total = isNaN(b[0]) ? 0 : Number(b[0])
-            }
-          }
-          if (total > 0) {
-            if (Module.setStatus.hasOwnProperty('last') == false) Module.setStatus.last = 0;
-            var now = Date.now();
-            if (now - Module.setStatus.last < 1000) return; // if this is a progress update, skip it if too soon
+          try {
+            // Safely handle status text parsing
+            if (typeof text === 'string') {
+              var parts = text.split('...');
+              if (parts.length > 1) {
+                var subparts = parts[1].split('/');
+                if (subparts.length > 1) {
+                  // Safely extract current progress
+                  var currentMatch = subparts[0].match(/\((\d+)/);
+                  if (currentMatch) {
+                    current = parseInt(currentMatch[1]) || 0;
+                  }
 
-            Module.setStatus.last = now;
-            progressElement.value = current;
-            progressElement.max = total;
-            progressElement.hidden = false;
-          }
-          statusElement.innerHTML = text;
+                  // Safely extract total
+                  var totalMatch = subparts[1].match(/(\d+)\)/);
+                  if (totalMatch) {
+                    total = parseInt(totalMatch[1]) || 0;
+                  }
+                }
+              }
+            }
+
+            // Ensure current and total are numbers
+            current = typeof current === 'number' ? current : 0;
+            total = typeof total === 'number' ? total : 0;
+            // Update progress if we have valid numbers
+            if (total > 0) {
+              if (!Module.setStatus.last) Module.setStatus.last = 0;
+              var now = Date.now();
+              if (now - Module.setStatus.last >= 1000) { // Throttle updates
+                Module.setStatus.last = now;
+                var progressElement = document.getElementById('progress');
+                if (progressElement) {
+                  progressElement.value = current;
+                  progressElement.max = total;
+                  progressElement.hidden = false;
+                }
+              }
+            }
+
+            // Update status text
+            var statusElement = document.getElementById('status');
+            if (statusElement) {
+              statusElement.textContent = text;
+            }
+        } catch (e) {
+          console.error('Error in setStatus:', e);
+        }
         },
         totalDependencies: 0,
         monitorRunDependencies: function(left) {
