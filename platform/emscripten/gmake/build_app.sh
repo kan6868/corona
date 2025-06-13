@@ -121,11 +121,11 @@ pushd $path > /dev/null
 	else
 		echo "Skipping .car"
 	fi
-
+	#-pthread -s PROXY_TO_PTHREAD -s PTHREAD_POOL_SIZE=4 
 	echo " "
 	echo "Building HTML:"
-	echo '\t' emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -pthread -s PROXY_TO_PTHREAD -s PTHREAD_POOL_SIZE=4 -s WASM=0 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,FS,allocateUTF8,UTF8ToString -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
-	emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -pthread -s PROXY_TO_PTHREAD -s PTHREAD_POOL_SIZE=4 -s WASM=0 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,FS,allocateUTF8,UTF8ToString -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js -lidbfs.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	echo '\t' emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s WASM=0 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,FS,allocateUTF8,UTF8ToString -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s WASM=0 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap,FS,allocateUTF8,UTF8ToString -O3 -s USE_SDL=2 -s ALLOW_MEMORY_GROWTH=1 --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js -lidbfs.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
 	checkError
 
 
