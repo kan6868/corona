@@ -749,7 +749,9 @@ function webPackageApp(options)
 
 	-- fixme UUID
 	loadPackage = loadPackage .. ',package_uuid:"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
-	--log3('loadPackage:', loadPackage);
+	
+	log('loadPackage:', loadPackage);
+
 
 	--generate new FS_createPath for .js
 
