@@ -517,7 +517,7 @@ end
 function webPackageApp(options)
 	args = options -- keep for local functions
 	debugBuildProcess = tonumber(args.debugBuildProcess) or 0
-	log('HTML5 builder started')
+	log('HTML5 builder started hiii')
 	log3(json.prettify(args))
 
 	local template = args.webtemplateLocation
