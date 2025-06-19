@@ -965,7 +965,7 @@ namespace Rtt
 				}
 				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
 
-				const pixelRatio = jsContextGetPixelRatio();
+				const int pixelRatio = jsContextGetPixelRatio();
 				// keep ratio
 				float scaleX = (w / fWidth);
 				float scaleY = (h / fHeight);
