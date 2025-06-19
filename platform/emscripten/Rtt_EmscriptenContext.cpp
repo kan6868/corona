@@ -46,6 +46,7 @@ extern "C"
 	extern int jsContextLoadFonts(const char* name, void* buf, int size);
 	extern void jsContextSetClearColor(int r, int g, int b, int a);
 	extern void jsContextConfig(int w, int h);
+	extern int jsContextGetPixelRatio();
 }
 #else
 	static int appWidth, appHeight;
@@ -60,6 +61,7 @@ extern "C"
 	int jsContextLoadFonts(const char* name, void* buf, int size)  { return 0; }
 	void jsContextSetClearColor(int r, int g, int b, int a) {}
 	void jsContextConfig(int w, int h) {}
+	int jsContextGetPixelRatio() {return 1;}
 #endif
 
 namespace Rtt
@@ -541,6 +543,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
+				// const pixelRatio = jsContextGetPixelRatio();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -961,10 +964,12 @@ namespace Rtt
 					h = fHeight;
 				}
 				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
-				// keep ratio
-				float scaleX = w / fWidth;
-				float scaleY = h / fHeight;
 
+				const pixelRatio = jsContextGetPixelRatio();
+				// keep ratio
+				float scaleX = (w / fWidth);
+				float scaleY = (h / fHeight);
+			
 				float scale = fmin(scaleX, scaleY);
 
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
@@ -1034,7 +1039,8 @@ namespace Rtt
 					h = fHeight * scale;
 				}
 
-				SDL_SetWindowSize(fWindow, w, h);
+				
+				SDL_SetWindowSize(fWindow, w * pixelRatio, h * pixelRatio);
 
 				fRuntime->WindowSizeChanged();
 				fRuntime->RestartRenderer(fOrientation);

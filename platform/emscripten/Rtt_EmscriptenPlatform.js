@@ -623,7 +623,9 @@ var platformLibrary =
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
 	},
-
+	jsContextGetPixelRatio: function() {
+		return window.devicePixelRatio;
+	},
 	jsContextGetWindowWidth: function() {	return window.innerWidth;	},
 	jsContextGetWindowHeight: function() { return window.innerHeight;	},
 
