@@ -542,7 +542,7 @@ namespace Rtt
 // #ifdef defined(WIN32)
 //   SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
 // #endif
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
+		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
 	
