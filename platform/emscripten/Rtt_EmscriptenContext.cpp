@@ -550,7 +550,7 @@ namespace Rtt
 		// fWidth = fWidth * pixelRatio;
 		// fHeight = fHeight * pixelRatio;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -583,7 +583,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
@@ -594,9 +594,14 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
-		 if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
+		 
+		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		 {
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
+		 }
+		 else
+		 {
+			//emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
 		 }
 #endif
 
