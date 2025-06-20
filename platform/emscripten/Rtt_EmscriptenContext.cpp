@@ -539,9 +539,9 @@ namespace Rtt
 			}
 		}
 
-#ifdef defined(WIN32)
-  SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-#endif
+// #ifdef defined(WIN32)
+//   SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
+// #endif
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
@@ -550,7 +550,7 @@ namespace Rtt
 		// fWidth = fWidth * pixelRatio;
 		// fHeight = fHeight * pixelRatio;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -583,7 +583,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
 
 		fRuntime->BeginRunLoop();
 
@@ -601,7 +601,7 @@ namespace Rtt
 		 }
 		 else
 		 {
-			emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
+			//emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
 		 }
 #endif
 		 
