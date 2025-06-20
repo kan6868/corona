@@ -548,13 +548,13 @@ namespace Rtt
 		fWidth = fWidth * pixelRatio;
 		fHeight = fHeight * pixelRatio;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED + fWidth, SDL_WINDOWPOS_CENTERED + fHeight, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
-		int windowX, windowY;
-		SDL_GetWindowPosition(fWindow, &windowX, &windowY);
-		SDL_SetWindowPosition(fWindow, windowX + fWidth * .5, windowY + fHeight * .5);		
+		//int windowX, windowY;
+		//SDL_GetWindowPosition(fWindow, &windowX, &windowY);
+		//SDL_SetWindowPosition(fWindow, windowX - fWidth, windowY - fHeight);		
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
