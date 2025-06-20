@@ -543,9 +543,14 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
-		//const int pixelRatio = jsContextGetPixelRatio();
+		const int pixelRatio = jsContextGetPixelRatio();
+		
+		fWidth = fWidth * pixelRatio;
+		fHeight = fHeight * pixelRatio;
+
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
+		SDL_SetWindowPosition(fWindow, fWidth * (pixelRatio * .5), fHeight * (pixelRatio * .5))
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
