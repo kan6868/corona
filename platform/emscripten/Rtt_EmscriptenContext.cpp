@@ -550,9 +550,10 @@ namespace Rtt
 
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
-		SDL_SetWindowPosition(fWindow, fWidth * (pixelRatio * .5), fHeight * (pixelRatio * .5));
-		fPlatform->setWindow(fWindow, fOrientation);
 
+		fPlatform->setWindow(fWindow, fOrientation);
+		
+		SDL_SetWindowPosition(fWindow, fWidth * .5, fHeight * .5);		
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
