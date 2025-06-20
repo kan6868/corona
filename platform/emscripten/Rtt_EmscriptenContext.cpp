@@ -552,7 +552,7 @@ namespace Rtt
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
-		int windowX, int windowY;
+		int windowX, windowY;
 		SDL_GetWindowPosition(fWindow, &windowX, &windowY);
 		SDL_SetWindowPosition(fWindow, windowX + fWidth * .5, windowY + fHeight * .5);		
 #if defined(EMSCRIPTEN)
