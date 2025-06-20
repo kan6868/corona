@@ -543,17 +543,17 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
-		const int pixelRatio = jsContextGetPixelRatio();
+		//const int pixelRatio = jsContextGetPixelRatio();
 		
-		fWidth = fWidth * pixelRatio;
-		fHeight = fHeight * pixelRatio;
+		//fWidth = fWidth * pixelRatio;
+		//fHeight = fHeight * pixelRatio;
 
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
 		
-		SDL_SetWindowPosition(fWindow, fWidth * .5, fHeight * .5);		
+		//SDL_SetWindowPosition(fWindow, fWidth * .5, fHeight * .5);		
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
