@@ -508,7 +508,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 		const int pixelRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
+		jsContextInit(fWidth, fHeight, fOrientation);
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
@@ -583,7 +583,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
