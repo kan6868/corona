@@ -604,7 +604,7 @@ namespace Rtt
 			emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
 		 }
 #endif
-
+		 SDL_SetWindowPosition(fWindow, SDL_WINDOWPOS_CENTERED + fWidth, SDL_WINDOWPOS_CENTERED + fHeight);
 		return true;
 	}
 
