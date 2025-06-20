@@ -539,7 +539,9 @@ namespace Rtt
 			}
 		}
 
-
+#ifdef defined(WIN32)
+  SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
+#endif
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		//Window canvas
@@ -972,7 +974,7 @@ namespace Rtt
 				}
 				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
 
-				const int pixelRatio = jsContextGetPixelRatio();
+				//const int pixelRatio = jsContextGetPixelRatio();
 				// keep ratio
 				float scaleX = (w / fWidth);
 				float scaleY = (h / fHeight);
@@ -1047,7 +1049,7 @@ namespace Rtt
 				}
 
 				
-				SDL_SetWindowSize(fWindow, (int)(w * pixelRatio), (int)(h * pixelRatio));
+				SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
 				fRuntime->WindowSizeChanged();
 				fRuntime->RestartRenderer(fOrientation);
