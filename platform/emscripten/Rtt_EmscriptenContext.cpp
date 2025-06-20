@@ -523,6 +523,10 @@ namespace Rtt
 		float scaleY = (float) jsWindowHeight / (float) fHeight;
 		float scale = fmin(scaleX, scaleY);				// keep ratio
 		
+		fWidth *= scale;
+		fHeight *= scale;
+
+		/*
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			fWidth *= scale;
@@ -538,7 +542,7 @@ namespace Rtt
 				}
 			}
 		}
-
+		*/
 // #ifdef defined(WIN32)
 //   SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
 // #endif
@@ -583,7 +587,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
 
 		fRuntime->BeginRunLoop();
 
