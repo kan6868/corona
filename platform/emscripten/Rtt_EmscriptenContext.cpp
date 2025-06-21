@@ -507,61 +507,28 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		const int pixelRatio = jsContextGetPixelRatio();
+
 		jsContextInit(fWidth, fHeight, fOrientation);
-
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
-
-		if ((fWidth == 0) || (fHeight == 0))
-		{
-			printf("Size not available!");
-		}
-		
-		float scaleX = (float) jsWindowWidth / (float) fWidth;
-		float scaleY = (float) jsWindowHeight / (float) fHeight;
-		float scale = fmin(scaleX, scaleY);				// keep ratio
-		
-		fWidth *= scale;
-		fHeight *= scale;
-
-		/*
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
+			// get JS window size
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
+
+			float scaleX = (float) jsWindowWidth / (float) fWidth;
+			float scaleY = (float) jsWindowHeight / (float) fHeight;
+			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
-			if(fRuntimeDelegate->fScaleMode == "zoomEven")
-			{
-				// w = jsContextGetWindowWidth();
-				// h = jsContextGetWindowHeight();
-				if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
-				{
-					w = fWidth;
-					h = fHeight * scaleY;
-				}
-			}
 		}
-		*/
-// #ifdef defined(WIN32)
-//   SDL_SetHint(SDL_HINT_WINDOWS_DPI_SCALING, "1");
-// #endif
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
-		//Window canvas
-	
-		
-		// fWidth = fWidth * pixelRatio;
-		// fHeight = fHeight * pixelRatio;
 
+		Uint32 flags = SDL_WINDOW_OPENGL;
+		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
+		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
-
 		fPlatform->setWindow(fWindow, fOrientation);
-		// int drawableWidth, drawableHeight;
-		// SDL_GL_GetDrawableSize(window, &drawableWidth, &drawableHeight);
-		//SDL_GetWindowPosition(fWindow, &windowX, &windowY);
-		//SDL_SetWindowPosition(fWindow, windowX - fWidth, windowY - fHeight);		
+
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -598,15 +565,10 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
-		 
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
-		 {
+		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
-		 }
-		 else
-		 {
-			//emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
-		 }
+		}
 #endif
 		 
 		return true;
