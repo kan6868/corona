@@ -554,7 +554,7 @@ namespace Rtt
 		// fWidth = fWidth * pixelRatio;
 		// fHeight = fHeight * pixelRatio;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
