@@ -508,7 +508,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 		const int pixelRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
+		jsContextInit(fWidth, fHeight, fOrientation);
 
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
@@ -554,7 +554,7 @@ namespace Rtt
 		// fWidth = fWidth * pixelRatio;
 		// fHeight = fHeight * pixelRatio;
 
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
 		SDL_GL_CreateContext(fWindow);
 
 		fPlatform->setWindow(fWindow, fOrientation);
@@ -587,7 +587,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
@@ -976,13 +976,6 @@ namespace Rtt
 
 				float w = (float)event.window.data1;
 				float h = (float)event.window.data2;
-
-				if ((w == 0) || (h == 0))
-				{
-					w = fWidth;
-					h = fHeight;
-				}
-				printf("Window %d resized to %dx%d\n", event.window.windowID, w, h);
 
 				//const int pixelRatio = jsContextGetPixelRatio();
 				// keep ratio
