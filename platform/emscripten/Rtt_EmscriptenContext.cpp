@@ -1005,8 +1005,8 @@ namespace Rtt
 						}
 						else
 						{
-							 //w = fWidth * scaleX;
-							 //h = fHeight * scaleY;
+							 w = fWidth * scaleX;
+							 h = fHeight * scaleY;
 						}
 					}
 					else
@@ -1043,12 +1043,6 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
-				}
-
-				if (fullScreen == true)
-				{
-					w = fWidth * scale;
-					h = fHeight * scale;
 				}
 
 				
