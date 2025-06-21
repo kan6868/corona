@@ -1005,8 +1005,8 @@ namespace Rtt
 						}
 						else
 						{
-							 w = fWidth * scaleX;
-							 h = fHeight * scaleY;
+							 //w = fWidth * scaleX;
+							 //h = fHeight * scaleY;
 						}
 					}
 					else
