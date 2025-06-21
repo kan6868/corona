@@ -983,8 +983,8 @@ namespace Rtt
 				{
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{	
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
+						//w = jsContextGetWindowWidth();
+						//h = jsContextGetWindowHeight();
 
 						if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
 						{
@@ -999,6 +999,11 @@ namespace Rtt
 					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
 						
+					}
+					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+					{
+						w = fWidth * scaleX;
+						h = fHeight * scaleY;
 					}
 					else
 					{
