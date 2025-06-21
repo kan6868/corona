@@ -509,6 +509,9 @@ namespace Rtt
 		}
 
 		jsContextInit(fWidth, fHeight, fOrientation);
+
+		
+		/*
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
@@ -520,12 +523,72 @@ namespace Rtt
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
+		}*/
+
+		if (fMode == "maximized")
+		{
+
+			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+			{
+				w = fWidth * scaleX;
+				h = fHeight * scaleY;
+			}
+			else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+			{
+				if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
+					{
+						w = fWidth;
+						h = fHeight * scaleY;
+					}
+					else
+					{
+						 w = fWidth * scaleX;
+						 h = fHeight * scaleY;
+					}
+			}
+			else
+			{
+				w = fWidth * scale;
+				h = fHeight * scale;
+			}
+
+		}
+		else if(fMode == "fullscreen")
+		{
+			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+			{	
+				//w = jsContextGetWindowWidth();
+				//h = jsContextGetWindowHeight();
+				if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
+				{
+					w = fWidth;
+					h = fHeight * scaleY;
+				}else
+				{
+					w = fWidth * scaleX;
+					h = fHeight;
+				}
+			}
+			else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+			{
+				
+			}
+			else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+			{
+				w = fWidth * scaleX;
+				h = fHeight * scaleY;
+			}
+			else
+			{
+				w = fWidth * scale;
+				h = fHeight * scale;
+			}
 		}
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, w, h, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
