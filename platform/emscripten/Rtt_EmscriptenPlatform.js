@@ -599,7 +599,8 @@ var platformLibrary =
 
 				var scale = viewPort.width / Module.appInitWidth;
 				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
-
+				scale *= window.devicePixelRatio;
+				
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
 				obj.style.left = left + 'px';
