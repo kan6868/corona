@@ -973,23 +973,19 @@ namespace Rtt
 					return fullscreenElement != null ? true: false;
 				});
 #endif
-
-				float w = (float)event.window.data1;
-				float h = (float)event.window.data2;
-
-				//const int pixelRatio = jsContextGetPixelRatio();
-				// keep ratio
-				float scaleX = (w / fWidth);
-				float scaleY = (h / fHeight);
-			
-				float scale = fmin(scaleX, scaleY);
-
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
+					float w = (float)event.window.data1;
+					float h = (float)event.window.data2;
 
+					// keep ratio
+					float scaleX = w / fWidth;
+					float scaleY = h / fHeight;
+
+					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
@@ -998,45 +994,6 @@ namespace Rtt
 					else
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
-						if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
-						{
-							w = fWidth;
-							h = fHeight * scaleY;
-						}
-						else
-						{
-							 w = fWidth * scaleX;
-							 h = fHeight * scaleY;
-						}
-					}
-					else
-					{
-						w = fWidth * scale;
-						h = fHeight * scale;
-					}
-
-
-				}
-				else if(fullScreen == false && fMode == "fullscreen")
-				{
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-					{	
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
-
-						if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
-						{
-							w = fWidth;
-							h = fHeight * scaleY;
-						}else
-						{
-							w = fWidth * scaleX;
-							h = fHeight;
-						}
-					}
-					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-					{
-						
 					}
 					else
 					{
@@ -1044,7 +1001,6 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 				}
-
 				
 				SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
