@@ -1000,9 +1000,10 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
+					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 				}
 				
-				SDL_SetWindowSize(fWindow, (int)w, (int)h);
+
 
 				fRuntime->WindowSizeChanged();
 				fRuntime->RestartRenderer(fOrientation);
