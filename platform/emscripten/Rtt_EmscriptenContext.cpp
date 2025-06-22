@@ -507,8 +507,8 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-
-		jsContextInit(fWidth, fHeight, fOrientation);
+		const int pixelRatio = jsContextGetPixelRatio();
+		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
@@ -525,7 +525,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
@@ -939,12 +939,14 @@ namespace Rtt
 				float w = (float)event.window.data1;
 				float h = (float)event.window.data2;
 
-				//const int pixelRatio = jsContextGetPixelRatio();
+				const int pixelRatio = jsContextGetPixelRatio();
 				// keep ratio
 				float scaleX = (w / fWidth);
 				float scaleY = (h / fHeight);
 			
 				float scale = fmin(scaleX, scaleY);
+				
+				//Swap(fWidth, fHeight);
 
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
@@ -1013,7 +1015,7 @@ namespace Rtt
 				}
 
 				
-				SDL_SetWindowSize(fWindow, (int)w, (int)h);
+				SDL_SetWindowSize(fWindow, (int)(w * pixelRatio), (int)(h * pixelRatio));
 
 				fRuntime->WindowSizeChanged();
 				fRuntime->RestartRenderer(fOrientation);
