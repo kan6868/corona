@@ -554,7 +554,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
+		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
 
 		fRuntime->BeginRunLoop();
 
