@@ -510,13 +510,20 @@ namespace Rtt
 
 		jsContextInit(fWidth, fHeight, fOrientation);
 
-		// get JS window size
-		int jsWindowWidth = jsContextGetWindowWidth();
-		int jsWindowHeight = jsContextGetWindowHeight();
+		
+		/*
+		if (fMode == "maximized" || fMode == "fullscreen")
+		{
+			// get JS window size
+			int jsWindowWidth = jsContextGetWindowWidth();
+			int jsWindowHeight = jsContextGetWindowHeight();
 
-		float scaleX = (float) jsWindowWidth / (float) fWidth;
-		float scaleY = (float) jsWindowHeight / (float) fHeight;
-		float scale = fmin(scaleX, scaleY);				// keep ratio
+			float scaleX = (float) jsWindowWidth / (float) fWidth;
+			float scaleY = (float) jsWindowHeight / (float) fHeight;
+			float scale = fmin(scaleX, scaleY);				// keep ratio
+			fWidth *= scale;
+			fHeight *= scale;
+		}*/
 
 		if (fMode == "maximized")
 		{
