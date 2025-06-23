@@ -958,7 +958,7 @@ namespace Rtt
 
 					float scale = fmin(scaleX, scaleY);
 
-					if (fullScreen == false && fMode == "maximized")
+					if (fMode == "maximized")
 					{
 
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -986,7 +986,7 @@ namespace Rtt
 							h = fHeight * scale;
 						}
 					}
-					else if(fullScreen == false && fMode == "fullscreen")
+					else if(fMode == "fullscreen")
 					{
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 						{	
@@ -1005,7 +1005,8 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							
+							w = w * scale;
+							h = h * scale;
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
@@ -1019,12 +1020,12 @@ namespace Rtt
 						}
 					}
 
-					if 
-					(((h < w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
-					((h > w) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
-					{
-						Swap(w, h);
-					}
+					// if 
+					// (((h < w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
+					// ((h > w) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
+					// {
+					// 	Swap(w, h);
+					// }
 
 					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
