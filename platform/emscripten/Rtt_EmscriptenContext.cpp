@@ -526,7 +526,7 @@ namespace Rtt
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio), flags);
 		SDL_GL_CreateContext(fWindow);
 		//SDL_GLContext Context = SDL_GL_CreateContext(fWindow);
 		
@@ -560,7 +560,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig(fRuntimeDelegate->fContentWidth * pixelRatio, fRuntimeDelegate->fContentHeight * pixelRatio);
+		jsContextConfig((int)(fRuntimeDelegate->fContentWidth * pixelRatio), (int)(fRuntimeDelegate->fContentHeight * pixelRatio));
 
 		fRuntime->BeginRunLoop();
 
@@ -577,7 +577,7 @@ namespace Rtt
 		}
 		else
 		{
-			emscripten_set_element_css_size("canvas", fWidth * pixelRatio, fHeight * pixelRatio);
+			emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
 		}
 #endif
 		 
