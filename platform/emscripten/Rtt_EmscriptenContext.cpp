@@ -527,11 +527,11 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
+		SDL_GL_CreateContext(fWindow);
+		//SDL_GLContext Context = SDL_GL_CreateContext(fWindow);
 		
-		SDL_GLContext Context = SDL_GL_CreateContext(fWindow);
-		
-		SDL_GL_MakeCurrent(fWindow, Context);
-		SDL_GL_SetSwapInterval(1); // Enable vsync
+		//SDL_GL_MakeCurrent(fWindow, Context);
+		//SDL_GL_SetSwapInterval(1); // Enable vsync
 
 		fPlatform->setWindow(fWindow, fOrientation);
 
