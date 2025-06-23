@@ -1019,12 +1019,12 @@ namespace Rtt
 						}
 					}
 
-					// if 
-					// (((h > w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
-					// ((w > h) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
-					// {
-					// 	Swap(w, h);
-					// }
+					if 
+					(((h < w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
+					((h > w) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
+					{
+						Swap(w, h);
+					}
 
 					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
