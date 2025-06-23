@@ -511,7 +511,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit(fWidth, fHeight, fOrientation);
+		jsContextInit((int)fWidth, (int)fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			//Scale double
@@ -1017,6 +1017,13 @@ namespace Rtt
 							w = fWidth * scale;
 							h = fHeight * scale;
 						}
+					}
+
+					if 
+					(((h > w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
+					((w > h) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
+					{
+						Swap(w, h);
 					}
 
 					SDL_SetWindowSize(fWindow, (int)w, (int)h);
