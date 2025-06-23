@@ -525,7 +525,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)fWidth, (int)fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
@@ -570,7 +570,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+		emscripten_set_element_css_size("canvas", (int)(fWidth * .5), (int)(fHeight * .5));
 #endif
 
 		return true;
@@ -939,36 +939,87 @@ namespace Rtt
 #endif
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
-				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
+				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 //				if (fullScreen == false && fMode == "maximized")
-				{
-					int w = event.window.data1;
-					int h = event.window.data2;
+				// {
+					float w = event.window.data1;
+					float h = event.window.data2;
 
 					//Fix error zoom
-					if (w == 0 || h == 0) 
-					{
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
-					}
+					// if (w == 0 || h == 0) 
+					// {
+					// 	w = jsContextGetWindowWidth();
+					// 	h = jsContextGetWindowHeight();
+					// }
 
 					// keep ratio
 					float scaleX = (w * 2) / (float)fWidth;
 					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
-					if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
+
+					if (fullScreen == false && fMode == "maximized")
 					{
-						w = fWidth * scaleX;
-						h = fHeight * scaleY;
+
+						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+						{
+							w = fWidth * scaleX;
+							h = fHeight * scaleY;
+						}
+						else
+						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+						{
+							if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
+							{
+								w = fWidth;
+								h = fHeight * scaleY;
+							}
+							else
+							{
+								w = fWidth * scaleX;
+								h = fHeight * scaleY;
+							}
+						}
+						else
+						{
+							w = fWidth * scale;
+							h = fHeight * scale;
+						}
 					}
-					else
+					else if(fullScreen == false && fMode == "fullscreen")
 					{
-						w = fWidth * scale;
-						h = fHeight * scale;
+						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+						{	
+							//w = jsContextGetWindowWidth();
+							//h = jsContextGetWindowHeight();
+
+							if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
+							{
+								w = fWidth;
+								h = fHeight * scaleY;
+							}else
+							{
+								w = fWidth * scaleX;
+								h = fHeight;
+							}
+						}
+						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+						{
+							
+						}
+						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+						{
+							w = fWidth * scaleX;
+							h = fHeight * scaleY;
+						}
+						else
+						{
+							w = fWidth * scale;
+							h = fHeight * scale;
+						}
 					}
 
-					SDL_SetWindowSize(fWindow, w, h);
+					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
@@ -978,15 +1029,15 @@ namespace Rtt
 				
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", w / 2, h / 2);			
+					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
 #endif
-				}
-				else 
-				{
-#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-#endif
-				}
+				// }
+				// else 
+// 				{
+// #ifdef EMSCRIPTEN
+// 					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+// #endif
+// 				}
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
