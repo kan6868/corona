@@ -522,7 +522,7 @@ namespace Rtt
 			fHeight *= scale;
 		}
 
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+		Uint32 flags = SDL_WINDOW_OPENGL;// | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		
