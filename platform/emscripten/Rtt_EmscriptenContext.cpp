@@ -508,7 +508,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 		const int pixelRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth, fHeight, fOrientation);
+		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
