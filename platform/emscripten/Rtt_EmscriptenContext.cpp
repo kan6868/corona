@@ -575,6 +575,10 @@ namespace Rtt
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
+		else
+		{
+			emscripten_set_element_css_size("canvas", fWidth, fHeight);
+		}
 #endif
 		 
 		return true;
@@ -1020,7 +1024,6 @@ namespace Rtt
 					}
 				}
 
-				
 				SDL_SetWindowSize(fWindow, (int)(w), (int)(h));
 
 				fRuntime->WindowSizeChanged();
@@ -1028,7 +1031,9 @@ namespace Rtt
 				fRuntime->GetDisplay().Invalidate();
 
 				fRuntime->DispatchEvent(ResizeEvent());
-
+				#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", (int)w, (int)h);			
+				#endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;
