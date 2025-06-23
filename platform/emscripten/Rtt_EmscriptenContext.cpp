@@ -577,7 +577,7 @@ namespace Rtt
 		}
 		else
 		{
-			emscripten_set_element_css_size("canvas", fWidth, fHeight);
+			emscripten_set_element_css_size("canvas", fWidth * pixelRatio, fHeight * pixelRatio);
 		}
 #endif
 		 
