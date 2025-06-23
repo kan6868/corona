@@ -1031,9 +1031,9 @@ namespace Rtt
 				fRuntime->GetDisplay().Invalidate();
 
 				fRuntime->DispatchEvent(ResizeEvent());
-				// #ifdef EMSCRIPTEN
-				// 	emscripten_set_element_css_size("canvas", (int)w, (int)h);			
-				// #endif
+				#ifdef EMSCRIPTEN
+					emscripten_set_element_css_size("canvas", (int)w, (int)h);			
+				#endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;
