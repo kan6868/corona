@@ -1021,7 +1021,7 @@ namespace Rtt
 				}
 
 				
-				SDL_SetWindowSize(fWindow, (int)(w * pixelRatio), (int)(h * pixelRatio));
+				SDL_SetWindowSize(fWindow, (int)(w), (int)(h));
 
 				fRuntime->WindowSizeChanged();
 				fRuntime->RestartRenderer(fOrientation);
