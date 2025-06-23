@@ -508,7 +508,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 		const int pixelRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
+		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
@@ -522,7 +522,7 @@ namespace Rtt
 			fHeight *= scale;
 		}
 
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth * pixelRatio, fHeight * pixelRatio, flags);
