@@ -515,12 +515,86 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmin(scaleX, scaleY);				// keep ratio
-			fWidth *= scale;
-			fHeight *= scale;
+			// float scaleX = (float) jsWindowWidth / (float) fWidth;
+			// float scaleY = (float) jsWindowHeight / (float) fHeight;
+			// float scale = fmin(scaleX, scaleY);				// keep ratio
+			// fWidth *= scale;
+			// fHeight *= scale;
+
+			// keep ratio
+			float scaleX = (jsWindowWidth / fWidth);
+			float scaleY = (jsWindowHeight / fHeight);
+			
+			float scale = fmin(scaleX, scaleY);
+				
+				//Swap(fWidth, fHeight);
+
+				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				// resize only for 'maximized' to fill fit browers's window
+//				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
+			if (fMode == "maximized")
+			{
+
+				if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+				{
+					fWidth *= scaleX;
+					fHeight *= scaleY;
+				}
+				else
+				if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+				{
+					if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
+					{
+						fHeight *= scaleY;
+					}
+					else
+					{
+						fWidth *= scaleX;
+						fHeight *= scaleY;
+					}
+				}
+				else
+				{
+					fWidth *= scale;
+					fHeight *= scale;
+				}
+
+			}
+			else if(fMode == "fullscreen")
+			{
+				if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+				{	
+						//w = jsContextGetWindowWidth();
+						//h = jsContextGetWindowHeight();
+
+					if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
+					{
+							// w = fWidth;
+						fHeight *= scaleY;
+					}else
+					{
+						fWidth *= scaleX;
+							// h = fHeight;
+					}
+				}
+				else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+				{
+					
+				}
+				else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
+				{
+					fWidth *= scaleX;
+					fHeight *= scaleY;
+				}
+				else
+				{
+					fWidth *= scale;
+					fHeight *= scale;
+				}
+			}
 		}
+
+		
 
 		Uint32 flags = SDL_WINDOW_OPENGL;// | SDL_WINDOW_ALLOW_HIGHDPI;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
