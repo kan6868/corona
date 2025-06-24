@@ -1035,7 +1035,7 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				
-#ifdef EMSCRIPTEN
+// #ifdef EMSCRIPTEN
 					
 // 					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
 // #endif
