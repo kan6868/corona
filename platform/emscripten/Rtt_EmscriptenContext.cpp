@@ -953,8 +953,8 @@ namespace Rtt
 					// }
 
 					// keep ratio
-					float scaleX = (w * 2) / (float)fWidth;
-					float scaleY = (h * 2) / (float)fHeight;
+					float scaleX = (w) / (float)fWidth;
+					float scaleY = (h) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 
@@ -972,7 +972,7 @@ namespace Rtt
 							if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
 							{
 								w = fWidth;
-								h = fHeight * scaleY * 2;
+								h = fHeight * scaleY;
 							}
 							else
 							{
@@ -1035,10 +1035,10 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				
-#ifdef EMSCRIPTEN
+// #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
-#endif
+// 					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
+// #endif
 				// }
 				// else 
 // 				{
