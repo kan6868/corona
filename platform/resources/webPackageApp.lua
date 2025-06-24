@@ -816,8 +816,8 @@ function webPackageApp( options )
 	if (res ~= nil) then return res end
 
 	-- compress .js & .wasm into .bin
-	gzip(webappFolder, args.applicationName , {'.js', '.wasm'}, args.applicationName .. '.bin')
-	log3('Created ' .. args.applicationName .. '.bin')
+	-- gzip(webappFolder, args.applicationName , {'.js', '.wasm'}, args.applicationName .. '.bin')
+	-- log3('Created ' .. args.applicationName .. '.bin')
 	--
 	-- build FB Instant app
 	--
