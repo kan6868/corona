@@ -972,7 +972,7 @@ namespace Rtt
 							if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
 							{
 								w = fWidth;
-								h = fHeight * scaleY;
+								h = fHeight * scaleY * 2;
 							}
 							else
 							{
@@ -1035,10 +1035,10 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				
-// #ifdef EMSCRIPTEN
+#ifdef EMSCRIPTEN
 					
-// 					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
-// #endif
+					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
+#endif
 				// }
 				// else 
 // 				{
