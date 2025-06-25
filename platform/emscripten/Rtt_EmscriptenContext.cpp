@@ -527,6 +527,7 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)fWidth, (int)fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
+		SDL_GL_SetSwapInterval(1); // Enable vsync
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
@@ -937,28 +938,17 @@ namespace Rtt
 					return fullscreenElement != null ? true: false;
 				});
 #endif
-				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				// resize only for 'maximized' to fill fit browers's window
-				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-//				if (fullScreen == false && fMode == "maximized")
-				// {
+
 					float w = event.window.data1;
 					float h = event.window.data2;
 
-					//Fix error zoom
-					// if (w == 0 || h == 0) 
-					// {
-					// 	w = jsContextGetWindowWidth();
-					// 	h = jsContextGetWindowHeight();
-					// }
-
 					// keep ratio
-					float scaleX = (w) / (float)fWidth;
-					float scaleY = (h) / (float)fHeight;
+					float scaleX = (w * 2) / (float)fWidth;
+					float scaleY = (h * 2) / (float)fHeight;
 
 					float scale = fmin(scaleX, scaleY);
 
-					if (fMode == "maximized")
+					if (fullScreen == false && fMode == "maximized")
 					{
 
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -971,8 +961,8 @@ namespace Rtt
 						{
 							if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
 							{
-								// w = fWidth;
-								// h = fHeight;
+								w = fWidth;
+								h = fHeight * scaleY;
 							}
 							else
 							{
@@ -986,7 +976,7 @@ namespace Rtt
 							h = fHeight * scale;
 						}
 					}
-					else if(fMode == "fullscreen")
+					else if(fullScreen == false && fMode == "fullscreen")
 					{
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 						{	
@@ -1005,8 +995,7 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							w = w * 2;
-							h = h * 2;
+							
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
@@ -1021,8 +1010,8 @@ namespace Rtt
 					}
 
 					// if 
-					// (((h < w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
-					// ((h > w) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
+					// (((h > w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
+					// ((w > h) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
 					// {
 					// 	Swap(w, h);
 					// }
@@ -1035,17 +1024,10 @@ namespace Rtt
 
 					fRuntime->DispatchEvent(ResizeEvent());
 				
-// #ifdef EMSCRIPTEN
+#ifdef EMSCRIPTEN
 					
-// 					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
-// #endif
-				// }
-				// else 
-// 				{
-// #ifdef EMSCRIPTEN
-// 					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
-// #endif
-// 				}
+					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
+#endif
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
