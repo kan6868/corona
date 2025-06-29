@@ -942,8 +942,8 @@ namespace Rtt
 				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 //				if (fullScreen == false && fMode == "maximized")
 				// {
-					float w = event.window.data1;
-					float h = event.window.data2;
+					int w = event.window.data1;
+					int h = event.window.data2;
 
 					//Fix error zoom
 					// if (w == 0 || h == 0) 
@@ -958,7 +958,7 @@ namespace Rtt
 
 					float scale = fmin(scaleX, scaleY);
 
-					if (fullScreen == false && fMode == "maximized")
+					if (fMode == "maximized")
 					{
 
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
@@ -986,7 +986,7 @@ namespace Rtt
 							h = fHeight * scale;
 						}
 					}
-					else if(fullScreen == false && fMode == "fullscreen")
+					else if(fMode == "fullscreen")
 					{
 						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 						{	
@@ -1005,7 +1005,8 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							
+							w = w * scale;
+							h = h * scale;
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
