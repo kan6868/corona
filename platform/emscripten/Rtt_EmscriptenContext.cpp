@@ -511,7 +511,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit((int)fWidth, (int)fHeight, fOrientation);
+		jsContextInit(fWidth, fHeight, fOrientation);
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			//Scale double
@@ -527,7 +527,6 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)fWidth, (int)fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
-		SDL_GL_SetSwapInterval(1); // Enable vsync
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
@@ -938,9 +937,20 @@ namespace Rtt
 					return fullscreenElement != null ? true: false;
 				});
 #endif
-
+				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				// resize only for 'maximized' to fill fit browers's window
+				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
+//				if (fullScreen == false && fMode == "maximized")
+				// {
 					float w = event.window.data1;
 					float h = event.window.data2;
+
+					//Fix error zoom
+					// if (w == 0 || h == 0) 
+					// {
+					// 	w = jsContextGetWindowWidth();
+					// 	h = jsContextGetWindowHeight();
+					// }
 
 					// keep ratio
 					float scaleX = (w * 2) / (float)fWidth;
@@ -995,8 +1005,7 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							w = w * scale;
-							h = h * scale;
+							
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
@@ -1010,13 +1019,6 @@ namespace Rtt
 						}
 					}
 
-					// if 
-					// (((h > w) && (fOrientation != DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)) ||
-					// ((w > h) && (fOrientation != DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight)))
-					// {
-					// 	Swap(w, h);
-					// }
-
 					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
 					fRuntime->WindowSizeChanged();
@@ -1029,6 +1031,13 @@ namespace Rtt
 					
 					emscripten_set_element_css_size("canvas", (int)(w * .5), (int)(h * .5));			
 #endif
+				// }
+				// else 
+// 				{
+// #ifdef EMSCRIPTEN
+// 					emscripten_set_element_css_size("canvas", fWidth / 2, fHeight / 2);
+// #endif
+// 				}
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
@@ -1404,4 +1413,3 @@ namespace Rtt
 	}
 
 }
-
