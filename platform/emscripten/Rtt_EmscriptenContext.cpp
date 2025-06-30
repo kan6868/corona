@@ -46,7 +46,6 @@ extern "C"
 	extern int jsContextLoadFonts(const char* name, void* buf, int size);
 	extern void jsContextSetClearColor(int r, int g, int b, int a);
 	extern void jsContextConfig(int w, int h);
-	extern int jsContextGetPixelRatio();
 }
 #else
 	static int appWidth, appHeight;
@@ -61,7 +60,6 @@ extern "C"
 	int jsContextLoadFonts(const char* name, void* buf, int size)  { return 0; }
 	void jsContextSetClearColor(int r, int g, int b, int a) {}
 	void jsContextConfig(int w, int h) {}
-	int jsContextGetPixelRatio() {return 1;}
 #endif
 
 namespace Rtt
@@ -70,7 +68,7 @@ namespace Rtt
 	void TimerTickShim(void *userdata)
 	{
 		CoronaAppContext *context = (CoronaAppContext*) userdata;
-		float frameDuration = 1.0f / (float) context->getFPS();
+		float frameDuration = 1.0 / (float) context->getFPS();
 
 		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
 		if (now - s_tick >= frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
@@ -398,6 +396,8 @@ namespace Rtt
 			Rtt_LogException("SDL_Init: %s(%d)\n", SDL_GetError(), rc);
 		}
 
+		SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
+
 		SDL_version compiled;
 		SDL_version linked;
 		SDL_VERSION(&compiled);
@@ -507,32 +507,28 @@ namespace Rtt
 		{
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
-		const int pixelRatio = jsContextGetPixelRatio();
-		jsContextInit(fWidth * pixelRatio, fHeight * pixelRatio, fOrientation);
-		if (fMode == "maximized" || fMode == "fullscreen")
-		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmin(scaleX, scaleY);				// keep ratio
-			fWidth *= scale;
-			fHeight *= scale;
-		}
+		jsContextInit(fWidth, fHeight, fOrientation);
+		// if (fMode == "maximized" || fMode == "fullscreen")
+		// {
+		float devicePixelRatio = emscripten_get_device_pixel_ratio();
+			
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
 
-		Uint32 flags = SDL_WINDOW_OPENGL;// | SDL_WINDOW_ALLOW_HIGHDPI;
+		float scaleX = ((float)jsWindowWidth * devicePixelRatio) / (float) fWidth;
+		float scaleY = ((float)jsWindowHeight * devicePixelRatio) / (float) fHeight;
+		float scale = fmin(scaleX, scaleY);				// keep ratio
+		fWidth *= scale;
+		fHeight *= scale;
+		// }
+
+		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio), flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)(fWidth * scale), (int)(fHeight * scale), flags);
 		SDL_GL_CreateContext(fWindow);
-		//SDL_GLContext Context = SDL_GL_CreateContext(fWindow);
-		
-		//SDL_GL_MakeCurrent(fWindow, Context);
-		//SDL_GL_SetSwapInterval(1); // Enable vsync
-
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
@@ -560,7 +556,7 @@ namespace Rtt
 		{
 			Swap(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 		}
-		jsContextConfig((int)(fRuntimeDelegate->fContentWidth * pixelRatio), (int)(fRuntimeDelegate->fContentHeight * pixelRatio));
+		jsContextConfig(fRuntimeDelegate->fContentWidth, fRuntimeDelegate->fContentHeight);
 
 		fRuntime->BeginRunLoop();
 
@@ -575,12 +571,9 @@ namespace Rtt
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
-		else
-		{
-			emscripten_set_element_css_size("canvas", (int)(fWidth * pixelRatio), (int)(fHeight * pixelRatio));
-		}
+		emscripten_set_element_css_size("canvas", (int)(fWidth / pixelRatio), (int)(fHeight / pixelRatio));
 #endif
-		 
+
 		return true;
 	}
 
@@ -939,31 +932,29 @@ namespace Rtt
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				bool fullScreen = false;
+				float devicePixelRatio = 1.0;
 #ifdef EMSCRIPTEN
 				fullScreen = EM_ASM_INT({
 					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 					return fullscreenElement != null ? true: false;
 				});
+				devicePixelRatio = emscripten_get_device_pixel_ratio();
 #endif
-
-				float w = (float)event.window.data1;
-				float h = (float)event.window.data2;
-
-				const int pixelRatio = jsContextGetPixelRatio();
-				// keep ratio
-				float scaleX = (w / fWidth);
-				float scaleY = (h / fHeight);
-			
-				float scale = fmin(scaleX, scaleY);
 				
-				//Swap(fWidth, fHeight);
 
 				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
+					float w = (float)event.window.data1 * devicePixelRatio;
+					float h = (float)event.window.data2 * devicePixelRatio;
 
+					// keep ratio
+					float scaleX = w / fWidth;
+					float scaleY = h / fHeight;
+
+					float scale = fmin(scaleX, scaleY);
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 					{
 						w = fWidth * scaleX;
@@ -972,16 +963,6 @@ namespace Rtt
 					else
 					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 					{
-						if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
-						{
-							w = fWidth;
-							h = fHeight * scaleY;
-						}
-						else
-						{
-							 w = fWidth * scaleX;
-							 h = fHeight * scaleY;
-						}
 					}
 					else
 					{
@@ -989,51 +970,15 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 
+					SDL_SetWindowSize(fWindow, w, h);
 
-				}
-				else if(fullScreen == false && fMode == "fullscreen")
-				{
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-					{	
-						//w = jsContextGetWindowWidth();
-						//h = jsContextGetWindowHeight();
+					fRuntime->WindowSizeChanged();
+					fRuntime->RestartRenderer(fOrientation);
+					fRuntime->GetDisplay().Invalidate();
 
-						if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
-						{
-							w = fWidth;
-							h = fHeight * scaleY;
-						}else
-						{
-							w = fWidth * scaleX;
-							h = fHeight;
-						}
-					}
-					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-					{
-						
-					}
-					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-					{
-						w = fWidth * scaleX;
-						h = fHeight * scaleY;
-					}
-					else
-					{
-						w = fWidth * scale;
-						h = fHeight * scale;
-					}
+					fRuntime->DispatchEvent(ResizeEvent());
 				}
 
-				SDL_SetWindowSize(fWindow, (int)(w*pixelRatio), (int)(h*pixelRatio));
-
-				fRuntime->WindowSizeChanged();
-				fRuntime->RestartRenderer(fOrientation);
-				fRuntime->GetDisplay().Invalidate();
-
-				fRuntime->DispatchEvent(ResizeEvent());
-				#ifdef EMSCRIPTEN
-					emscripten_set_element_css_size("canvas", (int)w, (int)h);			
-				#endif
 				// refresh native elements
 				jsContextResizeNativeObjects();
 				break;
