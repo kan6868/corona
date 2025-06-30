@@ -576,7 +576,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
+		emscripten_set_element_css_size("canvas", (scaledWidth / devicePixelRatio), (scaledHeight / devicePixelRatio));
 #endif
 
 		return true;
@@ -1024,7 +1024,7 @@ namespace Rtt
 				
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));			
+					emscripten_set_element_css_size("canvas", (w / devicePixelRatio), (h / devicePixelRatio));			
 #endif
 				// }
 				// else 
