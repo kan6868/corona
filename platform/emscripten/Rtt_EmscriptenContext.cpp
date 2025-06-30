@@ -942,8 +942,8 @@ namespace Rtt
 				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 //				if (fullScreen == false && fMode == "maximized")
 				// {
-					int w = event.window.data1;
-					int h = event.window.data2;
+					int w = event.window.data1 * 2;
+					int h = event.window.data2 * 2;
 
 					//Fix error zoom
 					// if (w == 0 || h == 0) 
