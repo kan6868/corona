@@ -955,11 +955,11 @@ namespace Rtt
 					float h = event.window.data2 * devicePixelRatio;
 
 					//Fix error zoom
-					// if (w == 0 || h == 0) 
-					// {
-					// 	w = jsContextGetWindowWidth();
-					// 	h = jsContextGetWindowHeight();
-					// }
+					if (w == 0 || h == 0) 
+					{
+						w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
+					}
 
 					// keep ratio
 					float scaleX = w / (float)fWidth;
