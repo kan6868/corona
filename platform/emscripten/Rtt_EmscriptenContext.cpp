@@ -942,8 +942,8 @@ namespace Rtt
 				// if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 //				if (fullScreen == false && fMode == "maximized")
 				// {
-					int w = event.window.data1 * 2;
-					int h = event.window.data2 * 2;
+					int w = event.window.data1;
+					int h = event.window.data2;
 
 					//Fix error zoom
 					// if (w == 0 || h == 0) 
@@ -1005,8 +1005,8 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							w = w * scale;
-							h = h * scale;
+							w = w * scale * 2;
+							h = h * scale * 2;
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
