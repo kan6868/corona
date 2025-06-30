@@ -628,7 +628,7 @@ var platformLibrary =
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
 		if (audioCtx.state != 'running') {
-			var buffer = audioCtx.createBuffer(1, 1, 22050);
+			var buffer = audioCtx.createBuffer(1, 1, 44100);
 			var source = audioCtx.createBufferSource();
 			source.buffer = buffer;
 			source.connect(audioCtx.destination);
@@ -812,7 +812,7 @@ var platformLibrary =
 		var a = fontName.split('.');
 		fontName = a[0];
 		var ext = a[1];
-
+		console.log('render: ', _text, w, h, _alignment, _fontName, fontSize);
 		var canva = document.createElement('canvas');
 		canva.width = canvas.width;
 		canva.height = canvas.height;
