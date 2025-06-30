@@ -1014,8 +1014,8 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							w = w * scale * 2;
-							h = h * scale * 2;
+							w = w * scale;
+							h = h * scale;
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
