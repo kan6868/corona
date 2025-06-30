@@ -980,7 +980,7 @@ namespace Rtt
 						{
 							if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
 							{
-								w = fWidth;
+								w = fWidth * scaleX;
 								h = fHeight * scaleY;
 							}
 							else
@@ -997,25 +997,10 @@ namespace Rtt
 					}
 					else if(fMode == "fullscreen")
 					{
-						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-						{	
-							//w = jsContextGetWindowWidth();
-							//h = jsContextGetWindowHeight();
-
-							if ((fOrientation == DeviceOrientation::kUpsideDown) || (fOrientation == DeviceOrientation::kUpright))
-							{
-								w = fWidth;
-								h = fHeight * scaleY;
-							}else
-							{
-								w = fWidth * scaleX;
-								h = fHeight;
-							}
-						}
-						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
+					
+						if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
 						{
-							// w = w * scale;
-							// h = h * scale;
+							//keep size when zoomEven
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
