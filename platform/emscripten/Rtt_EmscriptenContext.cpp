@@ -511,8 +511,10 @@ namespace Rtt
 		jsContextInit(fWidth, fHeight, fOrientation);
 		// if (fMode == "maximized" || fMode == "fullscreen")
 		// {
-		float devicePixelRatio = emscripten_get_device_pixel_ratio();
-			
+		float devicePixelRatio = 1.0;
+#if defined(EMSCRIPTEN)
+		devicePixelRatio = emscripten_get_device_pixel_ratio();
+#endif
 		// get JS window size
 		int jsWindowWidth = jsContextGetWindowWidth();
 		int jsWindowHeight = jsContextGetWindowHeight();
@@ -571,7 +573,7 @@ namespace Rtt
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
-		emscripten_set_element_css_size("canvas", (int)(fWidth / pixelRatio), (int)(fHeight / pixelRatio));
+		emscripten_set_element_css_size("canvas", (int)(fWidth / devicePixelRatio), (int)(fHeight / devicePixelRatio));
 #endif
 
 		return true;
