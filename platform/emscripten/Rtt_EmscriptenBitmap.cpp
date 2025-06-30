@@ -27,7 +27,7 @@ extern "C"
 	// Java ==> Lua callback
 	void EMSCRIPTEN_KEEPALIVE jsEmscriptenBitmapSaveImage(Rtt::EmscriptenTextBitmap* thiz, int size, uint8_t* image, int w, int h, int isSafari)
 	{
-		//printf("jsEmscriptenBitmapSaveImage: %p %d %p %d %d\n", thiz, size, image, w, h);
+		printf("jsEmscriptenBitmapSaveImage: %p %d %p %d %d\n", thiz, size, image, w, h);
 		thiz->setBitmap(size, image, w, h, isSafari); 
 	}
 }
