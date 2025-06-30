@@ -938,7 +938,7 @@ var platformLibrary =
 			ww = (ww + 3) & -4;
 		}
 
-		//console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
+		console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
 
 		var myImageData = ctx.getImageData(0, 0, ww, hh);
 		var img = Module.jarray2carray(myImageData.data);
