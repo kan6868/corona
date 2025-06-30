@@ -511,7 +511,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit(fWidth, fHeight, fOrientation);
+		jsContextInit((int)fWidth, (int)fHeight, fOrientation);
 		#if defined(EMSCRIPTEN)
 		
 			devicePixelRatio = emscripten_get_device_pixel_ratio();
@@ -531,7 +531,7 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)(scaledWidth + 0.5f), (int)(scaledHeight + 0.5f), flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)scaledWidth, (int)scaledHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
 
@@ -576,7 +576,7 @@ namespace Rtt
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
 
-		emscripten_set_element_css_size("canvas", (int)((scaledWidth / devicePixelRatio) + 0.5f), (int)((scaledHeight / devicePixelRatio)+ 0.5f));
+		emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
 #endif
 
 		return true;
@@ -1014,7 +1014,7 @@ namespace Rtt
 						}
 					}
 
-					SDL_SetWindowSize(fWindow, (int)(w + 0.5f), (int)(h + 0.5f));
+					SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
@@ -1024,7 +1024,7 @@ namespace Rtt
 				
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", (int)((w / devicePixelRatio) + 0.5f), (int)((h / devicePixelRatio) + 0.5f));			
+					emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));			
 #endif
 				// }
 				// else 
