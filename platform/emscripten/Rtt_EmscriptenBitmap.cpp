@@ -348,8 +348,7 @@ namespace Rtt
 		, fWrapWidth(width)
 		, fAlignment(&context, alignment)
 	{
-		SDL_Log("Creating EmscriptenTextBitmap: %s, font: %s, size: %d, width: %d, height: %d, alignment: %s", str, inFont.Name(), inFont.Size(), width, height, alignment);
-		jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
+		jsRenderText(this, str, (int)(width + .5f), (int)(height + 0.5f), alignment, inFont.Name(), inFont.Size());
 		baselineOffset = fHeight * 0.5f - inFont.Size();
 	}
 
