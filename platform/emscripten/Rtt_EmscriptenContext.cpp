@@ -537,7 +537,7 @@ namespace Rtt
     	SDL_GL_SetSwapInterval(1); // Enable vsync
 
 		fPlatform->setWindow(fWindow, fOrientation);
-		SDL_GL_MakeCurrent(fWindow, Context);
+		SDL_GL_MakeCurrent(fWindow, fContext);
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
