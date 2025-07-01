@@ -814,6 +814,18 @@ var platformLibrary =
 		var ext = a[1];
 		console.log('render: ', _text, w, h, _alignment, _fontName, fontSize);
 		var canva = document.createElement('canvas');
+		var _width = canvas.width;
+		var _height = canvas.height;
+		if ( _width == 0 )
+		{
+			_width = window.innerWidth != 0 ? window.innerWidth : 800;	// default value
+		}
+
+		if ( _height == 0 )
+		{
+			_height = window.innerHeight != 0 ? window.innerHeight : 600;	// default value
+		}
+
 		canva.width = canvas.width || window.innerWidth;
 		canva.height = canvas.height || window.innerHeight;
 		canva.style.position = "absolute";
