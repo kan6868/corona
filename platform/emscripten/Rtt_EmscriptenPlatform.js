@@ -825,9 +825,9 @@ var platformLibrary =
 		{
 			_height = window.innerHeight != 0 ? window.innerHeight : 600;	// default value
 		}
-
-		canva.width = canvas.width || window.innerWidth;
-		canva.height = canvas.height || window.innerHeight;
+		console.log('render: width =', _width, ', height =', _height, ', text =', text, ', w =', w, ', h =', h, ', alignment =', alignment, ', fontName =', fontName, ', fontSize =', fontSize);
+		canva.width = _width;
+		canva.height = _height;
 		canva.style.position = "absolute";
 		var ctx = canva.getContext("2d");
 
@@ -858,6 +858,7 @@ var platformLibrary =
 		//	console.log(fontName + ' not found, using sans-serif');
 			fontName = 'sans-serif';		// Default value
 		}
+		console.log('render: fontName =', fontName, ', fontSize =', fontSize, ', fontExist =', fontExist);
 		ctx.font = String(fontSize) + 'px ' + fontName;
 
 		ctx.textBaseline = 'top';
@@ -867,6 +868,7 @@ var platformLibrary =
 		var lineHeight = a[1];
 
 		if (w == 0) {
+			console.log('render: w ==0');
 			// calc width
 			var line = '';
 			for (var i = 0; i < text.length; i++) {
@@ -884,6 +886,7 @@ var platformLibrary =
 			// last line
 			var metrics = ctx.measureText(line);
 			w = Math.max(w, metrics.width);
+			console.log('render: calc w =', w);
 		}
 
 		var x = 0;
