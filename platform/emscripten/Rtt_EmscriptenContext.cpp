@@ -532,9 +532,12 @@ namespace Rtt
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)scaledWidth, (int)scaledHeight, flags);
-		SDL_GL_CreateContext(fWindow);
-		fPlatform->setWindow(fWindow, fOrientation);
+		SDL_GLContext fContext = SDL_GL_CreateContext(Window);
 
+    	SDL_GL_SetSwapInterval(1); // Enable vsync
+
+		fPlatform->setWindow(fWindow, fOrientation);
+		SDL_GL_MakeCurrent(fWindow, Context);
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
