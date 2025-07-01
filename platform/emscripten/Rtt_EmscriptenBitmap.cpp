@@ -348,7 +348,7 @@ namespace Rtt
 		, fWrapWidth(width)
 		, fAlignment(&context, alignment)
 	{
-		jsRenderText(this, str, (int)(width + .5f), (int)(height + 0.5f), alignment, inFont.Name(), inFont.Size());
+		jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
 		baselineOffset = fHeight * 0.5f - inFont.Size();
 	}
 

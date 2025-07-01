@@ -284,7 +284,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 		
 		window.refreshNativeObject(obj.id);
-		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
+		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -768,6 +768,7 @@ var platformLibrary =
 
 	// Measures text by creating a DIV in the document and adding the relevant text to it.
 	$measureText: function (text, bold, font, size) {
+		console.log('measureText:', text, bold, font, size);
 		// This global variable is used to cache repeated calls with the same arguments
 		var str = text + ':' + bold + ':' + font + ':' + size;
 		if (Module.appTextMeters.hasOwnProperty(str)) {
@@ -812,20 +813,11 @@ var platformLibrary =
 		var a = fontName.split('.');
 		fontName = a[0];
 		var ext = a[1];
-		console.log('render: ', _text, w, h, _alignment, _fontName, fontSize);
+
 		var canva = document.createElement('canvas');
 		var _width = canvas.width;
 		var _height = canvas.height;
-		if ( _width == 0 )
-		{
-			_width = window.innerWidth != 0 ? window.innerWidth : 800;	// default value
-		}
 
-		if ( _height == 0 )
-		{
-			_height = window.innerHeight != 0 ? window.innerHeight : 600;	// default value
-		}
-		console.log('render: width =', _width, ', height =', _height, ', text =', text, ', w =', w, ', h =', h, ', alignment =', alignment, ', fontName =', fontName, ', fontSize =', fontSize);
 		canva.width = _width;
 		canva.height = _height;
 		canva.style.position = "absolute";
@@ -953,6 +945,24 @@ var platformLibrary =
 			ww = (ww + 3) & -4;
 		}
 
+		// Đảm bảo hh không bằng 0
+		if (hh <= 0) {
+			hh = lineHeight; // Chiều cao tối thiểu = 1 dòng
+		}
+
+		// Kiểm tra nếu không có văn bản
+		if (text.length === 0) {
+			hh = lineHeight;
+		}
+		if (hh <= 0)
+		{
+			hh = 1; // Chiều cao tối thiểu
+		}
+		// Kiểm tra ww (tránh lỗi tương tự)
+		if (ww <= 0) {
+			ww = 1;
+		}
+		
 		console.log('render: ', metrics, text, w, h, ww, hh, alignment, fontName, fontSize);
 
 		var myImageData = ctx.getImageData(0, 0, ww, hh);

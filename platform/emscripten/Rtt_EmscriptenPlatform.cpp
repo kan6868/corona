@@ -916,7 +916,7 @@ namespace Rtt
 
 	PlatformBitmap* EmscriptenPlatform::CreateBitmapMask(const char str[], const PlatformFont& font, Real w, Real h, const char alignment[], Real& baselineOffset) const
 	{
-		return Rtt_NEW(&GetAllocator(), EmscriptenTextBitmap(GetAllocator(), str, font, (int)(w + 0.5f), (int)(h + 0.5f), alignment, baselineOffset));
+		return Rtt_NEW(&GetAllocator(), EmscriptenTextBitmap(GetAllocator(), str, font, (int)(w), (int)(h), alignment, baselineOffset));
 	}
 
 
