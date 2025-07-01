@@ -814,8 +814,8 @@ var platformLibrary =
 		var ext = a[1];
 		console.log('render: ', _text, w, h, _alignment, _fontName, fontSize);
 		var canva = document.createElement('canvas');
-		canva.width = canvas.width || this.jsContextGetWindowWidth();
-		canva.height = canvas.height || this.jsContextGetWindowHeight();
+		canva.width = canvas.width || window.innerWidth;
+		canva.height = canvas.height || window.innerHeight;
 		canva.style.position = "absolute";
 		var ctx = canva.getContext("2d");
 
