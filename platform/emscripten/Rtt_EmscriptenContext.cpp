@@ -532,8 +532,11 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)scaledWidth, (int)scaledHeight, flags);
 		SDL_GL_CreateContext(fWindow);
-		fPlatform->setWindow(fWindow, fOrientation);
+		
+		SDL_GL_SetSwapInterval(1); // Enable vsync
 
+		fPlatform->setWindow(fWindow, fOrientation);
+		
 #if defined(EMSCRIPTEN)
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
