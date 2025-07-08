@@ -996,6 +996,12 @@ namespace Rtt
 						{
 							//keep size when zoomEven
 						}
+						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
+						{
+							// SCALE TO FULL SCREEN
+							w = fWidth * scaleX; 
+							h = fHeight * scaleY;
+						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
 							w = fWidth * scaleX;
