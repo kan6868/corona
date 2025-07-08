@@ -523,60 +523,8 @@ namespace Rtt
 		float scaleY = (float)(((float)jsWindowHeight * devicePixelRatio) / fHeight);
 		float scale = fmin(scaleX, scaleY);				// keep ratio
 			
-		float scaledWidth = fWidth;
-		float scaledHeight = fHeight;
-
-		if (fMode == "maximized")
-		{
-
-			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-			{
-				scaledWidth = fWidth * scaleX;
-				scaledHeight = fHeight * scaleY;
-			}
-			else
-			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-			{
-				if (fOrientation == DeviceOrientation::kUpright || fOrientation == DeviceOrientation::kUpsideDown)
-				{
-					scaledWidth = fWidth * scaleX;
-					scaledHeight = fHeight * scaleY;
-				}
-				else
-				{
-					scaledWidth = fWidth * scaleX;
-					scaledHeight = fHeight * scaleY;
-				}
-			}
-			else
-			{
-				scaledWidth = fWidth * scale;
-				scaledHeight = fHeight * scale;
-			}
-		}
-		else if (fMode == "fullscreen")
-		{
-			if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-			{
-				// keep size when zoomEven
-			}
-			else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-			{
-				// SCALE TO FULL SCREEN
-				scaledWidth = fWidth * scaleX;
-				scaledHeight = fHeight * scaleY;
-			}
-			else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-			{
-				scaledWidth = fWidth * scaleX;
-				scaledHeight = fHeight * scaleY;
-			}
-			else
-			{
-				scaledWidth = fWidth * scale;
-				scaledHeight = fHeight * scale;
-			}
-		}
+		float scaledWidth = fWidth * scale;
+		float scaledHeight = fHeight * scale;
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
@@ -624,10 +572,10 @@ namespace Rtt
 #ifdef EMSCRIPTEN
 		//if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		//{
-			//EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
+			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		//}
 
-		emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
+		//emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
 #endif
 
 		return true;
