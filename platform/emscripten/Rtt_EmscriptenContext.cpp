@@ -570,12 +570,12 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
-		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
-		{
+		//if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
+		//{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
-		}
+		//}
 
-		emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
+		//emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
 #endif
 
 		return true;
