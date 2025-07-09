@@ -746,17 +746,76 @@ function webPackageApp( options )
 	loadPackage = loadPackage .. ',"package_uuid":"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
 	--log3('loadPackage:', loadPackage);
 
+	-- Main changes needed for Emscripten 4.0.10 compatibility:
+
+	-- 1. Update FS_createPath to new FS API
+	local function updateFSCalls(src)
+		-- First try new FS.mkdir pattern
+		local count
+		src, count = src:gsub("Module%['FS_createPath']%b()", function(match)
+			-- Convert Module['FS_createPath']("/","folder",true,true) to FS.mkdir("/folder")
+			local path, name = match:match("Module%['FS_createPath']%(\"([^\"]+)\",\"([^\"]+)\"")
+			if path and name then
+				return "FS.mkdir(\""..path..(path:sub(-1) == "/" and "" or "/")..name.."\")"
+			end
+			return match
+		end)
+		
+		if count < 1 then
+			-- Try other variants
+			src, count = src:gsub('Module%["FS_createPath"]%b()', function(match)
+				local path, name = match:match('Module%["FS_createPath"]%("([^"]+)","([^"]+)"')
+				if path and name then
+					return "FS.mkdir(\""..path..(path:sub(-1) == "/" and "" or "/")..name.."\")"
+				end
+				return match
+			end)
+		end
+		
+		return src, count
+	end
+	
+	-- 2. Update loadPackage and runtime methods
+	local function updateRuntimeMethods(src)
+		-- Update EXTRA_EXPORTED_RUNTIME_METHODS to EXPORTED_RUNTIME_METHODS
+		src = src:gsub("EXTRA_EXPORTED_RUNTIME_METHODS", "EXPORTED_RUNTIME_METHODS")
+		
+		-- Ensure required methods are exported
+		if not src:find("EXPORTED_RUNTIME_METHODS") then
+			src = src:gsub("var Module=.*{", "var Module={EXPORTED_RUNTIME_METHODS: ['FS', 'FS_createPath', 'FS_mkdir', 'ccall', 'cwrap'],")
+		end
+		
+		return src
+	end
+	--new emsdk
+	-----------------
+
+	-- old emsdk 2.x
 	--generate new FS_createPath for .js
 	
+	-- local createPaths = ''
+	-- for i = 1, #folders do
+	-- 	createPaths = createPaths .. 'Module["FS_createPath"]("'
+	-- 	createPaths = createPaths .. folders[i].parent
+	-- 	createPaths = createPaths .. '","'
+	-- 	createPaths = createPaths .. folders[i].name
+	-- 	createPaths = createPaths .. '",true,true);'
+	-- end
+	-- log3('FS_createPath:',createPaths);
+
+	-- new emsdk 4.x
+	-- Generate new FS.mkdir calls for .js
 	local createPaths = ''
 	for i = 1, #folders do
-		createPaths = createPaths .. 'Module["FS_createPath"]("'
+		createPaths = createPaths .. 'FS.mkdir("'
 		createPaths = createPaths .. folders[i].parent
-		createPaths = createPaths .. '","'
+		if folders[i].parent:sub(-1) ~= "/" then
+			createPaths = createPaths .. "/"
+		end
 		createPaths = createPaths .. folders[i].name
-		createPaths = createPaths .. '",true,true);'
+		createPaths = createPaths .. '");'
 	end
-	log3('FS_createPath:',createPaths);
+	log3('FS.mkdir calls:', createPaths)
 
 	-- generate .js
 
@@ -776,15 +835,18 @@ function webPackageApp( options )
 		return 'Source .js file does not contain loadPackage(...)';
  	end
 
+	--old emsdk 2.x
 	-- seek Module["FS_createPath"]("/","CORONA_FOLDER_PLACEHOLDER",true,true);
- 	src, count = src:gsub("Module%['FS_createPath']%b();", createPaths, 1)
- 	if count < 1 then
-	 	src, count = src:gsub('Module%["FS_createPath"]%b();', createPaths, 1)
-	 	if count < 1 then
-			return 'Source .js file does not contain FS_createPath()';
-		end
- 	end
-
+ 	-- src, count = src:gsub("Module%['FS_createPath']%b();", createPaths, 1)
+ 	-- if count < 1 then
+	--  	src, count = src:gsub('Module%["FS_createPath"]%b();', createPaths, 1)
+	--  	if count < 1 then
+	-- 		return 'Source .js file does not contain FS_createPath()';
+	-- 	end
+ 	-- end
+	
+	-- new emsdk 4.x
+	src, count = updateFSCalls(src);
  	-- rename .data
  	src, count = src:gsub('coronaHtml5App.data', args.applicationName .. ".data")
  	if count < 1 then
