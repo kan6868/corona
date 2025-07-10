@@ -85,6 +85,8 @@ b2GLESDebugDraw::b2GLESDebugDraw( Display &display )
 		fData.fUserUniform1 = NULL;
 		fData.fUserUniform2 = NULL;
 		fData.fUserUniform3 = NULL;
+
+		fData.fGeometry->SetPrimitiveType(Geometry::kTriangles);
 	}
 }
 
