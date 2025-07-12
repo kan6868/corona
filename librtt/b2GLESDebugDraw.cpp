@@ -67,7 +67,7 @@ b2GLESDebugDraw::b2GLESDebugDraw( Display &display )
 		/**/ //BAD: THIS MEMORY IS LEAKED!!!!!!!!
 		fData.fGeometry = Rtt_NEW( display.GetAllocator(),
 									Rtt::Geometry( display.GetAllocator(),
-													Geometry::kTriangles,
+													Geometry::kTriangleFan,
 													0, // Vertex count.
 													0, // Index count.
 													false ) ); // Store on GPU.
@@ -434,7 +434,7 @@ void b2GLESDebugDraw::_DrawPolygon( bool fill_body,
 											0.5*color.b,
 											0.5 );
 
-		fData.fGeometry->SetPrimitiveType( Geometry::kTriangles );
+		fData.fGeometry->SetPrimitiveType( Geometry::kTriangleFan );
 		fRenderer->Insert( &fData );
 	}
 
@@ -540,7 +540,7 @@ void b2GLESDebugDraw::DrawCircle( bool fill_body,
 											0.5*color.b,
 											0.5 );
 
-		fData.fGeometry->SetPrimitiveType( Geometry::kTriangles );
+		fData.fGeometry->SetPrimitiveType( Geometry::kTriangleFan );
 		fRenderer->Insert( &fData );
 	}
 
