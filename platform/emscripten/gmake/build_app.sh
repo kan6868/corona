@@ -6,6 +6,8 @@ OUTPUT_HTML=$2
 CONFIG=$3
 BIN_DIR=$path/../../../bin/mac
 
+RUNTIME_FUNCS="['ccall','cwrap','addFunction','removeFunction','allocate','AsciiToString','stringToAscii','UTF16ToString','stringToUTF16','lengthBytesUTF16','UTF32ToString','stringToUTF32','lengthBytesUTF32','allocateUTF8','allocateUTF8OnStack','writeStringToMemory','writeArrayToMemory','writeAsciiToMemory','intArrayFromString','intArrayToString','warnOnce']"
+
 # -----------------------------------------------------------------------------
 
 #
@@ -124,8 +126,8 @@ pushd $path > /dev/null
 
 	echo " "
 	echo "Building HTML:"
-	echo '\t' emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s EXPORTED_RUNTIME_METHODS=['FS','ccall','cwrap','FS_createPath','FS_mkdir'] -O3 -s USE_SDL=2 -s FORCE_FILESYSTEM=1 -s STACK_SIZE=5MB -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=128MB --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
-	emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s EXPORTED_RUNTIME_METHODS=['FS','ccall','cwrap','FS_createPath','FS_mkdir'] -O3 -s USE_SDL=2 -s FORCE_FILESYSTEM=1 -s STACK_SIZE=5MB -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=128MB --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js -lidbfs.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	echo '\t' emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s LEGACY_RUNTIME=1 -O3 -s USE_SDL=2 -s FORCE_FILESYSTEM=1 -s STACK_SIZE=5MB -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=128MB --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
+	emcc obj/"$CONFIG"/libratatouille.a obj/"$CONFIG"/librtt.a $CC_FLAGS obj/"$CONFIG"/libBox2D.a $CC_FLAGS obj/"$CONFIG"/liblua.a $CC_FLAGS obj/"$CONFIG"/libpng.a $CC_FLAGS obj/"$CONFIG"/libjpeg.a $CC_FLAGS obj/"$CONFIG"/libz.a $CC_FLAGS obj/"$CONFIG"/liblfs.a $CC_FLAGS obj/"$CONFIG"/liblpeg.a $CC_FLAGS obj/"$CONFIG"/libRenderer.a -s LEGACY_RUNTIME=1 -O3 -s USE_SDL=2 -s FORCE_FILESYSTEM=1 -s STACK_SIZE=5MB -s ALLOW_MEMORY_GROWTH=1 -s INITIAL_MEMORY=128MB --js-library ../Rtt_PlatformWebAudioPlayer.js --js-library ../Rtt_EmscriptenPlatform.js --js-library ../Rtt_EmscriptenVideo.js -lidbfs.js --preload-file "$TMP_DIR"@/ -o "$OUTPUT_HTML"
 	checkError
 
 
