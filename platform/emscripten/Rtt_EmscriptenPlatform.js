@@ -639,10 +639,8 @@ var platformLibrary =
 	jsContextSyncFS: function() {
 		if (Module.idbfsSynced == 0)
 		{
-			console.log("Wait Syncing..");
 			return;
 		}
-
 
 		Module.idbfsSynced = 0;
 		try {
@@ -656,7 +654,6 @@ var platformLibrary =
 		catch (e) {
 			Module.printErr('Error: Failed to sync IDBFS\n', e);
 		}
-		console.log("Syncing started");
 	},
 
 	jsContextResizeNativeObjects: function () {

@@ -80,8 +80,8 @@ var audioLibrary =
 
 			this.fSource.onended = function () {
 				var ch = this.parent;
-				console.log('channel finished', ch);
-				console.log(ch.fLuaCallback);
+				// console.log('channel finished', ch);
+				// console.log(ch.fLuaCallback);
 
 				ch.fStartedAt = 0;
 				if (ch.fLoops == 0) {
