@@ -1196,7 +1196,7 @@ namespace Rtt
 			int rc = jsContextGetIntModuleItem("idbfsSynced");
 			if (rc == 1)
 			{
-				//Rtt_Log("Syncing ended\n");
+				Rtt_Log("Syncing ended\n");
 				fAppState = LOAD_FONTS;
 			}
 			break;

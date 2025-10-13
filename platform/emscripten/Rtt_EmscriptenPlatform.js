@@ -649,7 +649,7 @@ var platformLibrary =
 		catch (e) {
 			Module.printErr('Error: Failed to sync IDBFS\n', e);
 		}
-		//console.log("Syncing started");
+		console.log("Syncing started");
 	},
 
 	jsContextResizeNativeObjects: function () {
