@@ -637,6 +637,13 @@ var platformLibrary =
 	},
 
 	jsContextSyncFS: function() {
+		if (Module.idbfsSynced == 0)
+		{
+			console.log("Wait Syncing..");
+			return;
+		}
+
+
 		Module.idbfsSynced = 0;
 		try {
 			FS.syncfs(function (err) {
