@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --
 -- This file is part of the Corona game engine.
--- For overview and more information on licensing please refer to README.md 
+-- For overview and more information on licensing please refer to README.md
 -- Home page: https://github.com/coronalabs/corona
 -- Contact: support@coronalabs.com
 --
@@ -12,15 +12,15 @@ processExecute = processExecute or os.execute
 
 local lfs = require "lfs"
 local json = require "json"
-local http = require( "socket.http" )
+local http = require("socket.http")
 local debugBuildProcess = 0
 
-local dirSeparator = package.config:sub(1,1)
+local dirSeparator = package.config:sub(1, 1)
 local windows = (dirSeparator == '\\')
-local buildSettings = nil		-- build.settings
+local buildSettings = nil -- build.settings
 
 local webappFolder
-local args  -- args from C++ builder
+local args -- args from C++ builder
 
 local function log(...)
 	myprint(...)
@@ -32,140 +32,145 @@ local function log3(...)
 	end
 end
 
-local function quoteString( str )
+local function quoteString(str)
 	str = str:gsub('\\', '\\\\')
 	str = str:gsub('"', '\\"')
 	return "\"" .. str .. "\""
 end
 
 function dir_exists(path)
-    local cd = lfs.currentdir()
-    local is = lfs.chdir(path) and true or false
-    lfs.chdir(cd)
-    return is
+	local cd = lfs.currentdir()
+	local is = lfs.chdir(path) and true or false
+	lfs.chdir(cd)
+	return is
 end
 
 function file_exists(name)
-   local f = io.open(name,"r")
-   if f~=nil then io.close(f) return true else return false end
+	local f = io.open(name, "r")
+	if f ~= nil then
+		io.close(f)
+		return true
+	else
+		return false
+	end
 end
 
 function globToPattern(g)
-  local p = "^"  -- pattern being built
-  local i = 0    -- index in g
-  local c        -- char at index i in g.
+	local p = "^" -- pattern being built
+	local i = 0 -- index in g
+	local c    -- char at index i in g.
 
-  -- unescape glob char
-  local function unescape()
-    if c == '\\' then
-      i = i + 1; c = g:sub(i,i)
-      if c == '' then
-        p = '[^]'
-        return false
-      end
-    end
-    return true
-  end
+	-- unescape glob char
+	local function unescape()
+		if c == '\\' then
+			i = i + 1; c = g:sub(i, i)
+			if c == '' then
+				p = '[^]'
+				return false
+			end
+		end
+		return true
+	end
 
-  -- escape pattern char
-  local function escape(c)
-    return c:match("^%w$") and c or '%' .. c
-  end
+	-- escape pattern char
+	local function escape(c)
+		return c:match("^%w$") and c or '%' .. c
+	end
 
-  -- Convert tokens at end of charset.
-  local function charset_end()
-    while 1 do
-      if c == '' then
-        p = '[^]'
-        return false
-      elseif c == ']' then
-        p = p .. ']'
-        break
-      else
-        if not unescape() then break end
-        local c1 = c
-        i = i + 1; c = g:sub(i,i)
-        if c == '' then
-          p = '[^]'
-          return false
-        elseif c == '-' then
-          i = i + 1; c = g:sub(i,i)
-          if c == '' then
-            p = '[^]'
-            return false
-          elseif c == ']' then
-            p = p .. escape(c1) .. '%-]'
-            break
-          else
-            if not unescape() then break end
-            p = p .. escape(c1) .. '-' .. escape(c)
-          end
-        elseif c == ']' then
-          p = p .. escape(c1) .. ']'
-          break
-        else
-          p = p .. escape(c1)
-          i = i - 1 -- put back
-        end
-      end
-      i = i + 1; c = g:sub(i,i)
-    end
-    return true
-  end
+	-- Convert tokens at end of charset.
+	local function charset_end()
+		while 1 do
+			if c == '' then
+				p = '[^]'
+				return false
+			elseif c == ']' then
+				p = p .. ']'
+				break
+			else
+				if not unescape() then break end
+				local c1 = c
+				i = i + 1; c = g:sub(i, i)
+				if c == '' then
+					p = '[^]'
+					return false
+				elseif c == '-' then
+					i = i + 1; c = g:sub(i, i)
+					if c == '' then
+						p = '[^]'
+						return false
+					elseif c == ']' then
+						p = p .. escape(c1) .. '%-]'
+						break
+					else
+						if not unescape() then break end
+						p = p .. escape(c1) .. '-' .. escape(c)
+					end
+				elseif c == ']' then
+					p = p .. escape(c1) .. ']'
+					break
+				else
+					p = p .. escape(c1)
+					i = i - 1 -- put back
+				end
+			end
+			i = i + 1; c = g:sub(i, i)
+		end
+		return true
+	end
 
-  -- Convert tokens in charset.
-  local function charset()
-    i = i + 1; c = g:sub(i,i)
-    if c == '' or c == ']' then
-      p = '[^]'
-      return false
-    elseif c == '^' or c == '!' then
-      i = i + 1; c = g:sub(i,i)
-      if c == ']' then
-        -- ignored
-      else
-        p = p .. '[^'
-        if not charset_end() then return false end
-      end
-    else
-      p = p .. '['
-      if not charset_end() then return false end
-    end
-    return true
-  end
+	-- Convert tokens in charset.
+	local function charset()
+		i = i + 1; c = g:sub(i, i)
+		if c == '' or c == ']' then
+			p = '[^]'
+			return false
+		elseif c == '^' or c == '!' then
+			i = i + 1; c = g:sub(i, i)
+			if c == ']' then
+				-- ignored
+			else
+				p = p .. '[^'
+				if not charset_end() then return false end
+			end
+		else
+			p = p .. '['
+			if not charset_end() then return false end
+		end
+		return true
+	end
 
-  -- Convert tokens.
-  while 1 do
-    i = i + 1; c = g:sub(i,i)
-    if c == '' then
-      p = p .. '$'
-      break
-    elseif c == '?' then
-      p = p .. '.'
-    elseif c == '*' then
-      p = p .. '.*'
-    elseif c == '[' then
-      if not charset() then break end
-    elseif c == '\\' then
-      i = i + 1; c = g:sub(i,i)
-      if c == '' then
-        p = p .. '\\$'
-        break
-      end
-      p = p .. escape(c)
-    else
-      p = p .. escape(c)
-    end
-  end
-  return p
+	-- Convert tokens.
+	while 1 do
+		i = i + 1; c = g:sub(i, i)
+		if c == '' then
+			p = p .. '$'
+			break
+		elseif c == '?' then
+			p = p .. '.'
+		elseif c == '*' then
+			p = p .. '.*'
+		elseif c == '[' then
+			if not charset() then break end
+		elseif c == '\\' then
+			i = i + 1; c = g:sub(i, i)
+			if c == '' then
+				p = p .. '\\$'
+				break
+			end
+			p = p .. escape(c)
+		else
+			p = p .. escape(c)
+		end
+	end
+	return p
 end
 
-local function pathJoin(p1, p2, ... )
+local function pathJoin(p1, p2, ...)
 	local res
 	local p1s = p1:sub(-1) == dirSeparator
 	local p2s = p2:sub(1, 1) == dirSeparator
 	if p1s and p2s then
-		res = p1:sub(1,-2) .. p2
+		res = p1:sub(1, -2) .. p2
 	elseif p1s or p2s then
 		res = p1 .. p2
 	else
@@ -178,48 +183,48 @@ local function pathJoin(p1, p2, ... )
 	end
 end
 
-local function gzip( path, appname, ext, destFile )
+local function gzip(path, appname, ext, destFile)
 	local dst = pathJoin(path, destFile)
 	if windows then
 		local src = ''
-		for i = 1, #ext do	
+		for i = 1, #ext do
 			src = src .. '"' .. pathJoin(path, appname .. ext[i]) .. '"'
 			src = src .. ' '
 		end
-		local cmd = '""%CORONA_PATH%\\7za.exe" a -tzip "' .. dst .. '" ' ..  src
+		local cmd = '""%CORONA_PATH%\\7za.exe" a -tzip "' .. dst .. '" ' .. src
 		processExecute(cmd);
 	else
 		local src = ''
-		for i = 1, #ext do	
+		for i = 1, #ext do
 			src = src .. appname .. ext[i]
 			src = src .. ' '
 		end
-		local cmd = 'cd '.. quoteString(path) .. ' && /usr/bin/zip "' .. dst .. '" ' .. src
+		local cmd = 'cd ' .. quoteString(path) .. ' && /usr/bin/zip "' .. dst .. '" ' .. src
 		os.execute(cmd)
 	end
 
 	-- delete source files
-	for i = 1, #ext do	
+	for i = 1, #ext do
 		os.remove(pathJoin(path, appname .. ext[i]))
 	end
 end
 
-local function zip( folder, zipfile )
+local function zip(folder, zipfile)
 	if windows then
-		local cmd = '""%CORONA_PATH%\\7za.exe" a ' .. zipfile .. ' ' ..  folder .. '/*"'
+		local cmd = '""%CORONA_PATH%\\7za.exe" a ' .. zipfile .. ' ' .. folder .. '/*"'
 		return processExecute(cmd)
 	else
-		local cmd = 'cd '.. folder .. ' && /usr/bin/zip -r -X ' .. zipfile .. ' ' .. '*'
+		local cmd = 'cd ' .. folder .. ' && /usr/bin/zip -r -X ' .. zipfile .. ' ' .. '*'
 		return os.execute(cmd)
 	end
 end
 
-local function unzip( archive, dst )
+local function unzip(archive, dst)
 	if windows then
-		local cmd = '""%CORONA_PATH%\\7za.exe" x -aoa "' .. archive .. '" -o"' ..  dst .. '"'
+		local cmd = '""%CORONA_PATH%\\7za.exe" x -aoa "' .. archive .. '" -o"' .. dst .. '"'
 		return processExecute(cmd)
 	else
-		return os.execute('/usr/bin/unzip -o -q ' .. quoteString(archive) .. ' -d ' ..  quoteString(dst))
+		return os.execute('/usr/bin/unzip -o -q ' .. quoteString(archive) .. ' -d ' .. quoteString(dst))
 	end
 end
 
@@ -239,18 +244,18 @@ local function copyFile(src, dst)
 	return false;
 end
 
-local function copyDir( src, dst )
+local function copyDir(src, dst)
 	if windows then
-		local cmd = 'robocopy "' .. src .. '" ' .. '"' .. dst.. '" /e 2> nul'
-		-- robocopy failed when exit code is > 7... Windows  ¯\_(ツ)_/¯ 
-		return processExecute(cmd)>7 and 1 or 0
+		local cmd = 'robocopy "' .. src .. '" ' .. '"' .. dst .. '" /e 2> nul'
+		-- robocopy failed when exit code is > 7... Windows  ¯\_(ツ)_/¯
+		return processExecute(cmd) > 7 and 1 or 0
 	else
-		local cmd = 'cp -R ' .. quoteString(src) .. '/. ' ..  quoteString(dst)
+		local cmd = 'cp -R ' .. quoteString(src) .. '/. ' .. quoteString(dst)
 		return os.execute(cmd)
 	end
 end
 
-local function removeDir( dir )
+local function removeDir(dir)
 	if windows then
 		local cmd = 'rmdir /s/q "' .. dir .. '"'
 		return processExecute(cmd)
@@ -265,66 +270,66 @@ local function webDownloadPlugins(buildRevision, tmpDir, pluginDstDir)
 		return nil
 	end
 
-	local collectorParams = { 
+	local collectorParams = {
 		pluginPlatform = 'web',
 		plugins = buildSettings.plugins or {},
 		destinationDirectory = tmpDir,
 		build = buildRevision,
 		extractLocation = pluginDstDir,
 	}
-	
+
 	local pluginCollector = require "CoronaBuilderPluginCollector"
 	return pluginCollector.collect(collectorParams)
 end
 
 local function getExcludePredecate()
 	local excludes = {
-			"*.config",
-			"*.lu",
-			"*.lua",
-			"*.bak",
-			"*.orig",
-			"*.swp",
-			"*.DS_Store",
-			"*.apk",
-			"*.obb",
-			"*.obj",
-			"*.o",
-			"*.lnk",
-			"*.class",
-			"*.log",
-			".*",
-			"build.properties",
-		}
+		"*.config",
+		"*.lu",
+		"*.lua",
+		"*.bak",
+		"*.orig",
+		"*.swp",
+		"*.DS_Store",
+		"*.apk",
+		"*.obb",
+		"*.obj",
+		"*.o",
+		"*.lnk",
+		"*.class",
+		"*.log",
+		".*",
+		"build.properties",
+	}
 
-		-- append 'all:' and 'web:'
-		if buildSettings and buildSettings.excludeFiles then
-			if buildSettings.excludeFiles.all then
-				-- append excludes from 'all:'
-				local excl = buildSettings.excludeFiles.all		
-				for i = 1, #excl do	
-					excludes[#excludes + 1] = excl[i]
-				end
-			end
-			if buildSettings.excludeFiles.web then
-				-- append excludes from 'web:'
-				local excl = buildSettings.excludeFiles.web
-				for i = 1, #excl do	
-					excludes[#excludes + 1] = excl[i]
-				end
+	-- append 'all:' and 'web:'
+	if buildSettings and buildSettings.excludeFiles then
+		if buildSettings.excludeFiles.all then
+			-- append excludes from 'all:'
+			local excl = buildSettings.excludeFiles.all
+			for i = 1, #excl do
+				excludes[#excludes + 1] = excl[i]
 			end
 		end
-
-		-- glob ==> regexp
-		for i = 1, #excludes do
-			excludes[i] = globToPattern(excludes[i])
+		if buildSettings.excludeFiles.web then
+			-- append excludes from 'web:'
+			local excl = buildSettings.excludeFiles.web
+			for i = 1, #excl do
+				excludes[#excludes + 1] = excl[i]
+			end
 		end
+	end
 
-		for i = 1, #excludes do
-			log3('Exclude rule: ', excludes[i])
-		end
+	-- glob ==> regexp
+	for i = 1, #excludes do
+		excludes[i] = globToPattern(excludes[i])
+	end
 
-		return
+	for i = 1, #excludes do
+		log3('Exclude rule: ', excludes[i])
+	end
+
+	return
 
 		function(fileName)
 			for i = 1, #excludes do
@@ -345,27 +350,26 @@ local function pullDir(srcDir, dstDir, dataFiles, folders, out, excludePredicate
 		xf = xf:sub(2)
 		local f = pathJoin(srcDir, file)
 		if excludePredicate(xf) and excludePredicate(file) then
-			local attr = lfs.attributes (f)
+			local attr = lfs.attributes(f)
 			if attr.mode == "directory" then
-
 				-- keep, it will be used later to generate .js
-				folders[#folders+1] = { parent=dstDir , name=file };
+				folders[#folders + 1] = { parent = dstDir, name = file };
 
-				pullDir( pathJoin(srcDir, file), dstDir..file..'/', dataFiles, folders, out, excludePredicate)
+				pullDir(pathJoin(srcDir, file), dstDir .. file .. '/', dataFiles, folders, out, excludePredicate)
 			else
-       	-- append the file to out
-       	local fi = io.open(f, 'rb')
+				-- append the file to out
+				local fi = io.open(f, 'rb')
 				if (fi) then
-					 local block = 1024000			-- block size, 1mb
-						while true do
-							local bytes = fi:read(block)
-							if not bytes then break end
-							out:write(bytes)
-						end
+					local block = 1024000 -- block size, 1mb
+					while true do
+						local bytes = fi:read(block)
+						if not bytes then break end
+						out:write(bytes)
+					end
 					fi:close()
 
 					-- keep, it will be used later to generate .js
-					dataFiles[#dataFiles+1] = { name=dstDir..file, size=attr.size };
+					dataFiles[#dataFiles + 1] = { name = dstDir .. file, size = attr.size };
 					log3('Added ' .. f .. ' into .data')
 				else
 					log('Failed to add ' .. f .. ' into .data')
@@ -373,20 +377,20 @@ local function pullDir(srcDir, dstDir, dataFiles, folders, out, excludePredicate
 			end
 		else
 			log3('Excluded ' .. f)
-    end
+		end
 	end
 end
 
 function GetFileName(url)
-  return url:match("^.+/(.+)$")
+	return url:match("^.+/(.+)$")
 end
 
 function GetFileExtension(url)
-  return url:match("^.+(%..+)$")
+	return url:match("^.+(%..+)$")
 end
 
 local function buildTemplate(templateFolder)
---[[
+	--[[
 	-- get plugin files
 
 	local pluginFiles = {}
@@ -481,17 +485,17 @@ local function buildTemplate(templateFolder)
 end
 
 local function makeHtmlFile(name)
-	local htmlFile = pathJoin(webappFolder, name..".html")
+	local htmlFile = pathJoin(webappFolder, name .. ".html")
 	log3(htmlFile)
 	local fi = io.open(htmlFile, 'rb')
 	if (fi == nil) then
-		return 'Failed to open '..htmlFile;
+		return 'Failed to open ' .. htmlFile;
 	end
-	local s = fi:read("*a")	-- read file
+	local s = fi:read("*a") -- read file
 	fi:close()
 
 	local count
- 	s, count = s:gsub('coronaHtml5App.bin', args.applicationName .. ".bin", 1)
+	s, count = s:gsub('coronaHtml5App.bin', args.applicationName .. ".bin", 1)
 	if count > 0 then
 		-- replace title
 		s = s:gsub('Corona HTML5 App', args.applicationName)
@@ -499,21 +503,21 @@ local function makeHtmlFile(name)
 		-- rewrite file
 		local out = io.open(htmlFile, "wb");
 		if (out == nil) then
-			return 'Failed to update '..htmlFile
+			return 'Failed to update ' .. htmlFile
 		end
 		out:write(s)
-		out:close() 	
+		out:close()
 		log3('Created ' .. htmlFile)
 		return nil
 	end
-	return "Invalid "..htmlFile
+	return "Invalid " .. htmlFile
 end
 
 --
 -- global script to call from C++
 ---
-function webPackageApp( options )
-	args = options	-- keep for local functions
+function webPackageApp(options)
+	args = options -- keep for local functions
 	debugBuildProcess = tonumber(args.debugBuildProcess) or 0
 	log('HTML5 builder started')
 	log3(json.prettify(args))
@@ -521,9 +525,9 @@ function webPackageApp( options )
 	local template = args.webtemplateLocation
 	log3('using template ' .. json.prettify(args))
 
--- for debugging
---	local template = 'g:/webtemplate/webtemplate.zip'
---	local template = '/Users/mymac/corona/main-vitaly/platform/emscripten/webtemplate.zip'
+	-- for debugging
+	--	local template = 'g:/webtemplate/webtemplate.zip'
+	--	local template = '/Users/mymac/corona/main-vitaly/platform/emscripten/webtemplate.zip'
 
 
 	-- check if user purchased splash screen
@@ -532,19 +536,20 @@ function webPackageApp( options )
 		if windows then
 			coronaRoot = os.getenv("CORONA_PATH")
 		else
-			local coronaDir = lfs.symlinkattributes(os.getenv('HOME') .. '/Library/Application Support/Corona/Native', "target")
+			local coronaDir = lfs.symlinkattributes(os.getenv('HOME') .. '/Library/Application Support/Corona/Native',
+				"target")
 			if coronaDir then
 				coronaRoot = coronaDir .. "../Corona Simulator.app/Contents"
 			end
 		end
-		template = pathJoin(coronaRoot , 'Resources', 'webtemplate.zip')
+		template = pathJoin(coronaRoot, 'Resources', 'webtemplate.zip')
 	end
 
 	-- read settings
 	local buildSettingsFile = pathJoin(args.srcDir, 'build.settings')
 	local oldSettings = _G['settings']
 	_G['settings'] = nil
-	pcall( function() dofile(buildSettingsFile) end	)
+	pcall(function() dofile(buildSettingsFile) end)
 	buildSettings = _G['settings']
 	_G['settings'] = oldSettings
 
@@ -561,10 +566,10 @@ function webPackageApp( options )
 	end
 
 	local appFolder = pathJoin(args.tmpDir, 'webapp')
-	success = removeDir(appFolder)	-- clear
---	if not success then
---		return 'Failed to clear tmp folder: ' .. appFolder
---	end
+	success = removeDir(appFolder) -- clear
+	--	if not success then
+	--		return 'Failed to clear tmp folder: ' .. appFolder
+	--	end
 
 	success = lfs.mkdir(appFolder)
 	if not success then
@@ -574,10 +579,10 @@ function webPackageApp( options )
 
 	-- unzip standard template
 	local templateFolder = pathJoin(args.tmpDir, 'webtemplate')
-	success = removeDir(templateFolder)	
---	if not success then
---		return 'Failed to clear template folder: ' .. templateFolder
---	end
+	success = removeDir(templateFolder)
+	--	if not success then
+	--		return 'Failed to clear template folder: ' .. templateFolder
+	--	end
 
 	success = lfs.mkdir(templateFolder)
 	if not success then
@@ -586,14 +591,14 @@ function webPackageApp( options )
 	log3('Template folder: ' .. templateFolder)
 
 	-- sanity check
-	local archivesize = lfs.attributes (template, "size")
+	local archivesize = lfs.attributes(template, "size")
 	if archivesize == nil or archivesize == 0 then
 		return 'Failed to open template: ' .. template
 	end
 
 	local ret = unzip(template, templateFolder)
 	if ret ~= 0 then
-		return 'Failed to unpack template ' .. template .. ' to ' .. templateFolder ..  ', err=' .. ret
+		return 'Failed to unpack template ' .. template .. ' to ' .. templateFolder .. ', err=' .. ret
 	end
 	log3('Unzipped ' .. template .. ' to ' .. templateFolder)
 
@@ -608,16 +613,16 @@ function webPackageApp( options )
 	end
 
 	local luaPluginDir = pathJoin(pluginExtractDir, 'lua', 'lua_51')
-	if dir_exists( luaPluginDir ) then
+	if dir_exists(luaPluginDir) then
 		copyDir(luaPluginDir, pluginExtractDir)
 		removeDir(pathJoin(pluginExtractDir, 'lua'))
 	end
 	local luaPluginDir = pathJoin(pluginExtractDir, 'lua_51')
-	if dir_exists( luaPluginDir ) then
+	if dir_exists(luaPluginDir) then
 		copyDir(luaPluginDir, pluginExtractDir)
 		removeDir(pathJoin(pluginExtractDir, 'lua_51'))
 	end
-	if dir_exists( pluginExtractDir ) then
+	if dir_exists(pluginExtractDir) then
 		copyDir(pluginExtractDir, appFolder)
 	end
 
@@ -635,7 +640,7 @@ function webPackageApp( options )
 			local templateFile = pathJoin(templateFolder, 'html', srcFileName)
 			local ret = copyFile(templateFile, destinationFile)
 			if not ret then
-					return "Failed to copy " .. templateFile .. ' to ' .. destinationFile
+				return "Failed to copy " .. templateFile .. ' to ' .. destinationFile
 			end
 			log3("Copied " .. templateFile .. ' to ' .. destinationFile)
 		end
@@ -658,25 +663,25 @@ function webPackageApp( options )
 		return err
 	end
 
-	local err = copyHtmlTemplateFile('coronaHtml5App.js', args.applicationName ..".js")
+	local err = copyHtmlTemplateFile('coronaHtml5App.js', args.applicationName .. ".js")
 	if err then
 		return err
 	end
 
-	local err = copyHtmlTemplateFile('coronaHtml5App.wasm', args.applicationName ..".wasm")
+	local err = copyHtmlTemplateFile('coronaHtml5App.wasm', args.applicationName .. ".wasm")
 	if err then
 		return err
 	end
 
 	-- gather files into appFolder (tmp folder)
-	local ret = copyDir( args.srcDir, appFolder )
+	local ret = copyDir(args.srcDir, appFolder)
 	if ret ~= 0 then
 		return "Failed to copy " .. args.srcDir .. ' to ' .. appFolder
 	end
 	log3("Copied " .. args.srcDir .. ' to ' .. appFolder)
 
 	if args.useStandartResources then
-		local ret = copyDir( pathJoin(templateFolder, 'res_widget'), appFolder )
+		local ret = copyDir(pathJoin(templateFolder, 'res_widget'), appFolder)
 		if ret ~= 0 then
 			return "Failed to copy standard resources"
 		end
@@ -698,7 +703,7 @@ function webPackageApp( options )
 		return 'Failed to create .data file';
 	end
 	log3("Created .data file")
-	
+
 	local dataFiles = {};
 	local folders = {};
 
@@ -712,21 +717,19 @@ function webPackageApp( options )
 	--log3('DataFiles: size=', #dataFiles, json.prettify(dataFiles))
 	--log3('folders: size=', #folders, json.prettify(folders))
 
-	--generate new loadPackaghe for .js
-
-	local loadPackage = 'loadPackage({"files":[';
+	local loadPackage = 'loadPackage({files:[';
 	local pos = 0
 
 	log('.data file map (size/name)');
 	local totalDataSize = 0;
 	for i = 1, #dataFiles do
 		-- {"audio":0,"start":0,"crunched":0,"end":5,"filename":"/main.lua"}
-		loadPackage = loadPackage .. '{"audio":0,';
-		loadPackage = loadPackage .. '"start":' .. pos .. ','; 
+		loadPackage = loadPackage .. '{audio:0,';
+		loadPackage = loadPackage .. 'start:' .. pos .. ','; 
 		pos = pos + dataFiles[i].size
-		loadPackage = loadPackage .. '"crunched":0,';
-		loadPackage = loadPackage .. '"end":' .. pos .. ',';
-		loadPackage = loadPackage .. '"filename":"' .. dataFiles[i].name ..'"}';
+		loadPackage = loadPackage .. 'crunched:0,';
+		loadPackage = loadPackage .. 'end:' .. pos .. ',';
+		loadPackage = loadPackage .. 'filename:"' .. dataFiles[i].name ..'"}';
 		if i == #dataFiles then loadPackage = loadPackage .. ']' else loadPackage = loadPackage .. "," end
 
 		-- print log
@@ -740,124 +743,70 @@ function webPackageApp( options )
 	log('Total data file size = ' .. totalDataSize .. ' = ' .. math.floor(totalDataSize / 1024) .. 'KB = ' .. math.floor(totalDataSize / 1024 / 1024) .. 'MB');
 
 	-- ,"remote_package_size":5,"package_uuid":"134361ad-01a4-42aa-aea6-5b48c05818f7"})
-	loadPackage = loadPackage .. ',"remote_package_size":' .. pos;
+	loadPackage = loadPackage .. ',remote_package_size:' .. pos;
 
 	-- fixme UUID
-	loadPackage = loadPackage .. ',"package_uuid":"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
+	loadPackage = loadPackage .. ',package_uuid:"134361ad-01a4-42aa-aea6-5b48c05818f7"})';
 	--log3('loadPackage:', loadPackage);
 
-	-- Main changes needed for Emscripten 4.0.10 compatibility:
-
-	-- 1. Update FS_createPath to new FS API
-	local function updateFSCalls(src)
-		-- First try new FS.mkdir pattern
-		local count
-		src, count = src:gsub("Module%['FS_createPath']%b()", function(match)
-			-- Convert Module['FS_createPath']("/","folder",true,true) to FS.mkdir("/folder")
-			local path, name = match:match("Module%['FS_createPath']%(\"([^\"]+)\",\"([^\"]+)\"")
-			if path and name then
-				return "FS.mkdir(\""..path..(path:sub(-1) == "/" and "" or "/")..name.."\")"
-			end
-			return match
-		end)
-		
-		if count < 1 then
-			-- Try other variants
-			src, count = src:gsub('Module%["FS_createPath"]%b()', function(match)
-				local path, name = match:match('Module%["FS_createPath"]%("([^"]+)","([^"]+)"')
-				if path and name then
-					return "FS.mkdir(\""..path..(path:sub(-1) == "/" and "" or "/")..name.."\")"
-				end
-				return match
-			end)
-		end
-		
-		return src, count
-	end
-	
-	-- 2. Update loadPackage and runtime methods
-	local function updateRuntimeMethods(src)
-		-- Update EXTRA_EXPORTED_RUNTIME_METHODS to EXPORTED_RUNTIME_METHODS
-		src = src:gsub("EXTRA_EXPORTED_RUNTIME_METHODS", "EXPORTED_RUNTIME_METHODS")
-		
-		-- Ensure required methods are exported
-		if not src:find("EXPORTED_RUNTIME_METHODS") then
-			src = src:gsub("var Module=.*{", "var Module={EXPORTED_RUNTIME_METHODS: ['FS', 'FS_createPath', 'FS_mkdir', 'ccall', 'cwrap'],")
-		end
-		
-		return src
-	end
-	--new emsdk
-	-----------------
-
-	-- old emsdk 2.x
 	--generate new FS_createPath for .js
-	
-	-- local createPaths = ''
-	-- for i = 1, #folders do
-	-- 	createPaths = createPaths .. 'Module["FS_createPath"]("'
-	-- 	createPaths = createPaths .. folders[i].parent
-	-- 	createPaths = createPaths .. '","'
-	-- 	createPaths = createPaths .. folders[i].name
-	-- 	createPaths = createPaths .. '",true,true);'
-	-- end
-	-- log3('FS_createPath:',createPaths);
 
-	-- new emsdk 4.x
-	-- Generate new FS.mkdir calls for .js
 	local createPaths = ''
 	for i = 1, #folders do
-		createPaths = createPaths .. 'FS.mkdir("'
+		createPaths = createPaths .. 'Module["FS_createPath"]("'
 		createPaths = createPaths .. folders[i].parent
-		if folders[i].parent:sub(-1) ~= "/" then
-			createPaths = createPaths .. "/"
-		end
+		createPaths = createPaths .. '","'
 		createPaths = createPaths .. folders[i].name
-		createPaths = createPaths .. '");'
+		createPaths = createPaths .. '",true,true);'
 	end
-	log3('FS.mkdir calls:', createPaths)
+	log3('FS_createPath:', createPaths);
 
 	-- generate .js
 
 	-- read template .js file
-	local jsfile = pathJoin(webappFolder, args.applicationName ..".js")
+	local jsfile = pathJoin(webappFolder, args.applicationName .. ".js")
 	local fi = io.open(jsfile, 'rb')
 	if (fi == nil) then
 		return 'Failed not open ' .. jsfile
 	end
-	local src = fi:read("*a")	-- .js file
+	local src = fi:read("*a") -- .js file
 	fi:close()
 
 	-- seek loadPackage({"files":[{"audio":0,"start":0,"crunched":0,"end":359,"filename":"/main.lua"},{"audio":0,"start":359,"crunched":0,"end":718,"filename":"/zzz/main.lua"}],"remote_package_size":718,"package_uuid":"be67bd33-1e30-46ab-85c8-ab4d3f06cf1d"})
-	local count
- 	src, count = src:gsub('loadPackage%b()', loadPackage, 1)
- 	if count < 1 then
-		return 'Source .js file does not contain loadPackage(...)';
- 	end
+	local count = 0
+	src = src:gsub("loadPackage%b()", function(m)
+		count = count + 1
+		if count == 2 then
+			return loadPackage
+		else
+			return m
+		end
+	end)
+	-- src, count = src:gsub("loadPackage%b()", loadPackage, 1)
+	-- if count < 1 then
+	-- 	return 'Source .js file does not contain loadPackage(...)';
+	-- end
 
-	--old emsdk 2.x
 	-- seek Module["FS_createPath"]("/","CORONA_FOLDER_PLACEHOLDER",true,true);
- 	-- src, count = src:gsub("Module%['FS_createPath']%b();", createPaths, 1)
- 	-- if count < 1 then
-	--  	src, count = src:gsub('Module%["FS_createPath"]%b();', createPaths, 1)
-	--  	if count < 1 then
-	-- 		return 'Source .js file does not contain FS_createPath()';
-	-- 	end
- 	-- end
-	
-	-- new emsdk 4.x
-	src, count = updateFSCalls(src);
- 	-- rename .data
- 	src, count = src:gsub('coronaHtml5App.data', args.applicationName .. ".data")
- 	if count < 1 then
-		return 'Source .js file does not contain coronaHtml5App.data';
- 	end
+	src, count = src:gsub("Module%['FS_createPath']%b();", createPaths, 1)
+	if count < 1 then
+		src, count = src:gsub('Module%["FS_createPath"]%b();', createPaths, 1)
+		if count < 1 then
+			return 'Source .js file does not contain FS_createPath()';
+		end
+	end
 
- 	-- rename .wasm
- 	src, count = src:gsub('coronaHtml5App.wasm', args.applicationName .. ".wasm")
- 	if count < 1 then
+	-- rename .data
+	src, count = src:gsub('coronaHtml5App.data', args.applicationName .. ".data")
+	if count < 1 then
+		return 'Source .js file does not contain coronaHtml5App.data';
+	end
+
+	-- rename .wasm
+	src, count = src:gsub('coronaHtml5App.wasm', args.applicationName .. ".wasm")
+	if count < 1 then
 		return 'Source .js file does not contain coronaHtml5App.wasm';
- 	end
+	end
 
 	-- write .js
 	local out = io.open(jsfile, "wb");
@@ -869,7 +818,7 @@ function webPackageApp( options )
 	out:close()
 	log3('Created ' .. jsfile)
 
-	-- make index.html 
+	-- make index.html
 	local err = makeHtmlFile("index")
 	if (res ~= nil) then return res end
 	err = makeHtmlFile("index-debug")
@@ -878,7 +827,7 @@ function webPackageApp( options )
 	if (res ~= nil) then return res end
 
 	-- compress .js & .wasm into .bin
-	gzip(webappFolder, args.applicationName , {'.js', '.wasm'}, args.applicationName .. '.bin')
+	gzip(webappFolder, args.applicationName, { '.js', '.wasm' }, args.applicationName .. '.bin')
 	log3('Created ' .. args.applicationName .. '.bin')
 	--
 	-- build FB Instant app
@@ -886,7 +835,7 @@ function webPackageApp( options )
 	if args.createFBInstantArchive then
 		-- create tmp folder for fb app
 		local appFolder = pathJoin(args.tmpDir, 'fbapp')
-		success = removeDir(appFolder)	-- clear
+		success = removeDir(appFolder) -- clear
 		success = lfs.mkdir(appFolder)
 		if not success then
 			return 'Failed to create tmp folder: ' .. appFolder
@@ -894,10 +843,10 @@ function webPackageApp( options )
 		log3('TMP folder: ' .. appFolder)
 
 		-- copy template files into appFolder (tmp folder)
-		local srcDir =  pathJoin(templateFolder, 'fbinstant')
+		local srcDir = pathJoin(templateFolder, 'fbinstant')
 		local ret = copyDir(srcDir, appFolder)
 		if ret ~= 0 then
-			return "Failed to copy " ..  srcDir .. ' to ' .. appFolder
+			return "Failed to copy " .. srcDir .. ' to ' .. appFolder
 		end
 		log3("Copied " .. srcDir .. ' to ' .. appFolder)
 
@@ -906,7 +855,7 @@ function webPackageApp( options )
 		local dst = pathJoin(appFolder, args.applicationName .. '.data')
 		local ret = copyFile(src, dst)
 		if not ret then
-				return "Failed to copy " .. src .. ' to ' .. dst
+			return "Failed to copy " .. src .. ' to ' .. dst
 		end
 		log3("Copied " .. src .. ' to ' .. dst)
 
@@ -914,7 +863,7 @@ function webPackageApp( options )
 		local src = pathJoin(webappFolder, args.applicationName .. '.bin')
 		local ret = unzip(src, appFolder)
 		if ret ~= 0 then
-			return 'Failed to unpack ' .. src .. ' to ' .. appFolder ..  ', err=' .. ret
+			return 'Failed to unpack ' .. src .. ' to ' .. appFolder .. ', err=' .. ret
 		end
 		log3('Unzipped ' .. src, ' to ', appFolder)
 
@@ -925,11 +874,11 @@ function webPackageApp( options )
 		if (fi == nil) then
 			return 'Failed to open ' .. src
 		end
-		local s = fi:read("*a")	-- read file
+		local s = fi:read("*a") -- read file
 		fi:close()
 
 		local count
- 		s, count = s:gsub('coronaHtml5App.data', args.applicationName .. ".data", 1)
+		s, count = s:gsub('coronaHtml5App.data', args.applicationName .. ".data", 1)
 		if count > 0 then
 			-- rewrite file
 			local out = io.open(src, "wb");
@@ -937,7 +886,7 @@ function webPackageApp( options )
 				return 'Failed to renew ' .. src
 			end
 			out:write(s)
-			out:close() 	
+			out:close()
 			log3('Created ' .. src)
 		end
 
@@ -949,10 +898,9 @@ function webPackageApp( options )
 			return 'Failed to create ' .. dst
 		end
 		log3('Created FB instant app: ' .. dst)
-
 	end
 
 	log('HTML5 builder ended')
 
-	return nil 
+	return nil
 end
