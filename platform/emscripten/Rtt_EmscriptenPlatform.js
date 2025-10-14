@@ -785,7 +785,13 @@ var platformLibrary =
 		try {
 			console.log("=== jsRenderText START ===");
 			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
-
+			
+			if (fontSize <= 0)
+			{
+				console.log("Fontsize is 0");
+				console.log("=== jsRenderText END ===");
+				return;
+			}
 			var text = UTF8ToString(_text);
 			var alignment = UTF8ToString(_alignment);
 			var fontName = UTF8ToString(_fontName);
