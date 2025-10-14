@@ -784,6 +784,7 @@ var platformLibrary =
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
 		try {
 			console.log("=== jsRenderText START ===");
+			console.trace("Called from:");
 			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
 			
 			var text = UTF8ToString(_text);
@@ -831,6 +832,7 @@ var platformLibrary =
 				fontName = 'sans-serif';
 			}
 			if (!fontSize || fontSize <= 0){
+				console.warn(fontSize + " is empty, set is 24");
 				fontSize = 24; //Hack to pass fontSize 0
 			}
 			ctx.font = String(fontSize) + 'px ' + fontName;
