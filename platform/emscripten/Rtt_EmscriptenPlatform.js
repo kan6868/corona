@@ -276,7 +276,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 
 		window.refreshNativeObject(obj.id);
-		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
+		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
