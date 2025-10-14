@@ -784,7 +784,6 @@ var platformLibrary =
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
 		try {
 			console.log("=== jsRenderText START ===");
-			console.trace("Called from:");
 			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
 			
 			var text = UTF8ToString(_text);
