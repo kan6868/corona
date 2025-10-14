@@ -786,12 +786,6 @@ var platformLibrary =
 			console.log("=== jsRenderText START ===");
 			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
 			
-			if (fontSize <= 0)
-			{
-				console.log("Fontsize is 0");
-				console.log("=== jsRenderText END ===");
-				return;
-			}
 			var text = UTF8ToString(_text);
 			var alignment = UTF8ToString(_alignment);
 			var fontName = UTF8ToString(_fontName);
@@ -835,6 +829,9 @@ var platformLibrary =
 			if (fontName === '' || fontExist == false) {
 				console.warn(fontName + " not found, using sans-serif");
 				fontName = 'sans-serif';
+			}
+			if (!fontSize || fontSize <= 0){
+				fontSize = 24; //Hack to pass fontSize 0
 			}
 			ctx.font = String(fontSize) + 'px ' + fontName;
 			console.log("Using font:", ctx.font);
