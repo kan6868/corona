@@ -42,7 +42,7 @@ EM_JS(void, info, (), {
 	});
 });
 
-EM_JS(void, resize_zoom, (w, h), {
+EM_JS(void, resize_zoom, (int w, int h), {
 	if (canvas.width == 0 || canvas.height == 0)
 	{
 		canvas.width = w;
