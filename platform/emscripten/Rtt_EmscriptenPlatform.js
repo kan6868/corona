@@ -276,7 +276,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 
 		window.refreshNativeObject(obj.id);
-		console.log('JS create', fType, 'id=', obj.id, x, y, w, h);
+		console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -568,29 +568,18 @@ var platformLibrary =
 		window.refreshNativeObject = function (id) {
 			var obj = document.getElementById(id);
 			if (obj) {
-				var dpr = window.devicePixelRatio || 1;
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-				// var scale = viewPort.width / Module.appInitWidth;
-				// scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
+				var scale = viewPort.width / Module.appInitWidth;
+				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
 
-				var scale = (viewPort.width * dpr) / Module.appInitWidth;
-				if (Module.appContentWidth > 0) {
-					scale *= Module.appInitWidth / Module.appContentWidth;
-				}
-
-				// var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
-				// var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
-				// obj.style.left = left + 'px';
-				// obj.style.top = top + 'px';
-				// obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
-				var left = scrollLeft + viewPort.left + (obj.x + obj.w / 2) * scale / dpr;
-				var top = scrollTop + viewPort.top + (obj.y + obj.h / 2) * scale / dpr;
+				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
+				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
 				obj.style.left = left + 'px';
 				obj.style.top = top + 'px';
-				obj.style.transform = `translate(-50%, -50%) scale(${scale / dpr})`;
+				obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
 			}
 		};
 
@@ -796,7 +785,7 @@ var platformLibrary =
 		try {
 			console.log("=== jsRenderText START ===");
 			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
-
+			
 			var text = UTF8ToString(_text);
 			var alignment = UTF8ToString(_alignment);
 			var fontName = UTF8ToString(_fontName);
@@ -841,7 +830,7 @@ var platformLibrary =
 				console.warn(fontName + " not found, using sans-serif");
 				fontName = 'sans-serif';
 			}
-			if (!fontSize || fontSize <= 0) {
+			if (!fontSize || fontSize <= 0){
 				console.warn(fontSize + " is empty, set is 24");
 				fontSize = 24; //Hack to pass fontSize 0
 			}
