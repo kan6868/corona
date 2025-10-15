@@ -568,15 +568,13 @@ var platformLibrary =
 		window.refreshNativeObject = function (id) {
 			var obj = document.getElementById(id);
 			if (obj) {
+
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-				var scale = viewPort.width / (Module.appInitWidth || 1);
-				if (Module.appContentWidth > 0)
-					scale *= Module.appInitWidth / Module.appContentWidth;
-				else if (viewPort.width === 0 || viewPort.height === 0)
-					scale = 1.0; // avoid 0
+				var scale = viewPort.width / Module.appInitWidth;
+				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
 
 				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
 				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
@@ -638,10 +636,6 @@ var platformLibrary =
 	jsContextResizeNativeObjects: function () {
 		//		var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
 		//		if (fullscreenElement == null) {
-		if (!canvas.width || !canvas.height) {
-			canvas.width = Module.appInitWidth || 640;
-			canvas.height = Module.appInitHeight || 960;
-		}
 		var parent = canvas.parentNode.childNodes;
 		for (var item in parent) {
 			var obj = parent[item];
@@ -809,12 +803,6 @@ var platformLibrary =
 			fontName = a[0];
 			var ext = a[1];
 			console.log("Font name / ext:", { fontName, ext });
-
-			if (!canvas.width || !canvas.height) {
-				console.warn("Canvas width/height is invalid (" + canvas.width + "x" + canvas.height + ")");
-				canvas.width = Module.appInitWidth || 640;
-				canvas.height = Module.appInitHeight || 960;
-			}
 
 			// create canvas
 			var canva = document.createElement('canvas');
