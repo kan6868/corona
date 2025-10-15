@@ -551,7 +551,7 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 		
 #if defined(EMSCRIPTEN)
-		resize_zoom(fWidth, fHeight);		
+				
 		info();
 		
 				// Tell it to use OpenGL version 2.0
@@ -1008,6 +1008,8 @@ namespace Rtt
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				resize_zoom((int)event.window.data1, (int)event.window.data2);
+				jsContextResizeNativeObjects();
 				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
