@@ -41,6 +41,14 @@ EM_JS(void, info, (), {
 		DPR: window.devicePixelRatio
 	});
 });
+
+EM_JS(void, resize_zoom, (w, h), {
+	if (canvas.width == 0 || canvas.height == 0)
+	{
+		canvas.width = w;
+		canvas.height = h;
+	}
+})
 extern "C"
 {
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
@@ -541,10 +549,12 @@ namespace Rtt
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		glViewport(0, 0, fWidth, fHeight);
+		
 #if defined(EMSCRIPTEN)
-				info();
-		// Tell it to use OpenGL version 2.0
+		resize_zoom(fWidth, fHeight);		
+		info();
+		
+				// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 		// SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -985,7 +995,7 @@ namespace Rtt
 					}
 
 					SDL_SetWindowSize(fWindow, w, h);
-					glViewport(0, 0, w, h);
+
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
