@@ -549,7 +549,7 @@ namespace Rtt
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		glViewport(0, 0, fWidth, fHeight);
+	
 #if defined(EMSCRIPTEN)
 				
 		info();
