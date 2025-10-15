@@ -537,6 +537,7 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
+				info();
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 #endif
@@ -572,6 +573,7 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
+		info();
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
