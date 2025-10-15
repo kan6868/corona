@@ -910,7 +910,7 @@ namespace Rtt
 		}
 
 		case SDL_WINDOWEVENT:
-			SDL_Log("SDL_WINDOWEVENT %x %x", event.window.event);
+			//SDL_Log("SDL_WINDOWEVENT %x %x", event.window.event);
 			switch (event.window.event)
 			{
 			case SDL_WINDOWEVENT_SHOWN:
