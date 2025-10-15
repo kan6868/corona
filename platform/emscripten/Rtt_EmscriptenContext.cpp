@@ -519,6 +519,8 @@ namespace Rtt
 		SDL_Log("fWidth: %d, fHeight: %d", fWidth, fHeight);
 #endif
 		jsContextInit(fWidth, fHeight, fOrientation);
+		SDL_Log("SDL INIT");
+		info();
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
