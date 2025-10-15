@@ -519,8 +519,6 @@ namespace Rtt
 		SDL_Log("fWidth: %d, fHeight: %d", fWidth, fHeight);
 #endif
 		jsContextInit(fWidth, fHeight, fOrientation);
-		SDL_Log("SDL INIT");
-		info();
 		if (fMode == "maximized" || fMode == "fullscreen")
 		{
 			// get JS window size
@@ -541,13 +539,11 @@ namespace Rtt
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
-
-		SDL_GLContext glContext = SDL_GL_CreateContext(fWindow);
-		SDL_GL_MakeCurrent(fWindow, glContext);
+		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		info();
+		glViewport(0, 0, fWidth, fHeight);
 #if defined(EMSCRIPTEN)
-
+				info();
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 		// SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -586,10 +582,10 @@ namespace Rtt
 		ColorUnion c;
 		c.pixel = defaults.GetClearColor();
 		jsContextSetClearColor(c.rgba.r, c.rgba.g, c.rgba.b, c.rgba.a);
-		info();
+
 		// hack
 #ifdef EMSCRIPTEN
-		
+		info();
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
@@ -989,7 +985,7 @@ namespace Rtt
 					}
 
 					SDL_SetWindowSize(fWindow, w, h);
-
+					glViewport(0, 0, w, h);
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
