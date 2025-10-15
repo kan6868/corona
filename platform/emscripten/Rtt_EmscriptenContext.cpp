@@ -642,6 +642,7 @@ namespace Rtt
 
 	bool CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
 	{
+		SDL_LOG("Focus callback");
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
 		{
@@ -653,6 +654,7 @@ namespace Rtt
 
 	bool CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
 	{
+		SDL_LOG("Resize callback");
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
 		sdlevent.window.data1 = uiEvent->windowInnerWidth;
@@ -665,6 +667,7 @@ namespace Rtt
 
 	const char* CoronaAppContext::beforeunloadCallback(int eventType, const void *reserved, void *userData)
 	{
+		SDL_LOG("beforeunload callback");
 		jsContextSyncFS();
 
 		CoronaAppContext* ctx = (CoronaAppContext*) userData;
@@ -938,7 +941,7 @@ namespace Rtt
 		}
 
 		case SDL_WINDOWEVENT:
-			//SDL_Log("SDL_WINDOWEVENT %x %x", event.window.event);
+			SDL_Log("SDL_WINDOWEVENT %x", event.window.event);
 			switch (event.window.event)
 			{
 			case SDL_WINDOWEVENT_SHOWN:
