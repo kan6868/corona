@@ -525,12 +525,14 @@ namespace Rtt
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
 			SDL_Log("jsWindowWidth: %d, jsWindowHeight: %d", jsWindowWidth, jsWindowHeight);
-			
+
 			float scaleX = (float) jsWindowWidth / (float) fWidth;
 			float scaleY = (float) jsWindowHeight / (float) fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
 			fWidth *= scale;
 			fHeight *= scale;
+			
+			SDL_Log("Scale -> fWidth: %d, fHeight: %d", fWidth, fHeight);
 		}
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
@@ -544,6 +546,12 @@ namespace Rtt
 				info();
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+		// SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 #endif
 
 #if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
