@@ -508,25 +508,27 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 
-		jsContextInit(fWidth, fHeight, fOrientation);
-		if (fMode == "maximized" || fMode == "fullscreen")
-		{
-			// get JS window size
-			int jsWindowWidth = jsContextGetWindowWidth();
-			int jsWindowHeight = jsContextGetWindowHeight();
 
-			float scaleX = (float) jsWindowWidth / (float) fWidth;
-			float scaleY = (float) jsWindowHeight / (float) fHeight;
-			float scale = fmin(scaleX, scaleY);				// keep ratio
-			fWidth *= scale;
-			fHeight *= scale;
-		}
+		#if defined(EMSCRIPTEN)
+		
+			devicePixelRatio = emscripten_get_device_pixel_ratio();
+
+		#endif
+		jsContextInit((int)(fWidth * devicePixelRatio), (int)(fHeight * devicePixelRatio), fOrientation);
+		//Scale double
+		float scaleX = (float)(((float)jsWindowWidth * devicePixelRatio) / fWidth);
+		float scaleY = (float)(((float)jsWindowHeight * devicePixelRatio) / fHeight);
+		float scale = fmin(scaleX, scaleY);				// keep ratio
+			
+		float scaledWidth = fWidth * scale;
+		float scaledHeight = fHeight * scale;
 
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)scaledWidth, (int)scaledHeight, flags);
 		SDL_GL_CreateContext(fWindow);
+		SDL_GL_SetSwapInterval(1); // Enable vsync
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
