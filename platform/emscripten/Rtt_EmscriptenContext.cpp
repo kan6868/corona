@@ -549,7 +549,7 @@ namespace Rtt
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		SDL_GL_CreateContext(fWindow);
 		fPlatform->setWindow(fWindow, fOrientation);
-		
+		glViewport(0, 0, fWidth, fHeight);
 #if defined(EMSCRIPTEN)
 				
 		info();
@@ -1008,8 +1008,6 @@ namespace Rtt
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				resize_zoom((int)event.window.data1, (int)event.window.data2);
-				jsContextResizeNativeObjects();
 				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
