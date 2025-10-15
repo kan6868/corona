@@ -613,10 +613,10 @@ namespace Rtt
 			CoronaAppContext* ctx = (CoronaAppContext*) userData;
 			ctx->pause();
 		}
-	  return 0;
+	  return false;
 	}
 
-	int CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
+	bool CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
 	{
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
