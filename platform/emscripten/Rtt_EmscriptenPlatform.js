@@ -568,19 +568,29 @@ var platformLibrary =
 		window.refreshNativeObject = function (id) {
 			var obj = document.getElementById(id);
 			if (obj) {
-
+				var dpr = window.devicePixelRatio || 1;
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-				var scale = viewPort.width / Module.appInitWidth;
-				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
+				// var scale = viewPort.width / Module.appInitWidth;
+				// scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
 
-				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
-				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
+				var scale = (viewPort.width * dpr) / Module.appInitWidth;
+				if (Module.appContentWidth > 0) {
+					scale *= Module.appInitWidth / Module.appContentWidth;
+				}
+
+				// var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
+				// var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
+				// obj.style.left = left + 'px';
+				// obj.style.top = top + 'px';
+				// obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
+				var left = scrollLeft + viewPort.left + (obj.x + obj.w / 2) * scale / dpr;
+				var top = scrollTop + viewPort.top + (obj.y + obj.h / 2) * scale / dpr;
 				obj.style.left = left + 'px';
 				obj.style.top = top + 'px';
-				obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
+				obj.style.transform = `translate(-50%, -50%) scale(${scale / dpr})`;
 			}
 		};
 
