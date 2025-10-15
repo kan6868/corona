@@ -524,7 +524,8 @@ namespace Rtt
 			// get JS window size
 			int jsWindowWidth = jsContextGetWindowWidth();
 			int jsWindowHeight = jsContextGetWindowHeight();
-
+			SDL_Log("jsWindowWidth: %d, jsWindowHeight: %d", jsWindowWidth, jsWindowHeight);
+			
 			float scaleX = (float) jsWindowWidth / (float) fWidth;
 			float scaleY = (float) jsWindowHeight / (float) fHeight;
 			float scale = fmin(scaleX, scaleY);				// keep ratio
