@@ -396,8 +396,6 @@ namespace Rtt
 			Rtt_LogException("SDL_Init: %s(%d)\n", SDL_GetError(), rc);
 		}
 
-		// SDL_SetHint(SDL_HINT_ANDROID_SEPARATE_MOUSE_AND_TOUCH, "1");
-
 		SDL_version compiled;
 		SDL_version linked;
 		SDL_VERSION(&compiled);
@@ -445,6 +443,11 @@ namespace Rtt
 		int w = 0;
 		int h = 0;
 		fRuntime->readSettings(&w, &h, &orientation, &title, &fMode);
+
+		// get JS window size
+		int jsWindowWidth = jsContextGetWindowWidth();
+		int jsWindowHeight = jsContextGetWindowHeight();
+		float devicePixelRatio = 1.0;
 		if (orientation == "landscapeRight")
 		{
 			fOrientation = DeviceOrientation::kSidewaysRight;	// bottom of device is to the right
@@ -567,11 +570,12 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
-				
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
 		}
+
+		emscripten_set_element_css_size("canvas", (int)(scaledWidth / devicePixelRatio), (int)(scaledHeight / devicePixelRatio));
 #endif
 
 		return true;
@@ -580,7 +584,7 @@ namespace Rtt
 #if defined(EMSCRIPTEN)
 
 	// iOS Web Audio Unlocker
-	bool CoronaAppContext::mouseupCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void * userData) 
+	int CoronaAppContext::mouseupCallback(int eventType, const EmscriptenMouseEvent *mouseEvent, void * userData) 
 	{
 		CoronaAppContext* ctx = (CoronaAppContext*) userData;
 		jsContextUnlockAudio();
@@ -593,15 +597,15 @@ namespace Rtt
 			isFirstTime = false;
 			ctx->requestFullscreen(EMSCRIPTEN_FULLSCREEN_SCALE_ASPECT, EMSCRIPTEN_FULLSCREEN_CANVAS_SCALE_STDDEF, EMSCRIPTEN_FULLSCREEN_FILTERING_DEFAULT); 
 		}
-	  return false;
+	  return 0;
 	}
 
-	bool CoronaAppContext::touchCallback(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
+	int CoronaAppContext::touchCallback(int eventType, const EmscriptenTouchEvent *touchEvent, void *userData)
 	{
 		return mouseupCallback(0, 0, 0);
 	}
 
-	bool CoronaAppContext::blurCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
+	int CoronaAppContext::blurCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
 	{
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
@@ -609,10 +613,10 @@ namespace Rtt
 			CoronaAppContext* ctx = (CoronaAppContext*) userData;
 			ctx->pause();
 		}
-	  return false;
+	  return 0;
 	}
 
-	bool CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
+	int CoronaAppContext::focusCallback(int eventType, const EmscriptenFocusEvent *focusEvent, void *userData)
 	{
 		// check event target, ingnore all events except #window
 		if (*focusEvent->id == 0)		// event from #window ?
@@ -620,10 +624,10 @@ namespace Rtt
 			CoronaAppContext* ctx = (CoronaAppContext*) userData;
 			ctx->resume();
 		}
-		return false;
+		return 0;
 	}
 
-	bool CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
+	int CoronaAppContext::resizeCallback(int eventType, const EmscriptenUiEvent *uiEvent, void *userData)
 	{
 		SDL_Event sdlevent;
 		sdlevent.type = SDL_WINDOWEVENT;
@@ -632,7 +636,7 @@ namespace Rtt
 		sdlevent.window.windowID = 0;
 		sdlevent.window.event = SDL_WINDOWEVENT_RESIZED;
 		SDL_PushEvent(&sdlevent);
-		return false;
+		return 0;
 	}
 
 	const char* CoronaAppContext::beforeunloadCallback(int eventType, const void *reserved, void *userData)
@@ -994,12 +998,6 @@ namespace Rtt
 						}
 						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
 						{
-							w = fWidth * scaleX;
-							h = fHeight * scaleY;
-						}
-						else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
-						{
-							//Scale to fullscreen
 							w = fWidth * scaleX;
 							h = fHeight * scaleY;
 						}
