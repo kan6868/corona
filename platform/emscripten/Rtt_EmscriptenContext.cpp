@@ -1157,7 +1157,7 @@ namespace Rtt
 							Rtt_CopyFile(files[i].c_str(), dst.c_str());
 							copiedFiles++;
 
-							//Rtt_Log("Creating sandbox: %s to %s\n", files[i].c_str(), dst.c_str());
+							Rtt_Log("Creating sandbox: %s to %s\n", files[i].c_str(), dst.c_str());
 						}
 					}
 				
