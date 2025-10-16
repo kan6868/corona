@@ -561,12 +561,15 @@ var platformLibrary =
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
 		var canva = document.createElement('canvas');
+		console.log("Create canva");
 		var ctx = canva.getContext("2d");
+		console.log("Get context");
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
 
 		window.refreshNativeObject = function (id) {
+			console.log("refresh Object " + id);
 			var obj = document.getElementById(id);
 			if (obj) {
 
