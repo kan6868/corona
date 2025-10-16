@@ -1028,56 +1028,6 @@ namespace Rtt
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
 				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				bool fullScreen = false;
-#ifdef EMSCRIPTEN
-				fullScreen = EM_ASM_INT({
-					var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-					return fullscreenElement != null ? true: false;
-				});
-#endif
-				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				// resize only for 'maximized' to fill fit browers's window
-//				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
-				if (fullScreen == false && fMode == "maximized")
-				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
-					if (w == 0 || h == 0)
-					{
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
-					}
-					// keep ratio
-					float scaleX = w / fWidth;
-					float scaleY = h / fHeight;
-
-					float scale = fmin(scaleX, scaleY);
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0)
-					{
-						w = fWidth * scaleX;
-						h = fHeight * scaleY;
-					}
-					else
-					if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0)
-					{
-					}
-					else
-					{
-						w = fWidth * scale;
-						h = fHeight * scale;
-					}
-
-					SDL_SetWindowSize(fWindow, (int)w, (int)h);
-
-					fRuntime->WindowSizeChanged();
-					fRuntime->RestartRenderer(fOrientation);
-					fRuntime->GetDisplay().Invalidate();
-
-					fRuntime->DispatchEvent(ResizeEvent());
-				}
-
-				// refresh native elements
-				jsContextResizeNativeObjects();
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
