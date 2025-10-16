@@ -348,23 +348,23 @@ namespace Rtt
 		, fWrapWidth(width)
 		, fAlignment(&context, alignment)
 	{
-		// Debug log — in ra toàn bộ tham số trước khi gọi JS
-		SDL_Log("=== EmscriptenTextBitmap::EmscriptenTextBitmap ===");
-		SDL_Log("  str            = '%s'", str ? str : "(null)");
-		SDL_Log("  width          = %d", width);
-		SDL_Log("  height         = %d", height);
-		SDL_Log("  alignment      = '%s'", alignment ? alignment : "(null)");
-		SDL_Log("  inFont.Name()  = '%s'", inFont.Name() ? inFont.Name() : "(null)");
-		SDL_Log("  inFont.Size()  = %d", (int)inFont.Size());
-		SDL_Log("  this pointer   = %p", this);
+		// // Debug log — in ra toàn bộ tham số trước khi gọi JS
+		// SDL_Log("=== EmscriptenTextBitmap::EmscriptenTextBitmap ===");
+		// SDL_Log("  str            = '%s'", str ? str : "(null)");
+		// SDL_Log("  width          = %d", width);
+		// SDL_Log("  height         = %d", height);
+		// SDL_Log("  alignment      = '%s'", alignment ? alignment : "(null)");
+		// SDL_Log("  inFont.Name()  = '%s'", inFont.Name() ? inFont.Name() : "(null)");
+		// SDL_Log("  inFont.Size()  = %d", (int)inFont.Size());
+		// SDL_Log("  this pointer   = %p", this);
 		
-		jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
-		SDL_Log("  [jsRenderText] called successfully");
-    	SDL_Log("  baselineOffset before calc = %f", baselineOffset);
-		baselineOffset = fHeight * 0.5f - inFont.Size();
-		SDL_Log("  fHeight        = %f", fHeight);
-		SDL_Log("  baselineOffset = %f", baselineOffset);
-		SDL_Log("=== END EmscriptenTextBitmap ===");
+		// jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
+		// SDL_Log("  [jsRenderText] called successfully");
+    	// SDL_Log("  baselineOffset before calc = %f", baselineOffset);
+		// baselineOffset = fHeight * 0.5f - inFont.Size();
+		// SDL_Log("  fHeight        = %f", fHeight);
+		// SDL_Log("  baselineOffset = %f", baselineOffset);
+		// SDL_Log("=== END EmscriptenTextBitmap ===");
 	}
 
 	void EmscriptenTextBitmap::setBitmap(int size, uint8_t* image, int w, int h, int isSafari)
