@@ -543,7 +543,7 @@ namespace Rtt
 			SDL_Log("Scale -> fWidth: %d, fHeight: %d", fWidth, fHeight);
 		}
 
-		Uint32 flags = SDL_WINDOW_OPENGL;
+		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		info();
