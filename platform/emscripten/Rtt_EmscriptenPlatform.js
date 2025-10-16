@@ -605,8 +605,8 @@ var platformLibrary =
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function () { return window.innerWidth * window.devicePixelRatio; },
-	jsContextGetWindowHeight: function () { return window.innerHeight * window.devicePixelRatio; },
+	jsContextGetWindowWidth: function () { return Math.floor(window.innerWidth * window.devicePixelRatio); },
+	jsContextGetWindowHeight: function () { return Math.floor(window.innerHeight * window.devicePixelRatio); },
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
