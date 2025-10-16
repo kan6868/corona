@@ -788,25 +788,25 @@ var platformLibrary =
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
 		try {
-			console.log("=== jsRenderText START ===");
-			console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
+			// console.log("=== jsRenderText START ===");
+			// console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
 
 			var text = UTF8ToString(_text);
 			var alignment = UTF8ToString(_alignment);
 			var fontName = UTF8ToString(_fontName);
 
-			console.log("Decoded strings:", { text, alignment, fontName });
+			// console.log("Decoded strings:", { text, alignment, fontName });
 
 			// extract file name
 			var a = fontName.split('/');
 			fontName = a[a.length - 1];
-			console.log("Font basename:", fontName);
+			// console.log("Font basename:", fontName);
 
 			// remove extension
 			a = fontName.split('.');
 			fontName = a[0];
 			var ext = a[1];
-			console.log("Font name / ext:", { fontName, ext });
+			// console.log("Font name / ext:", { fontName, ext });
 
 			// create canvas
 			var canva = document.createElement('canvas');
@@ -814,11 +814,11 @@ var platformLibrary =
 			canva.height = canvas.height;
 			canva.style.position = "absolute";
 			var ctx = canva.getContext("2d");
-			console.log("Canvas created:", { width: canva.width, height: canva.height });
+			// console.log("Canvas created:", { width: canva.width, height: canva.height });
 
 			if (Module.isSafari) {
 				ctx.fillStyle = 'red';
-				console.log("Safari detected, set fillStyle = red");
+				// console.log("Safari detected, set fillStyle = red");
 			}
 
 			// check if font exists
@@ -829,30 +829,27 @@ var platformLibrary =
 			var newSize = ctx.measureText(testtext).width;
 
 			var fontExist = newSize != baselineSize;
-			console.log("Font existence check:", { baselineSize, newSize, fontExist });
+			// console.log("Font existence check:", { baselineSize, newSize, fontExist });
 
 			if (fontName === '' || fontExist == false) {
-				console.warn(fontName + " not found, using sans-serif");
+				// console.warn(fontName + " not found, using sans-serif");
 				fontName = 'sans-serif';
 			}
-			if (!fontSize || fontSize <= 0) {
-				console.warn(fontSize + " is empty, set is 24");
-				fontSize = 24; //Hack to pass fontSize 0
-			}
+
 			ctx.font = String(fontSize) + 'px ' + fontName;
-			console.log("Using font:", ctx.font);
+			// console.log("Using font:", ctx.font);
 
 			ctx.textBaseline = 'top';
 			ctx.textAlign = alignment;
-			console.log("Text alignment + baseline:", { textBaseline: ctx.textBaseline, textAlign: ctx.textAlign });
+			// console.log("Text alignment + baseline:", { textBaseline: ctx.textBaseline, textAlign: ctx.textAlign });
 
 			var a = measureText(testtext, false, fontName, fontSize);
 			var lineHeight = a[1];
-			console.log("Measured lineHeight:", lineHeight);
+			// console.log("Measured lineHeight:", lineHeight);
 
 			// auto width calculation
 			if (w == 0) {
-				console.log("Auto calculating width...");
+				// console.log("Auto calculating width...");
 				var line = '';
 				for (var i = 0; i < text.length; i++) {
 					if (text.charAt(i) == '\n') {
@@ -867,16 +864,16 @@ var platformLibrary =
 				}
 				var metrics = ctx.measureText(line);
 				w = Math.max(w, metrics.width);
-				console.log("Auto width =", w);
+				// console.log("Auto width =", w);
 			}
 
 			var x = 0, y = 0;
 			if (alignment === 'right') x = w;
 			else if (alignment === 'center') x = w / 2;
-			console.log("Initial position:", { x, y, alignment });
+			// console.log("Initial position:", { x, y, alignment });
 
 			// wrap text
-			console.log("Begin drawing text...");
+			// console.log("Begin drawing text...");
 			var ww = 0;
 			var hh = 0;
 			var line = '';
@@ -884,7 +881,7 @@ var platformLibrary =
 			for (var i = 0; i < text.length; i++) {
 				if (text.charAt(i) == '\n') {
 					ctx.fillText(line, x, y);
-					console.log("Draw line (newline):", line, "at y =", y);
+					// console.log("Draw line (newline):", line, "at y =", y);
 					line = '';
 					y += lineHeight;
 				} else {
@@ -893,7 +890,7 @@ var platformLibrary =
 					if (metrics.width > w) {
 						if (text.charAt(i) === ' ') {
 							ctx.fillText(line, x, y);
-							console.log("Draw line (space wrap):", line, "at y =", y);
+							// console.log("Draw line (space wrap):", line, "at y =", y);
 							line = '';
 						} else {
 							var words = line.split(' ');
@@ -902,11 +899,11 @@ var platformLibrary =
 								words.pop();
 								var s = words.join(' ');
 								ctx.fillText(s, x, y);
-								console.log("Draw line (word wrap):", s, "at y =", y);
+								// console.log("Draw line (word wrap):", s, "at y =", y);
 								line = nextLine;
 							} else {
 								ctx.fillText(line, x, y);
-								console.log("Draw line (force wrap):", line, "at y =", y);
+								// console.log("Draw line (force wrap):", line, "at y =", y);
 								line = text.charAt(i);
 							}
 						}
@@ -918,29 +915,29 @@ var platformLibrary =
 			}
 
 			ctx.fillText(line, x, y);
-			console.log("Draw last line:", line, "at y =", y);
+			// console.log("Draw last line:", line, "at y =", y);
 
 			hh = h > 0 ? h : y + lineHeight;
 			ww = w > 0 ? w : 1;
 
 			if ((ww & 0x3) != 0) {
 				ww = (ww + 3) & -4;
-				console.log("Adjusted width (align 4 bytes):", ww);
+				// console.log("Adjusted width (align 4 bytes):", ww);
 			}
 
-			console.log("Final dimensions:", { ww, hh });
+			// console.log("Final dimensions:", { ww, hh });
 
 			var myImageData = ctx.getImageData(0, 0, ww, hh);
-			console.log("Image data captured:", { width: myImageData.width, height: myImageData.height, len: myImageData.data.length });
+			// console.log("Image data captured:", { width: myImageData.width, height: myImageData.height, len: myImageData.data.length });
 
 			var img = Module.jarray2carray(myImageData.data);
-			console.log("Converted image to C array:", img ? "OK" : "FAIL");
+			// console.log("Converted image to C array:", img ? "OK" : "FAIL");
 
 			_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
-			console.log("_jsEmscriptenBitmapSaveImage called");
+			// console.log("_jsEmscriptenBitmapSaveImage called");
 
 			_free(img);
-			console.log("Memory freed for img");
+			// console.log("Memory freed for img");
 
 			console.log("=== jsRenderText END ===");
 		} catch (e) {
