@@ -548,6 +548,7 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		info();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		
 		if (fWindow){
 			SDL_Log("fWindow");
 		}
@@ -558,7 +559,7 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 	
 #if defined(EMSCRIPTEN)
-				
+		resize_zoom(fWidth, fHeight);
 		info();
 		
 				// Tell it to use OpenGL version 2.0

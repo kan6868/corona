@@ -597,7 +597,7 @@ var platformLibrary =
 				}
 			}
 		});
-
+		console.log("Context init done!");
 	},
 
 	jsContextConfig: function (w, h) {
