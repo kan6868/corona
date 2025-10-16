@@ -960,6 +960,7 @@ namespace Rtt
 			case SDL_WINDOWEVENT_MOVED:
 				//SDL_Log("Window %d moved to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				bool fullScreen = false;
@@ -1010,9 +1011,9 @@ namespace Rtt
 				jsContextResizeNativeObjects();
 				break;
 			}
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				break;
+			
+				//SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				//break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
 				//SDL_Log("Window %d minimized", event.window.windowID);
