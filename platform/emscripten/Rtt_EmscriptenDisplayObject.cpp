@@ -46,6 +46,11 @@ namespace Rtt
 		, fElementID(0)
 		, fType(elementType)
 	{
+		Rtt_Log("EmscriptenDisplayObject constructor called");
+    	Rtt_Log("Initial bounds: xMin=%.2f, yMin=%.2f, width=%.2f, height=%.2f", 
+           bounds.xMin, bounds.yMin, bounds.Width(), bounds.Height());
+    	Rtt_Log("Element type: %s", elementType ? elementType : "NULL");
+
 		// Note: Setting the reference point to center is not done in any of the other implementations because
 		// fSelfBounds is already centered/converted unlike this implementation.
 		// This solves the problem, but will possibly be a problem if/when we support object resizing.
@@ -207,6 +212,9 @@ namespace Rtt
 		if (ShouldPrepare())
 		{
 			Rect outBounds = StageBounds();
+			Rtt_Log("  fType = '%s'\n", fType.c_str());
+			Rtt_Log("Prepare  StageBounds = { xMin: %f, yMin: %f, width: %f, height: %f }\n",
+			outBounds.xMin, outBounds.yMin, outBounds.Width(), outBounds.Height());
 			jsDisplayObjectSetBounds(fElementID, outBounds.xMin, outBounds.yMin, outBounds.Width(), outBounds.Height());
 		}
 	}

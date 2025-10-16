@@ -170,100 +170,70 @@ namespace Rtt
 	bool EmscriptenBaseBitmap::LoadFileBitmap(Rtt_Allocator &context, const char *path)
 	{
 		Rtt_ASSERT(fData == NULL);
-		Rtt_Log("LoadFileBitmap: start loading '%s'", path ? path : "(null)");
+
 		// get file ext
 		int n = strlen(path);
 		if (n < 5)
 		{
-			Rtt_Log("LoadFileBitmap: invalid path or too short");
 			return false;
 		}
 
 		std::string ext = path + n - 4;
-		Rtt_Log("LoadFileBitmap: detected extension '%s'", ext.c_str());
-		
 		if (ext == ".bmp")
-	{
-		fData = bitmapUtil::loadBMP(path, fWidth, fHeight, fFormat);
-		if (fData)
 		{
-			fFormat = kRGBA;
-			Rtt_Log("LoadFileBitmap: loaded BMP %dx%d", fWidth, fHeight);
-		}
-		else
-		{
-			Rtt_Log("LoadFileBitmap: failed to load BMP file '%s'", path);
-		}
-	}
-	else if (ext == ".png")
-	{
-		FILE* f = fopen(path, "rb");
-		if (f)
-		{
-			Rtt_Log("LoadFileBitmap: opened PNG file '%s'", path);
-			fData = bitmapUtil::loadPNG(f, fWidth, fHeight);
+			fData = bitmapUtil::loadBMP(path, fWidth, fHeight, fFormat);
 			if (fData)
 			{
 				fFormat = kRGBA;
-				Rtt_Log("LoadFileBitmap: loaded PNG %dx%d", fWidth, fHeight);
 			}
-			else
-			{
-				Rtt_Log("LoadFileBitmap: failed to decode PNG '%s'", path);
-			}
-			fclose(f);
 		}
 		else
+		if (ext == ".png")
 		{
-			Rtt_Log("LoadFileBitmap: failed to open PNG file '%s'", path);
-		}
-	}
-	else if (ext == ".jpg")
-	{
-		FILE* f = fopen(path, "rb");
-		if (f)
-		{
-			Rtt_Log("LoadFileBitmap: opened JPG file '%s'", path);
-			uint8_t* img = bitmapUtil::loadJPG(f, fWidth, fHeight);
-			if (img)
+			FILE* f = fopen(path, "rb");
+			if (f)
 			{
-				Rtt_Log("LoadFileBitmap: decoded JPG %dx%d, converting to RGBA", fWidth, fHeight);
-				// convert to RGBA
-				fData = (uint8_t*) malloc(fWidth * fHeight * 4);
-				fFormat = kRGBA;
-
-				U8* src = img;
-				U8* dst = fData;
-				for (int y = 0; y < fHeight; y++)
+				fData = bitmapUtil::loadPNG(f, fWidth, fHeight);
+				if (fData)
 				{
-					for (int x = 0; x < fWidth; x++)
-					{
-						dst[0] = src[0];
-						dst[1] = src[1];
-						dst[2] = src[2];
-						dst[3] = 255;
-						dst += 4;
-						src += 3;
-					}
+					fFormat = kRGBA;
 				}
-				free(img);
+				fclose(f);
 			}
-			else
-			{
-				Rtt_Log("LoadFileBitmap: failed to decode JPG '%s'", path);
-			}
-			fclose(f);
-			return fData != NULL;
 		}
 		else
+		if (ext == ".jpg")
 		{
-			Rtt_Log("LoadFileBitmap: failed to open JPG file '%s'", path);
+			FILE* f = fopen(path, "rb");
+			if (f)
+			{
+				uint8_t* img = bitmapUtil::loadJPG(f, fWidth, fHeight);
+				if (img)
+				{
+					// convert to RGBA, for some reason RGB images are rendered incorrectly
+					fData = (uint8_t*) malloc(fWidth * fHeight * 4);
+					fFormat = kRGBA;
+
+					U8* src = img;
+					U8* dst = fData;
+					for (int y = 0; y < fHeight; y++)
+					{
+						for (int x = 0; x < fWidth; x++)
+						{
+							dst[0] = src[0];
+							dst[1] = src[1];
+							dst[2] = src[2];
+							dst[3] = 255;
+							dst += 4;
+							src += 3;
+						}
+					}
+					free(img);
+				}
+				fclose(f);
+				return fData != NULL;
+			}
 		}
-	}
-	else
-	{
-		Rtt_Log("LoadFileBitmap: unsupported file extension '%s'", ext.c_str());
-	}
 
 		if (fData && fFormat == kRGBA)
 		{

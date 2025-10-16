@@ -495,13 +495,13 @@ TextureFactory::Create(
 	const char alignment[],
 	Real& baselineOffset)
 {
-	Rtt_Log("TextureFactory::Create - Creating texture from text: '%s'", str);
-	Rtt_Log("TextureFactory::Create - Dimensions: %.2f x %.2f, Alignment: %s", w, h, alignment);
+	// Rtt_Log("TextureFactory::Create - Creating texture from text: '%s'", str);
+	// Rtt_Log("TextureFactory::Create - Dimensions: %.2f x %.2f, Alignment: %s", w, h, alignment);
 	
 	PlatformBitmap *pBitmap =
 		fDisplay.GetRuntime().Platform().CreateBitmapMask( str, font, w, h, alignment, baselineOffset );
 
-	Rtt_Log("TextureFactory::Create - Bitmap mask created, baselineOffset: %.2f", baselineOffset);
+	// Rtt_Log("TextureFactory::Create - Bitmap mask created, baselineOffset: %.2f", baselineOffset);
 	return SharedPtr< TextureResource >( TextureResourceBitmap::Create( * this, pBitmap, false ) );
 }
 

@@ -916,24 +916,24 @@ namespace Rtt
 
 	PlatformBitmap* EmscriptenPlatform::CreateBitmapMask(const char str[], const PlatformFont& font, Real w, Real h, const char alignment[], Real& baselineOffset) const
 	{
-		Rtt_Log("EmscriptenPlatform::CreateBitmapMask() called\n");
-		Rtt_Log("  text = '%s'\n", str ? str : "(null)");
-		Rtt_Log("  width = %.2f, height = %.2f\n", w, h);
-		Rtt_Log("  alignment = '%s'\n", alignment ? alignment : "(null)");
+		// Rtt_Log("EmscriptenPlatform::CreateBitmapMask() called\n");
+		// Rtt_Log("  text = '%s'\n", str ? str : "(null)");
+		// Rtt_Log("  width = %.2f, height = %.2f\n", w, h);
+		// Rtt_Log("  alignment = '%s'\n", alignment ? alignment : "(null)");
 
-		// If PlatformFont provides useful info, log it
-		Rtt_Log("  font.name = '%s', size = %d\n",
-			font.Name() ? font.Name() : "(unknown)",
-			(int)font.Size());
+		// // If PlatformFont provides useful info, log it
+		// Rtt_Log("  font.name = '%s', size = %d\n",
+		// 	font.Name() ? font.Name() : "(unknown)",
+		// 	(int)font.Size());
 
 		// Create bitmap
 		EmscriptenTextBitmap* bitmap = Rtt_NEW(
 			&GetAllocator(),
 			EmscriptenTextBitmap(GetAllocator(), str, font, (int)(w + 0.5f), (int)(h + 0.5f), alignment, baselineOffset));
 
-		Rtt_Log("  baselineOffset (after) = %.2f\n", baselineOffset);
-		Rtt_Log("  bitmap created at %p\n", bitmap);
-		Rtt_Log("EmscriptenPlatform::CreateBitmapMask() done\n");
+		// Rtt_Log("  baselineOffset (after) = %.2f\n", baselineOffset);
+		// Rtt_Log("  bitmap created at %p\n", bitmap);
+		// Rtt_Log("EmscriptenPlatform::CreateBitmapMask() done\n");
 
 		return bitmap;
 	}
