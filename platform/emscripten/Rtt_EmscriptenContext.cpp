@@ -993,6 +993,11 @@ namespace Rtt
 					float w = (float)event.window.data1;
 					float h = (float)event.window.data2;
 
+					if (w == 0 || h == 0){
+						w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
+					}
+					
 					// keep ratio
 					float scaleX = w / fWidth;
 					float scaleY = h / fHeight;
