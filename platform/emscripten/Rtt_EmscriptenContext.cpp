@@ -523,7 +523,7 @@ namespace Rtt
 			//Rtt_LogException("Unsupported orientation: '%s'", orientation.c_str());
 		}
 #if defined(EMSCRIPTEN)
-		info();
+
 		SDL_Log("fWidth: %d, fHeight: %d", fWidth, fHeight);
 #endif
 		jsContextInit(fWidth, fHeight, fOrientation);
@@ -546,8 +546,11 @@ namespace Rtt
 		Uint32 flags = SDL_WINDOW_OPENGL;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
+		info();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		info();
 		SDL_GL_CreateContext(fWindow);
+		info();
 		fPlatform->setWindow(fWindow, fOrientation);
 	
 #if defined(EMSCRIPTEN)
@@ -960,7 +963,6 @@ namespace Rtt
 			case SDL_WINDOWEVENT_MOVED:
 				//SDL_Log("Window %d moved to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				bool fullScreen = false;
@@ -1011,9 +1013,9 @@ namespace Rtt
 				jsContextResizeNativeObjects();
 				break;
 			}
-			
-				//SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				//break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
 				//SDL_Log("Window %d minimized", event.window.windowID);
