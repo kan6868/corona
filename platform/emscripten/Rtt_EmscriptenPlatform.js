@@ -259,6 +259,7 @@ var platformLibrary =
 	},
 
 	jsDisplayObjectCreate: function (x, y, w, h, etype, thiz) {
+		console.log('JS create', fType, 'id=', obj.id, x, y, w, h);
 		var fType = UTF8ToString(etype);
 		var obj = document.createElement(fType);
 		obj.id = Module.appElementCounter++;
@@ -276,7 +277,7 @@ var platformLibrary =
 		obj.style.borderWidth = "1px 1px 1px 1px";
 
 		window.refreshNativeObject(obj.id);
-		console.log('JS create', fType, 'id=', obj.id, x, y, w, h);
+
 		return obj.id;
 	},
 

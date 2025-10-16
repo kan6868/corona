@@ -190,6 +190,11 @@ namespace Rtt
 		if (fType.size() > 0)
 		{
 			Rect outBounds = StageBounds();
+			
+			Rtt_Log("  fType = '%s'\n", fType.c_str());
+			Rtt_Log("  StageBounds = { xMin: %f, yMin: %f, width: %f, height: %f }\n",
+			outBounds.xMin, outBounds.yMin, outBounds.Width(), outBounds.Height());
+
 			fElementID = jsDisplayObjectCreate(outBounds.xMin, outBounds.yMin, outBounds.Width(), outBounds.Height(), fType.c_str(), this);
 			return true;
 		}
