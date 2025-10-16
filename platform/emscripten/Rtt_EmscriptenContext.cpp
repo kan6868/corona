@@ -548,7 +548,11 @@ namespace Rtt
 		flags |= SDL_WINDOW_RESIZABLE;
 		info();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
+		if (fWindow){
+			SDL_Log("fWindow");
+		}
 		info();
+
 		SDL_GL_CreateContext(fWindow);
 		info();
 		fPlatform->setWindow(fWindow, fOrientation);
