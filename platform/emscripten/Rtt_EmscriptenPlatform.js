@@ -208,7 +208,7 @@ var platformLibrary =
 	jsDisplayObjectDelete: function (id) {
 		var obj = document.getElementById(id);
 		if (obj) {
-			//console.log('JS delete', obj.type, 'id=', obj.id);
+			console.log('JS delete', obj.type, 'id=', obj.id);
 			obj.remove();
 		}
 	},
@@ -289,6 +289,7 @@ var platformLibrary =
 			obj.h = h - 2;	// -2 border
 			obj.style.width = obj.w + 'px';
 			obj.style.height = obj.h + 'px';
+			console.log('JS Set Bounds', fType, 'id=', obj.id, x, y, w, h);
 			window.refreshNativeObject(obj.id);
 		}
 	},

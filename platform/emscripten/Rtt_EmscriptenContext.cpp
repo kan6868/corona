@@ -1090,178 +1090,232 @@ namespace Rtt
 		}
 	}
 
-	bool CoronaAppContext::TimerTick()
-	{
-		switch (fAppState)
-		{
-		case MOUNT_IDBFS:
-		{
-			// mount IDBFS and sync it
-			int rc = jsContextMountFS();
-			fAppState = (rc == 1) ? WAIT_FOR_IDBFS_MOUNTED : LOAD_FONTS;
-			break;
-		}
+bool CoronaAppContext::TimerTick()
+{
+    SDL_Log("TimerTick() - Current state: %d", fAppState);
+    
+    switch (fAppState)
+    {
+    case MOUNT_IDBFS:
+    {
+        SDL_Log("MOUNT_IDBFS: Mounting IDBFS and syncing");
+        // mount IDBFS and sync it
+        int rc = jsContextMountFS();
+        SDL_Log("MOUNT_IDBFS: jsContextMountFS() returned: %d", rc);
+        fAppState = (rc == 1) ? WAIT_FOR_IDBFS_MOUNTED : LOAD_FONTS;
+        SDL_Log("MOUNT_IDBFS: Transitioning to state: %d", fAppState);
+        break;
+    }
 
-		case WAIT_FOR_IDBFS_MOUNTED:
-		{
-			// wait for documentsDir mounted
-			int rc = jsContextGetIntModuleItem("documentsDirLoaded");
-			if (rc == 1)
-			{
-				fAppState = COPY_DOCS;
-			}
-			break;
-		}
+    case WAIT_FOR_IDBFS_MOUNTED:
+    {
+        SDL_Log("WAIT_FOR_IDBFS_MOUNTED: Checking if documentsDir is mounted");
+        // wait for documentsDir mounted
+        int rc = jsContextGetIntModuleItem("documentsDirLoaded");
+        SDL_Log("WAIT_FOR_IDBFS_MOUNTED: documentsDirLoaded = %d", rc);
+        if (rc == 1)
+        {
+            fAppState = COPY_DOCS;
+            SDL_Log("WAIT_FOR_IDBFS_MOUNTED: Transitioning to COPY_DOCS");
+        }
+        else
+        {
+            SDL_Log("WAIT_FOR_IDBFS_MOUNTED: Still waiting for mount...");
+        }
+        break;
+    }
 
-		case COPY_DOCS:
-		{
-			// check for first start
-			std::string installed = fDocumentsDir;
-			installed += DIR_SEPARATOR;
-			installed += ".installed";
-			if (Rtt_FileExists(installed.c_str()))
-			{
-				// app already installed
-				fAppState = LOAD_FONTS;
-			}
-			else
-			{
-				//Rtt_Log("First time start\n");
-				FILE* f = fopen(installed.c_str(), "w");
-				if (f)
-				{
-					// create .installed file, it serves as marker
-					fclose(f);
+    case COPY_DOCS:
+    {
+        SDL_Log("COPY_DOCS: Checking for first start");
+        // check for first start
+        std::string installed = fDocumentsDir;
+        installed += DIR_SEPARATOR;
+        installed += ".installed";
+        SDL_Log("COPY_DOCS: Checking if %s exists", installed.c_str());
+        
+        if (Rtt_FileExists(installed.c_str()))
+        {
+            // app already installed
+            SDL_Log("COPY_DOCS: App already installed, skipping file copy");
+            fAppState = LOAD_FONTS;
+        }
+        else
+        {
+            SDL_Log("COPY_DOCS: First time start detected");
+            FILE* f = fopen(installed.c_str(), "w");
+            if (f)
+            {
+                // create .installed file, it serves as marker
+                fclose(f);
+                SDL_Log("COPY_DOCS: Created .installed marker file");
 
-					// copy databases
-					std::vector<std::string> files = Rtt_ListFiles(fPathToApp.c_str());
-					//Rtt_Log("Total file count in the App: %d\n", files.size());
+                // copy databases
+                std::vector<std::string> files = Rtt_ListFiles(fPathToApp.c_str());
+                SDL_Log("COPY_DOCS: Total file count in the App: %zu", files.size());
 
-					int copiedFiles = 0;
-					for (unsigned int i = 0; i < files.size(); i++)
-					{
-						int k = files[i].find(".db");
-						if (k > 0 && k == files[i].size() - 3)
-						{
-							int begin = files[i].rfind(DIR_SEPARATOR);
-							if (begin < 0)
-							{
-								// take whole string
-								begin = 0;
-							}
-							std::string fileName = files[i].c_str() + begin;
+                int copiedFiles = 0;
+                for (unsigned int i = 0; i < files.size(); i++)
+                {
+                    int k = files[i].find(".db");
+                    if (k > 0 && k == files[i].size() - 3)
+                    {
+                        int begin = files[i].rfind(DIR_SEPARATOR);
+                        if (begin < 0)
+                        {
+                            // take whole string
+                            begin = 0;
+                        }
+                        std::string fileName = files[i].c_str() + begin;
 
-							// copy to permanent memory
-							std::string dst = fDocumentsDir;
-							dst += fileName;
-							Rtt_CopyFile(files[i].c_str(), dst.c_str());
-							copiedFiles++;
+                        // copy to permanent memory
+                        std::string dst = fDocumentsDir;
+                        dst += fileName;
+                        SDL_Log("COPY_DOCS: Copying database file: %s to %s", files[i].c_str(), dst.c_str());
+                        Rtt_CopyFile(files[i].c_str(), dst.c_str());
+                        copiedFiles++;
+                    }
+                }
+                
+                SDL_Log("COPY_DOCS: Copied %d database files", copiedFiles);
+                
+                if (copiedFiles > 0)
+                {
+                    SDL_Log("COPY_DOCS: Syncing file system");
+                    jsContextSyncFS();
+                    fAppState = WAIT_FOR_SYNC;
+                }
+                else
+                {
+                    // no database files, so nothing to sync, just goto run app
+                    SDL_Log("COPY_DOCS: No database files to sync, proceeding to LOAD_FONTS");
+                    fAppState = LOAD_FONTS;
+                }
+            }
+            else
+            {
+                SDL_Log("COPY_DOCS: Failed to create %s file", installed.c_str());
+            }
+        }
+        break;
+    }
 
-							//Rtt_Log("Creating sandbox: %s to %s\n", files[i].c_str(), dst.c_str());
-						}
-					}
-				
-					if (copiedFiles > 0)
-					{
-						jsContextSyncFS();
-						fAppState = WAIT_FOR_SYNC;
-					}
-					else
-					{
-						// no database files, so nothing to sync, just goto run app
-						//Rtt_Log("Nothing to sync\n");
-						fAppState = LOAD_FONTS;
-					}
-				}
-				else
-				{
-					Rtt_LogException("Failed to create  %s file\n", installed.c_str());
-				}
-			}
-			break;
-		}
+    case WAIT_FOR_SYNC:
+    {
+        SDL_Log("WAIT_FOR_SYNC: Checking if file system sync completed");
+        // wait for documentsDir mounted
+        int rc = jsContextGetIntModuleItem("idbfsSynced");
+        SDL_Log("WAIT_FOR_SYNC: idbfsSynced = %d", rc);
+        if (rc == 1)
+        {
+            SDL_Log("WAIT_FOR_SYNC: Syncing completed, proceeding to LOAD_FONTS");
+            fAppState = LOAD_FONTS;
+        }
+        else
+        {
+            SDL_Log("WAIT_FOR_SYNC: Still waiting for sync to complete...");
+        }
+        break;
+    }
 
-		case WAIT_FOR_SYNC:
-		{
-			// wait for documentsDir mounted
-			int rc = jsContextGetIntModuleItem("idbfsSynced");
-			if (rc == 1)
-			{
-				//Rtt_Log("Syncing ended\n");
-				fAppState = LOAD_FONTS;
-			}
-			break;
-		}
+    case LOAD_FONTS:
+    {
+        SDL_Log("LOAD_FONTS: Starting font loading");
+        int loadingFonts = 0;
 
-		case LOAD_FONTS:
-		{
-			int loadingFonts = 0;
+        // Enumerate .ttf font files
+        std::vector<std::string> fileList;
+        enumerateFontFiles(fPathToApp.c_str(), fileList);
+        SDL_Log("LOAD_FONTS: Found %zu font files", fileList.size());
 
-			// Enumerate .ttf font files
-			std::vector<std::string> fileList;
-			enumerateFontFiles(fPathToApp.c_str(), fileList);
+        for (int i = 0; i < fileList.size(); i++)
+        {
+            const std::string& name = fileList[i];
+            SDL_Log("LOAD_FONTS: Processing font file: %s", name.c_str());
+            FILE* fi = fopen(name.c_str(), "rb");
+            if (fi)
+            {
+                fseek(fi, 0, SEEK_END);
+                int size = ftell(fi);
+                fseek(fi, 0, SEEK_SET);
+                void* buf = malloc(size);
+                fread(buf, 1, size, fi);
+                fclose(fi);
 
-			for (int i = 0; i < fileList.size(); i++)
-			{
-				const std::string& name = fileList[i];
-				FILE* fi = fopen(name.c_str(), "rb");
-				if (fi)
-				{
-					fseek(fi, 0, SEEK_END);
-					int size = ftell(fi);
-					fseek(fi, 0, SEEK_SET);
-					void* buf = malloc(size);
-					fread(buf, 1, size, fi);
-					fclose(fi);
+                loadingFonts += jsContextLoadFonts(name.c_str(), buf, size);
+                SDL_Log("LOAD_FONTS: Loaded font %s (size: %d bytes), loadingFonts count: %d", name.c_str(), size, loadingFonts);
 
-					loadingFonts += jsContextLoadFonts(name.c_str(), buf, size);
-
-					free(buf);
-				}
-			}
-			fAppState = loadingFonts > 0 ? WAIT_FOR_FONTS : INIT_APP;
-			break;
-		}
-		case WAIT_FOR_FONTS:
-		{
+                free(buf);
+            }
+            else
+            {
+                SDL_Log("LOAD_FONTS: Failed to open font file: %s", name.c_str());
+            }
+        }
+        
+        SDL_Log("LOAD_FONTS: Total fonts to load: %d", loadingFonts);
+        fAppState = loadingFonts > 0 ? WAIT_FOR_FONTS : INIT_APP;
+        SDL_Log("LOAD_FONTS: Transitioning to state: %d", fAppState);
+        break;
+    }
+    
+    case WAIT_FOR_FONTS:
+    {
+        SDL_Log("WAIT_FOR_FONTS: Checking font loading status");
 #ifndef WIN32
-			int rc = jsContextGetIntModuleItem("loadingFonts");
-			if (rc == 0)
-			{
-				fAppState = INIT_APP;
-			}
+        int rc = jsContextGetIntModuleItem("loadingFonts");
+        SDL_Log("WAIT_FOR_FONTS: loadingFonts = %d", rc);
+        if (rc == 0)
+        {
+            SDL_Log("WAIT_FOR_FONTS: Font loading completed, proceeding to INIT_APP");
+            fAppState = INIT_APP;
+        }
+        else
+        {
+            SDL_Log("WAIT_FOR_FONTS: Still waiting for fonts to load...");
+        }
 #else
-				fAppState = INIT_APP;
+        SDL_Log("WAIT_FOR_FONTS: Windows platform, skipping font wait, proceeding to INIT_APP");
+        fAppState = INIT_APP;
 #endif
-			break;
-		}
-		case INIT_APP:
-			Initialize();
-			fAppState = RUN_APP;
-			break;
+        break;
+    }
+    
+    case INIT_APP:
+        SDL_Log("INIT_APP: Initializing application");
+        Initialize();
+        fAppState = RUN_APP;
+        SDL_Log("INIT_APP: Transitioning to RUN_APP");
+        break;
 
-		case RUN_APP:
-		{
-			// main loop
-			SDL_Event event;
-			bool closeApp = false;
-			while (SDL_PollEvent(&event) && closeApp == false)
-			{
-				closeApp = ProcessEvent(event);
-			}
+    case RUN_APP:
+    {
+        SDL_Log("RUN_APP: Starting main loop");
+        // main loop
+        SDL_Event event;
+        bool closeApp = false;
+        while (SDL_PollEvent(&event) && closeApp == false)
+        {
+            closeApp = ProcessEvent(event);
+        }
 
-			if (fRuntime->IsSuspended() == false)
-			{
-				(*fRuntime)();
-			}
+        if (fRuntime->IsSuspended() == false)
+        {
+            (*fRuntime)();
+        }
 
-			return closeApp;
-		}
-		default:
-			Rtt_ASSERT(0);
-		}
-		return false;
-	}
+        SDL_Log("RUN_APP: Main loop completed, closeApp = %s", closeApp ? "true" : "false");
+        return closeApp;
+    }
+    
+    default:
+        SDL_Log("UNKNOWN STATE: %d", fAppState);
+        Rtt_ASSERT(0);
+    }
+    
+    SDL_Log("TimerTick() - Returning false (continuing)");
+    return false;
+}
 
 	bool EmscriptenRuntime::readTable(lua_State *L, const char* table, int* w, int* h, std::string* title, std::string* mode) const
 	{
