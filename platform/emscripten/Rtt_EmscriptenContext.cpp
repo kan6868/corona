@@ -1126,7 +1126,7 @@ namespace Rtt
 			}
 			else
 			{
-				//Rtt_Log("First time start\n");
+				SDL_Log("First time start\n");
 				FILE* f = fopen(installed.c_str(), "w");
 				if (f)
 				{
@@ -1135,7 +1135,7 @@ namespace Rtt
 
 					// copy databases
 					std::vector<std::string> files = Rtt_ListFiles(fPathToApp.c_str());
-					//Rtt_Log("Total file count in the App: %d\n", files.size());
+					SDL_Log("Total file count in the App: %d\n", files.size());
 
 					int copiedFiles = 0;
 					for (unsigned int i = 0; i < files.size(); i++)
@@ -1187,7 +1187,7 @@ namespace Rtt
 			int rc = jsContextGetIntModuleItem("idbfsSynced");
 			if (rc == 1)
 			{
-				//Rtt_Log("Syncing ended\n");
+				SDL_Log("Syncing ended\n");
 				fAppState = LOAD_FONTS;
 			}
 			break;
