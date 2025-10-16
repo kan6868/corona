@@ -567,7 +567,7 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 	
 #if defined(EMSCRIPTEN)
-		// resize_zoom(fWidth, fHeight);
+		resize_zoom(fWidth, fHeight);
 		info();
 		
 				// Tell it to use OpenGL version 2.0
@@ -985,7 +985,7 @@ namespace Rtt
 					return fullscreenElement != null ? true: false;
 				});
 #endif
-				//SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				SDL_Log("Window %d resized to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				// resize only for 'maximized' to fill fit browers's window
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
@@ -996,8 +996,9 @@ namespace Rtt
 					if (w == 0 || h == 0){
 						w = jsContextGetWindowWidth();
 						h = jsContextGetWindowHeight();
+						SDL_Log("Resize %d %d", w, h);
 					}
-					
+			
 					// keep ratio
 					float scaleX = w / fWidth;
 					float scaleY = h / fHeight;
