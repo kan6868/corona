@@ -517,10 +517,10 @@ namespace Rtt
 			devicePixelRatio = emscripten_get_device_pixel_ratio();
 
 		#endif
-		jsContextInit((int)(fWidth * devicePixelRatio), (int)(fHeight * devicePixelRatio), fOrientation);
+		jsContextInit(fWidth, fHeight , fOrientation);
 		//Scale double
-		float scaleX = (float)(((float)jsWindowWidth * devicePixelRatio) / fWidth);
-		float scaleY = (float)(((float)jsWindowHeight * devicePixelRatio) / fHeight);
+		float scaleX = (float)(((float)jsWindowWidth) / fWidth);
+		float scaleY = (float)(((float)jsWindowHeight) / fHeight);
 		float scale = fmin(scaleX, scaleY);				// keep ratio
 			
 		float scaledWidth = fWidth * scale;
