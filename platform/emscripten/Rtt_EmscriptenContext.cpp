@@ -550,7 +550,7 @@ namespace Rtt
 
 		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
-		flags |= SDL_WINDOW_RESIZABLE;
+		//flags |= SDL_WINDOW_RESIZABLE;
 		info();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		
@@ -561,7 +561,7 @@ namespace Rtt
 		int _width, _height;
 		SDL_GetWindowSize(fWindow, &_width, &_height);
 		SDL_Log("Window size: %d x %d\n", _width, _height);
-
+	
 		SDL_GL_CreateContext(fWindow);
 		info();
 		fPlatform->setWindow(fWindow, fOrientation);
