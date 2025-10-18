@@ -994,11 +994,10 @@ namespace Rtt
 					int w = event.window.data1;
 					int h = event.window.data2;
 
-					if (w == 0 || h == 0){
-						w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
+					// if (w == 0 || h == 0){
+                		SDL_GL_GetDrawableSize(fWindow, &w, &h);
 						SDL_Log("Resize %d %d", w, h);
-					}
+					// }
 			
 					// keep ratio
 					float scaleX = w / fWidth;
