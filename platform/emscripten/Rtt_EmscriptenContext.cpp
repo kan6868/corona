@@ -37,6 +37,8 @@ EM_JS(void, info, (), {
 	console.log("Zoom info:", {
 		width: canvas.width,
 		height: canvas.height,
+		innerWidth: window.innerWidth,
+		innerHeight: window.innerHeight,
 		client: canvas.clientWidth + "x" + canvas.clientHeight,
 		DPR: window.devicePixelRatio
 	});
