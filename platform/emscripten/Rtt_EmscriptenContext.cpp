@@ -541,7 +541,13 @@ namespace Rtt
 		}
 
 		SDL_GL_CreateContext(fWindow);
-		SDL_GL_SetSwapInterval(1); // Enable vsync
+
+		if (fRuntimeDelegate->fVSync)
+		{
+			SDL_Log("VSync enabled");
+			SDL_GL_SetSwapInterval(1); // Enable vsync
+		}
+
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)

@@ -27,9 +27,8 @@ namespace Rtt
 
 		mutable int fContentWidth;
 		mutable int fContentHeight;
+		mutable bool fVSync;
 		mutable std::string fScaleMode;
-
-
 	};
 } // namespace Rtt
 
