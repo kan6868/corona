@@ -567,7 +567,7 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 	
 #if defined(EMSCRIPTEN)
-		resize_zoom(fWidth, fHeight);
+		emscripten_set_element_css_size("canvas", fWidth, fHeight);		
 		info();
 		
 				// Tell it to use OpenGL version 2.0
