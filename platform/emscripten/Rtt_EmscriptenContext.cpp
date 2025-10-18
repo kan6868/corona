@@ -554,10 +554,6 @@ namespace Rtt
 		info();
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		
-		if (fWindow){
-			SDL_Log("fWindow");
-		}
-		info();
 		int _width, _height;
 		SDL_GetWindowSize(fWindow, &_width, &_height);
 		SDL_Log("Window size: %d x %d\n", _width, _height);
@@ -565,15 +561,10 @@ namespace Rtt
 		SDL_SetWindowSize(fWindow, _width, _height);
 
 		SDL_GL_CreateContext(fWindow);
-		info();
+
 		fPlatform->setWindow(fWindow, fOrientation);
 
-		SDL_Log("Resize canvas");
 #if defined(EMSCRIPTEN)
-		emscripten_set_element_css_size("canvas", fWidth, fHeight);	
-		resize_zoom(fWidth, fHeight);	
-		info();
-		
 				// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 		// SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -587,7 +578,6 @@ namespace Rtt
 #if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
 		glewExperimental = GL_TRUE;
 		glewInit();
-		glViewport(0, 0, fWidth, fHeight);
 #endif
 
 		fMouseListener = new MouseListener(*fRuntime);
@@ -616,7 +606,6 @@ namespace Rtt
 
 		// hack
 #ifdef EMSCRIPTEN
-		info();
 		if ((stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomStretch") == 0) || (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "zoomEven") == 0))
 		{
 			EM_ASM_INT({	window.dispatchEvent(new Event('resize')); });
@@ -996,14 +985,8 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					int w = event.window.data1;
-					int h = event.window.data2;
-
-					if (w == 0 || h == 0){
-                		w = jsContextGetWindowWidth();
-						h = jsContextGetWindowHeight();
-						SDL_Log("Resize %d %d", w, h);
-					}
+					float w = event.window.data1;
+					float h = event.window.data2;
 			
 					// keep ratio
 					float scaleX = w / fWidth;
@@ -1025,11 +1008,7 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 
-					SDL_SetWindowSize(fWindow, w, h);
-#if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
-					glViewport(0, 0, w, h);
-					SDL_Log("Viewport updated: %d x %d\n", w, h);
-#endif
+					SDL_SetWindowSize(fWindow, (int)(w + 0.5f), (int)(h + 0.5f));
 
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
