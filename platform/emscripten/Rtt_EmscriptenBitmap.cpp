@@ -358,10 +358,10 @@ namespace Rtt
 		// SDL_Log("  inFont.Size()  = %d", (int)inFont.Size());
 		// SDL_Log("  this pointer   = %p", this);
 		
-		// jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
+		jsRenderText(this, str, width, height, alignment, inFont.Name(), inFont.Size());
 		// SDL_Log("  [jsRenderText] called successfully");
     	// SDL_Log("  baselineOffset before calc = %f", baselineOffset);
-		// baselineOffset = fHeight * 0.5f - inFont.Size();
+		baselineOffset = fHeight * 0.5f - inFont.Size();
 		// SDL_Log("  fHeight        = %f", fHeight);
 		// SDL_Log("  baselineOffset = %f", baselineOffset);
 		// SDL_Log("=== END EmscriptenTextBitmap ===");
