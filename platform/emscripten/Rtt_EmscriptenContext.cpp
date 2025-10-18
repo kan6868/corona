@@ -43,19 +43,14 @@ EM_JS(void, info, (), {
 });
 
 EM_JS(void, resize_zoom, (int w, int h), {
-	let dpr = window.devicePixelRatio || 1;
-	console.log("Zoom info:", {
-		client: canvas.clientWidth + "x" + canvas.clientHeight,
-		DPR: window.devicePixelRatio
-	});
-	let displayWidth = Math.floor(canvas.clientWidth * dpr);
-	let displayHeight = Math.floor(canvas.clientHeight * dpr);
-
-	if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-		console.log("Canvas resized:", displayWidth, displayHeight, " DPR:", dpr);
-		canvas.width = displayWidth;
-		canvas.height = displayHeight;
-	}
+		console.log("Canvas resized:", w, h);
+		canvas.width = w;
+		canvas.height = h;
+	// if (canvas.width !== w || canvas.height !== h) {
+	// 	console.log("Canvas resized:", w, h);
+	// 	canvas.width = w;
+	// 	canvas.height = h;
+	// }
 })
 extern "C"
 {
@@ -565,9 +560,10 @@ namespace Rtt
 		SDL_GL_CreateContext(fWindow);
 		info();
 		fPlatform->setWindow(fWindow, fOrientation);
-	
+		SDL_Log("Resize canvas");
 #if defined(EMSCRIPTEN)
-		emscripten_set_element_css_size("canvas", fWidth, fHeight);		
+		emscripten_set_element_css_size("canvas", fWidth, fHeight);	
+		resize_zoom(fWidth, fHeight);	
 		info();
 		
 				// Tell it to use OpenGL version 2.0
