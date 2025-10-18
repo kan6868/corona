@@ -44,16 +44,6 @@ EM_JS(void, info, (), {
 	});
 });
 
-EM_JS(void, resize_zoom, (int w, int h), {
-		console.log("Canvas resized:", w, h);
-		canvas.width = w;
-		canvas.height = h;
-	// if (canvas.width !== w || canvas.height !== h) {
-	// 	console.log("Canvas resized:", w, h);
-	// 	canvas.width = w;
-	// 	canvas.height = h;
-	// }
-})
 extern "C"
 {
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
@@ -548,17 +538,20 @@ namespace Rtt
 			SDL_Log("Scale -> fWidth: %d, fHeight: %d", fWidth, fHeight);
 		}
 
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+		Uint32 flags = SDL_WINDOW_OPENGL ;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
-		info();
+
 		fWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, fWidth, fHeight, flags);
 		
-		int _width, _height;
-		SDL_GetWindowSize(fWindow, &_width, &_height);
-		SDL_Log("Window size: %d x %d\n", _width, _height);
-		
-		SDL_SetWindowSize(fWindow, _width, _height);
+		int checkWidth, checkHeight;
+
+		SDL_GetWindowSize(fWindow, &checkWidth, &checkHeight);
+
+		if (checkWidth == 0 || checkHeight == 0)
+		{
+			SDL_SetWindowSize(fWindow, fWidth, fHeight);
+		}
 
 		SDL_GL_CreateContext(fWindow);
 
