@@ -1033,7 +1033,8 @@ namespace Rtt
 				
 #ifdef EMSCRIPTEN
 					
-					emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));			
+					emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));	
+					info();
 #endif
 
 				// refresh native elements
@@ -1411,3 +1412,4 @@ namespace Rtt
 
 
 }
+
