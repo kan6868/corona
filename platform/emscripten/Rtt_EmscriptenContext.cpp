@@ -560,7 +560,7 @@ namespace Rtt
 		info();
 		int _width, _height;
 		SDL_GetWindowSize(fWindow, &_width, &_height);
-		printf("Window size: %d x %d\n", _width, _height);
+		SDL_Log("Window size: %d x %d\n", _width, _height);
 
 		SDL_GL_CreateContext(fWindow);
 		info();
