@@ -974,6 +974,7 @@ namespace Rtt
 			case SDL_WINDOWEVENT_MOVED:
 				//SDL_Log("Window %d moved to %d,%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
 			case SDL_WINDOWEVENT_RESIZED:
 			{
 				bool fullScreen = false;
@@ -988,8 +989,8 @@ namespace Rtt
 //				if (fullScreen == false && (fMode == "maximized" || fMode == "fullscreen"))
 				if (fullScreen == false && fMode == "maximized")
 				{
-					float w = (float)event.window.data1;
-					float h = (float)event.window.data2;
+					int w = event.window.data1;
+					int h = event.window.data2;
 
 					if (w == 0 || h == 0){
 						w = jsContextGetWindowWidth();
@@ -1017,7 +1018,7 @@ namespace Rtt
 						h = fHeight * scale;
 					}
 
-					SDL_SetWindowSize(fWindow, (int)w, (int)h);
+					SDL_SetWindowSize(fWindow, w, h);
 
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
@@ -1030,9 +1031,9 @@ namespace Rtt
 				jsContextResizeNativeObjects();
 				break;
 			}
-			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
-				break;
+
+				// SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				// break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
 				//SDL_Log("Window %d minimized", event.window.windowID);
