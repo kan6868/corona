@@ -994,10 +994,11 @@ namespace Rtt
 					int w = event.window.data1;
 					int h = event.window.data2;
 
-					// if (w == 0 || h == 0){
-                		SDL_GL_GetDrawableSize(fWindow, &w, &h);
+					if (w == 0 || h == 0){
+                		w = jsContextGetWindowWidth();
+						h = jsContextGetWindowHeight();
 						SDL_Log("Resize %d %d", w, h);
-					// }
+					}
 			
 					// keep ratio
 					float scaleX = w / fWidth;
@@ -1024,6 +1025,7 @@ namespace Rtt
 					glViewport(0, 0, w, h);
 					SDL_Log("Viewport updated: %d x %d\n", w, h);
 #endif
+
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
