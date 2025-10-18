@@ -548,7 +548,7 @@ namespace Rtt
 			SDL_Log("Scale -> fWidth: %d, fHeight: %d", fWidth, fHeight);
 		}
 
-		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_SHOWN;
+		Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 		//flags |= (fMode == "fullscreen") ?  SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_RESIZABLE;
 		flags |= SDL_WINDOW_RESIZABLE;
 		info();
@@ -562,6 +562,7 @@ namespace Rtt
 		SDL_GL_CreateContext(fWindow);
 		info();
 		fPlatform->setWindow(fWindow, fOrientation);
+
 		SDL_Log("Resize canvas");
 #if defined(EMSCRIPTEN)
 		emscripten_set_element_css_size("canvas", fWidth, fHeight);	
@@ -1020,7 +1021,10 @@ namespace Rtt
 					}
 
 					SDL_SetWindowSize(fWindow, w, h);
-
+#ifdef EMSCRIPTEN
+					glViewport(0, 0, w, h);
+					SDL_Log("Viewport updated: %d x %d\n", w, h);
+#endif
 					fRuntime->WindowSizeChanged();
 					fRuntime->RestartRenderer(fOrientation);
 					fRuntime->GetDisplay().Invalidate();
