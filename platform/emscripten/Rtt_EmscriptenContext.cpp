@@ -1020,7 +1020,7 @@ namespace Rtt
 					}
 
 					SDL_SetWindowSize(fWindow, w, h);
-#ifdef EMSCRIPTEN
+#if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
 					glViewport(0, 0, w, h);
 					SDL_Log("Viewport updated: %d x %d\n", w, h);
 #endif
