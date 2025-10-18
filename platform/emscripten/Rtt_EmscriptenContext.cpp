@@ -33,6 +33,16 @@
 // #define Rtt_DEBUG_TOUCH 1
 
 #if defined(EMSCRIPTEN)
+
+EM_JS(void, info, (), {
+	console.log("Zoom info:", {
+		width: canvas.width,
+		height: canvas.height,
+		client: canvas.clientWidth + "x" + canvas.clientHeight,
+		DPR: window.devicePixelRatio
+	});
+});
+
 extern "C"
 {
 	extern int jsContextInit(int fWidth, int fHeight, int fOrientation);
@@ -405,6 +415,7 @@ namespace Rtt
 		printf("linked version %d.%d.%d\n", linked.major, linked.minor, linked.patch);
 
 #if defined(EMSCRIPTEN)
+		info();
 		emscripten_set_blur_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, blurCallback);
 		emscripten_set_focus_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, true, focusCallback);
 		emscripten_set_resize_callback(EMSCRIPTEN_EVENT_TARGET_WINDOW, this, false, resizeCallback);
@@ -515,7 +526,8 @@ namespace Rtt
 		#if defined(EMSCRIPTEN)
 		
 			devicePixelRatio = emscripten_get_device_pixel_ratio();
-
+			SDL_Log("fWidth: %d, fHeight: %d", fWidth, fHeight);
+			info();
 		#endif
 		jsContextInit(fWidth, fHeight , fOrientation);
 		//Scale double
@@ -535,6 +547,8 @@ namespace Rtt
 		fPlatform->setWindow(fWindow, fOrientation);
 
 #if defined(EMSCRIPTEN)
+		SDL_Log("fWidth: %d, fHeight: %d", fWidth, fHeight);
+		info();
 		// Tell it to use OpenGL version 2.0
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 #endif
@@ -1394,5 +1408,6 @@ namespace Rtt
 		}
 		return 1;
 	}
+
 
 }
