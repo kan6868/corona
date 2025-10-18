@@ -581,6 +581,7 @@ namespace Rtt
 #if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
 		glewExperimental = GL_TRUE;
 		glewInit();
+		glViewport(0, 0, fWidth, fHeight);
 #endif
 
 		fMouseListener = new MouseListener(*fRuntime);
