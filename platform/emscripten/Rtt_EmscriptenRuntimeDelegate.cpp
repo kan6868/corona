@@ -68,13 +68,6 @@ namespace Rtt
 				}
 				lua_pop(L, 1);
 
-				lua_getfield(L, -1, "VSync");
-				if ((!lua_isnil(L, -1)) && (lua_isboolean(L, -1)))
-				{
-					fVSync= lua_toboolean(L, -1);
-				}
-				lua_pop(L, 1);
-
 				lua_getfield(L, -1, "height");
 				if ((!lua_isnil(L, -1)) && (lua_isnumber(L, -1)))
 				{
@@ -88,6 +81,18 @@ namespace Rtt
 					fScaleMode = lua_tostring(L, -1);
 				}
 				lua_pop(L, 1);
+
+				lua_getfield(L, -1, "VSync");
+				if (lua_isboolean(L, -1))
+				{
+					fVSync = lua_toboolean(L, -1);
+				}
+				else
+				{
+					fVSync = false; // default
+				}
+				lua_pop(L, 1);
+
 			}
 			lua_pop(L, 1);		// remove content
 		}
