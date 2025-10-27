@@ -85,7 +85,8 @@ var platformLibrary =
 		});
 
 		// add buttons
-		for (var i = 0; i < numButtons; i++) {
+		for (var i = 0; i < numButtons; i++)
+		{
 			var _caption = getValue(buttons + i * pointerSize, '*');
 			var caption = UTF8ToString(_caption);
 
@@ -102,7 +103,7 @@ var platformLibrary =
 			});
 		}
 
-		//		document.body.appendChild(awindow);
+//		document.body.appendChild(awindow);
 		canvas.parentNode.appendChild(awindow);
 
 		// move to center
@@ -160,13 +161,15 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLocaleLanguage: function () {
+	jsGetLocaleLanguage: function()
+	{
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[0];
 
 		var maxBytesToWrite = 64;
-		if (jsLocaleLanguage == null) {
+		if (jsLocaleLanguage == null)
+		{
 			jsLocaleLanguage = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLocaleLanguage, maxBytesToWrite);
@@ -174,13 +177,15 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLocaleCountry: function () {
+	jsGetLocaleCountry: function ()
+	{
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[1] || localization;
 
 		var maxBytesToWrite = 64;
-		if (jsLocaleCountry == null) {
+		if (jsLocaleCountry == null)
+		{
 			jsLocaleCountry = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLocaleCountry, maxBytesToWrite);
@@ -188,13 +193,15 @@ var platformLibrary =
 	},
 
 	// caller must free(p)
-	jsGetLanguage: function () {
+	jsGetLanguage: function ()
+	{
 		var localization = window.navigator.userLanguage || window.navigator.language;	// en-US
 		var a = localization.split('-');
 		var s = a[0] + '_' + (a[1] || a[0]).toUpperCase();
 
 		var maxBytesToWrite = 64;
-		if (jsLanguage == null) {
+		if (jsLanguage == null)
+		{
 			jsLanguage = Module._malloc(maxBytesToWrite);
 		}
 		stringToUTF8(s, jsLanguage, maxBytesToWrite);
@@ -208,12 +215,12 @@ var platformLibrary =
 	jsDisplayObjectDelete: function (id) {
 		var obj = document.getElementById(id);
 		if (obj) {
-			console.log('JS delete', obj.type, 'id=', obj.id);
+			//console.log('JS delete', obj.type, 'id=', obj.id);
 			obj.remove();
 		}
 	},
 
-	jsDisplayObjectShowControls: function (id, val) {
+	jsDisplayObjectShowControls: function(id, val) {
 		var obj = document.getElementById(id);
 		if (obj) {
 			obj.controls = id;
@@ -235,14 +242,14 @@ var platformLibrary =
 		}
 	},
 
-	jsDisplayObjectsetBackgroundColor: function (id, val) {
+	jsDisplayObjectsetBackgroundColor: function(id, val) {
 		var obj = document.getElementById(id);
 		if (obj) {
 			var rgba = UTF8ToString(val);
 			obj.style.backgroundColor = rgba;
 		}
 	},
-
+	
 	jsDisplayObjectGetVisible: function (id) {
 		var obj = document.getElementById(id);
 		if (obj && obj.style.visibility == 'hidden') {
@@ -251,15 +258,15 @@ var platformLibrary =
 		return false;
 	},
 
-	jsTextFieldSetValue: function (id, s) {
+	jsTextFieldSetValue: function(id, s) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.value = UTF8ToString(s);
 		}
 	},
 
 	jsDisplayObjectCreate: function (x, y, w, h, etype, thiz) {
-		console.log('JS create', fType, 'id=', obj.id, x, y, w, h);
 		var fType = UTF8ToString(etype);
 		var obj = document.createElement(fType);
 		obj.id = Module.appElementCounter++;
@@ -275,9 +282,9 @@ var platformLibrary =
 		obj.style.width = obj.w + 'px';
 		obj.style.height = obj.h + 'px';
 		obj.style.borderWidth = "1px 1px 1px 1px";
-
+		
 		window.refreshNativeObject(obj.id);
-
+		// console.log('JS create', fType, 'id=', obj.id, x,y,w,h);
 		return obj.id;
 	},
 
@@ -290,12 +297,11 @@ var platformLibrary =
 			obj.h = h - 2;	// -2 border
 			obj.style.width = obj.w + 'px';
 			obj.style.height = obj.h + 'px';
-			console.log('JS Set Bounds', fType, 'id=', obj.id, x, y, w, h);
 			window.refreshNativeObject(obj.id);
 		}
 	},
 
-	jsTextFieldInitialize: function (id) {
+	jsTextFieldInitialize: function(id)	{
 		var obj = document.getElementById(id);
 		if (obj) {
 			obj.oldText = obj.value;
@@ -332,7 +338,7 @@ var platformLibrary =
 			}
 		}
 	},
-
+	
 	jsTextFieldGetValue: function (id, buf, bufsize) {
 		var obj = document.getElementById(id);
 		if (obj) {
@@ -357,98 +363,111 @@ var platformLibrary =
 		return 0;
 	},
 
-	jsTextFieldGetFontSize: function (id) {
+	jsTextFieldGetFontSize: function(id) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			var style = window.getComputedStyle(obj, null).getPropertyValue('font-size');
 			return parseFloat(style);
 		}
 		return 0;
 	},
 
-	jsTextFieldSetFontSize: function (id, size) {
+	jsTextFieldSetFontSize: function(id, size) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.style.fontSize = (size) + 'px';
 		}
 	},
 
-	jsTextFieldGetAlign: function (id, buf, size) {
+	jsTextFieldGetAlign: function(id, buf, size) { 
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			stringToUTF8(obj.style.textAlign, buf, size);
 		}
 	},
 
-	jsTextFieldSetAlign: function (id, align) {
+	jsTextFieldSetAlign: function(id, align) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.style.textAlign = UTF8ToString(align);
 		}
 	},
 
-	jsTextFieldGetSecure: function (id, buf, size) {
+	jsTextFieldGetSecure: function(id, buf, size) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			stringToUTF8(obj.type, buf, size);
 		}
 	},
 
-	jsTextFieldGetInputType: function (id, buf, size) {
+	jsTextFieldGetInputType: function(id, buf, size) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			stringToUTF8(obj.type, buf, size);
 		}
 	},
 
-	jsTextFieldSetInputType: function (id, inputType) {
+	jsTextFieldSetInputType: function(id, inputType) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.type = UTF8ToString(inputType);
 		}
 	},
 
-	jsTextFieldGetEditable: function (id) {
+	jsTextFieldGetEditable: function(id) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			return obj.readonly;
 		}
 		return false;
 	},
 
-	jsTextFieldSetEditable: function (id, isEditable) {
+	jsTextFieldSetEditable: function(id, isEditable) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.readonly = isEditable;
 		}
 	},
 
-	jsTextFieldSetFont: function (id, name, size) {
+	jsTextFieldSetFont: function(id, name, size) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.style.fontFamily = UTF8ToString(name);
 			obj.style.fontSize = (size) + 'px';
 		}
 	},
 
-	jsTextFieldSetPlaceholder: function (id, text) {
+	jsTextFieldSetPlaceholder: function(id, text) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			var s = UTF8ToString(text);
 			obj.placeholder = s;
 		}
 	},
 
-	jsTextFieldSetSecure: function (id, secure) {
+	jsTextFieldSetSecure: function(id, secure) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			obj.type = secure ? "password" : "text";
 		}
 	},
 
-	jsTextFieldSetColor: function (id, _rgb) {
+	jsTextFieldSetColor: function(id, _rgb) {
 		var obj = document.getElementById(id);
-		if (obj) {
+		if (obj)
+		{
 			var rgb = UTF8ToString(_rgb);
 			obj.style.color = rgb;
 		}
@@ -458,7 +477,8 @@ var platformLibrary =
 	// context
 	//
 
-	jsContextLoadFonts: function (_name, buf, size) {
+	jsContextLoadFonts: function(_name, buf, size)
+	{
 		var name = UTF8ToString(_name);
 		var body = new Uint8Array(size);
 		for (var i = 0; i < size; i++) {
@@ -475,7 +495,7 @@ var platformLibrary =
 		var fontType = c[c.length - 1];
 		c = b.split('.' + fontType);
 		var fontName = c[0];
-		//		console.log('jsContextLoadFonts:', name, fontName, fontType);
+//		console.log('jsContextLoadFonts:', name, fontName, fontType);
 
 		var blob = new Blob([body], { type: ("font/" + fontType) });
 		var url = URL.createObjectURL(blob);
@@ -497,7 +517,7 @@ var platformLibrary =
 		}
 
 		// load font
-		if (document.fonts && typeof (document.fonts.load) == 'function') {
+		if (document.fonts && typeof(document.fonts.load) == 'function') {
 			if (!Module.loadingFonts) {
 				Module.loadingFonts = 0;
 			}
@@ -541,7 +561,8 @@ var platformLibrary =
 		parent.id = 'emscripten_border';
 
 		// override Emscripten's function
-		Module.requestFullscreen = function () {
+		Module.requestFullscreen = function ()
+		{
 			var element = document.getElementById('canvas');
 			element = element.parentNode;
 
@@ -562,18 +583,14 @@ var platformLibrary =
 
 		// Safari uses pre-calculated pixels, so use this feature to detect Safari
 		var canva = document.createElement('canvas');
-		console.log("Create canva");
 		var ctx = canva.getContext("2d");
-		console.log("Get context");
 		var img = ctx.getImageData(0, 0, 1, 1);
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
 
 		window.refreshNativeObject = function (id) {
-			console.log("refresh Object " + id);
 			var obj = document.getElementById(id);
 			if (obj) {
-
 				var viewPort = canvas.getBoundingClientRect();
 				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -597,16 +614,16 @@ var platformLibrary =
 				}
 			}
 		});
-		console.log("Context init done!");
+
 	},
 
-	jsContextConfig: function (w, h) {
+	jsContextConfig: function(w, h)	{
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
 	},
 
-	jsContextGetWindowWidth: function () { return Math.floor(window.innerWidth * window.devicePixelRatio); },
-	jsContextGetWindowHeight: function () { return Math.floor(window.innerHeight * window.devicePixelRatio); },
+	jsContextGetWindowWidth: function() {	return window.innerWidth;	},
+	jsContextGetWindowHeight: function() { return window.innerHeight;	},
 
 	jsContextUnlockAudio: function () {
 		// create empty buffer and play it
@@ -619,10 +636,7 @@ var platformLibrary =
 		}
 	},
 
-	jsContextSyncFS: function () {
-		if (Module.idbfsSynced == 0) {
-			return;
-		}
+	jsContextSyncFS: function() {
 		Module.idbfsSynced = 0;
 		try {
 			FS.syncfs(function (err) {
@@ -639,17 +653,17 @@ var platformLibrary =
 	},
 
 	jsContextResizeNativeObjects: function () {
-		//		var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-		//		if (fullscreenElement == null) {
-		var parent = canvas.parentNode.childNodes;
-		for (var item in parent) {
-			var obj = parent[item];
-			if (parseInt(obj.id, 10) > 0)		// native object ?
-			{
-				window.refreshNativeObject(obj.id);
+//		var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+//		if (fullscreenElement == null) {
+			var parent = canvas.parentNode.childNodes;
+			for (var item in parent) {
+				var obj = parent[item];
+				if (parseInt(obj.id, 10) > 0)		// native object ?
+				{
+					window.refreshNativeObject(obj.id);
+				}
 			}
-		}
-		//		}
+//		}
 	},
 
 	jsContextMountFS: function () {
@@ -686,7 +700,7 @@ var platformLibrary =
 	//
 
 	jsNetworkRequest: function (_url, _method, _headers, _body, body_size, progress, _requestPtr) {
-		//  progress:	UNKNOWN		= 0, 	Upload		= 1, 	Download	= 2, 	None		= 3
+	//  progress:	UNKNOWN		= 0, 	Upload		= 1, 	Download	= 2, 	None		= 3
 		var url = UTF8ToString(_url);
 		var method = UTF8ToString(_method);
 		var headers = UTF8ToString(_headers);
@@ -785,169 +799,209 @@ var platformLibrary =
 	},
 
 	//
-	// text render (debug version)
+	// text render
 	//
 	jsRenderText: function (thiz, _text, w, h, _alignment, _fontName, fontSize) {
-		try {
-			// console.log("=== jsRenderText START ===");
-			// console.log("Input:", { thiz, _text, w, h, _alignment, _fontName, fontSize });
+		var text = UTF8ToString(_text);
+		var alignment = UTF8ToString(_alignment);
 
-			var text = UTF8ToString(_text);
-			var alignment = UTF8ToString(_alignment);
-			var fontName = UTF8ToString(_fontName);
+		var fontName = UTF8ToString(_fontName);
+		var a = fontName.split('/');
+		fontName = a[a.length - 1]; // filename
 
-			// console.log("Decoded strings:", { text, alignment, fontName });
+		a = fontName.split('.');
+		fontName = a[0];
+		var ext = a[1];
 
-			// extract file name
-			var a = fontName.split('/');
-			fontName = a[a.length - 1];
-			// console.log("Font basename:", fontName);
+		var canva = document.createElement('canvas');
+		var ctx = canva.getContext("2d");
 
-			// remove extension
-			a = fontName.split('.');
-			fontName = a[0];
-			var ext = a[1];
-			// console.log("Font name / ext:", { fontName, ext });
+		if (Module.isSafari) {
+			ctx.fillStyle = 'red';
+		}
 
-			// create canvas
-			var canva = document.createElement('canvas');
-			canva.width = canvas.width;
-			canva.height = canvas.height;
-			canva.style.position = "absolute";
-			var ctx = canva.getContext("2d");
-			// console.log("Canvas created:", { width: canva.width, height: canva.height });
+		// check if font exists
+		var testtext = "ABCM|abcdefghijklmnopqrstuvwxyz0123456789";
 
-			if (Module.isSafari) {
-				ctx.fillStyle = 'red';
-				// console.log("Safari detected, set fillStyle = red");
+		ctx.font = "72px monospace";
+		var baselineSize = ctx.measureText(testtext).width;
+
+		ctx.font = "72px '" + fontName + "', monospace";
+		var newSize = ctx.measureText(testtext).width;
+
+		var fontExist = newSize != baselineSize;
+
+		if (fontName === '' || fontExist == false) {
+			// console.log(fontName + ' not found, using sans-serif');
+			fontName = 'sans-serif';
+		}
+
+		// ensure font is loaded (prevents Firefox fallback metrics)
+		if (document.fonts && document.fonts.load) {
+			try {
+				document.fonts.load(fontSize + 'px "' + fontName + '"');
+			} catch (e) {
+				// ignore
 			}
+		}
 
-			// check if font exists
-			var testtext = "ABCM|abcdefghijklmnopqrstuvwxyz0123456789";
-			ctx.font = "72px monospace";
-			var baselineSize = ctx.measureText(testtext).width;
-			ctx.font = "72px '" + fontName + "', monospace";
-			var newSize = ctx.measureText(testtext).width;
+		ctx.font = String(fontSize) + 'px ' + fontName;
+		ctx.textAlign = alignment;
+		ctx.textBaseline = 'alphabetic'; // safer baseline across browsers
 
-			var fontExist = newSize != baselineSize;
-			// console.log("Font existence check:", { baselineSize, newSize, fontExist });
+		// measure proper font metrics for vertical alignment
+		var testMetrics = ctx.measureText("Mg");
+		var ascent = testMetrics.actualBoundingBoxAscent || fontSize * 0.75;
+		var descent = testMetrics.actualBoundingBoxDescent || fontSize * 0.25;
+		var lineHeight = ascent + descent;
 
-			if (fontName === '' || fontExist == false) {
-				// console.warn(fontName + " not found, using sans-serif");
-				fontName = 'sans-serif';
-			}
-
-			ctx.font = String(fontSize) + 'px ' + fontName;
-			// console.log("Using font:", ctx.font);
-
-			ctx.textBaseline = 'top';
-			ctx.textAlign = alignment;
-			// console.log("Text alignment + baseline:", { textBaseline: ctx.textBaseline, textAlign: ctx.textAlign });
-
-			var a = measureText(testtext, false, fontName, fontSize);
-			var lineHeight = a[1];
-			// console.log("Measured lineHeight:", lineHeight);
-
-			// auto width calculation
-			if (w == 0) {
-				// console.log("Auto calculating width...");
-				var line = '';
-				for (var i = 0; i < text.length; i++) {
-					if (text.charAt(i) == '\n') {
-						line = '';
-					} else {
-						line += text.charAt(i);
-						var metrics = ctx.measureText(line);
-						if (metrics.width > w) {
-							w = metrics.width;
-						}
-					}
-				}
-				var metrics = ctx.measureText(line);
-				w = Math.max(w, metrics.width);
-				// console.log("Auto width =", w);
-			}
-
-			var x = 0, y = 0;
-			if (alignment === 'right') x = w;
-			else if (alignment === 'center') x = w / 2;
-			// console.log("Initial position:", { x, y, alignment });
-
-			// wrap text
-			// console.log("Begin drawing text...");
-			var ww = 0;
-			var hh = 0;
+		// calculate actual content dimensions first
+		var maxWidth = w;
+		if (w == 0) {
+			// calc width dynamically
+			maxWidth = 0;
 			var line = '';
-
 			for (var i = 0; i < text.length; i++) {
 				if (text.charAt(i) == '\n') {
-					ctx.fillText(line, x, y);
-					// console.log("Draw line (newline):", line, "at y =", y);
 					line = '';
-					y += lineHeight;
 				} else {
-					var testLine = line + text.charAt(i);
-					var metrics = ctx.measureText(testLine);
-					if (metrics.width > w) {
-						if (text.charAt(i) === ' ') {
-							ctx.fillText(line, x, y);
-							// console.log("Draw line (space wrap):", line, "at y =", y);
-							line = '';
-						} else {
-							var words = line.split(' ');
-							if (words.length > 1) {
-								var nextLine = words[words.length - 1] + text.charAt(i);
-								words.pop();
-								var s = words.join(' ');
-								ctx.fillText(s, x, y);
-								// console.log("Draw line (word wrap):", s, "at y =", y);
-								line = nextLine;
-							} else {
-								ctx.fillText(line, x, y);
-								// console.log("Draw line (force wrap):", line, "at y =", y);
-								line = text.charAt(i);
-							}
-						}
-						y += lineHeight;
-					} else {
-						line = testLine;
+					line += text.charAt(i);
+					var metrics = ctx.measureText(line);
+					if (metrics.width > maxWidth) {
+						maxWidth = metrics.width;
 					}
 				}
 			}
-
-			ctx.fillText(line, x, y);
-			// console.log("Draw last line:", line, "at y =", y);
-
-			hh = h > 0 ? h : y + lineHeight;
-			ww = w > 0 ? w : 1;
-
-			if ((ww & 0x3) != 0) {
-				ww = (ww + 3) & -4;
-				// console.log("Adjusted width (align 4 bytes):", ww);
-			}
-
-			// console.log("Final dimensions:", { ww, hh });
-
-			var myImageData = ctx.getImageData(0, 0, ww, hh);
-			// console.log("Image data captured:", { width: myImageData.width, height: myImageData.height, len: myImageData.data.length });
-
-			var img = Module.jarray2carray(myImageData.data);
-			// console.log("Converted image to C array:", img ? "OK" : "FAIL");
-
-			_jsEmscriptenBitmapSaveImage(thiz, myImageData.data.length, img, myImageData.width, myImageData.height, Module.isSafari);
-			// console.log("_jsEmscriptenBitmapSaveImage called");
-
-			_free(img);
-			// console.log("Memory freed for img");
-
-			console.log("=== jsRenderText END ===");
-		} catch (e) {
-			console.error("jsRenderText ERROR:", e);
+			var metrics = ctx.measureText(line);
+			maxWidth = Math.max(maxWidth, metrics.width);
 		}
+
+		// count lines to calculate height
+		var lineCount = 1;
+		var line = '';
+		for (var i = 0; i < text.length; i++) {
+			if (text.charAt(i) == '\n') {
+				lineCount++;
+				line = '';
+			} else {
+				var testLine = line + text.charAt(i);
+				var metrics = ctx.measureText(testLine);
+				if (metrics.width > maxWidth) {
+					lineCount++;
+					if (text.charAt(i) === ' ') {
+						line = '';
+					} else {
+						var a = line.split(' ');
+						if (a.length > 1) {
+							line = a[a.length - 1] + text.charAt(i);
+						} else {
+							line = text.charAt(i);
+						}
+					}
+				} else {
+					line = testLine;
+				}
+			}
+		}
+
+		// calculate required dimensions with proper padding
+		var topPadding = fontSize * 0.15; // padding to prevent clipping
+		var calculatedHeight = (lineCount * lineHeight) + (descent * 0.5);
+		var calculatedWidth = maxWidth;
+
+		// set canvas to exact required size
+		canva.width = h > 0 ? w : Math.ceil(calculatedWidth);
+		canva.height = h > 0 ? h : Math.ceil(calculatedHeight);
+		canva.style.position = "absolute";
+
+		// re-apply font and styles after canvas resize (canvas resets context)
+		ctx.font = String(fontSize) + 'px ' + fontName;
+		ctx.textAlign = alignment;
+		ctx.textBaseline = 'alphabetic';
+		
+		if (Module.isSafari) {
+			ctx.fillStyle = 'red';
+		}
+
+		var x = 0;
+		var y = ascent + topPadding;
+
+		if (alignment === 'right') {
+			x = maxWidth;
+		} else if (alignment === 'center') {
+			x = maxWidth / 2;
+		}
+
+		// render text
+		var line = '';
+		for (var i = 0; i < text.length; i++) {
+			if (text.charAt(i) == '\n') {
+				ctx.fillText(line, x, y);
+				line = '';
+				y += lineHeight;
+			} else {
+				var testLine = line + text.charAt(i);
+				var metrics = ctx.measureText(testLine);
+				if (metrics.width > maxWidth) {
+					if (text.charAt(i) === ' ') {
+						// ignore last space
+						ctx.fillText(line, x, y);
+						line = '';
+					} else {
+						// delete last uncomplete word if space exists
+						var a = line.split(' ');
+						if (a.length > 1) {
+							line = a[a.length - 1] + text.charAt(i); // beginning of next line
+							a.pop();
+							var s = a.join(' ');
+							ctx.fillText(s, x, y);
+						} else {
+							// no words, draw line as is
+							ctx.fillText(line, x, y);
+							line = text.charAt(i);
+						}
+					}
+					y += lineHeight;
+				} else {
+					line = testLine;
+				}
+			}
+		}
+
+		// last line
+		ctx.fillText(line, x, y);
+
+		var ww = w > 0 ? w : canva.width;
+		var hh = h > 0 ? h : canva.height;
+
+		// make width 4-byte aligned
+		if ((ww & 0x3) != 0) {
+			ww = (ww + 3) & -4;
+		}
+
+		// console.log('render: ', text, w, h, ww, hh, alignment, fontName, fontSize);
+
+		var myImageData = ctx.getImageData(0, 0, ww, hh);
+		var img = Module.jarray2carray(myImageData.data);
+		_jsEmscriptenBitmapSaveImage(
+			thiz,
+			myImageData.data.length,
+			img,
+			myImageData.width,
+			myImageData.height,
+			Module.isSafari
+		);
+		_free(img);
+
+		// optional debug
+		// var body = document.getElementsByTagName("body")[0];
+		// body.appendChild(canva);
+		// canva.remove();
 	},
 
 
-	jsContextSetClearColor: function (r, g, b, a) {
+	jsContextSetClearColor: function(r, g, b, a)
+	{
 		var rgba = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
 		var canvas = document.getElementById('canvas');
 		canvas.parentNode.style.backgroundColor = rgba;
