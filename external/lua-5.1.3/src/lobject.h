@@ -47,7 +47,7 @@ typedef union GCObject GCObject;
 ** Common header in struct form
 */
 typedef struct GCheader {
-  CommonHeader;
+    CommonHeader;
 } GCheader;
 
 
@@ -57,10 +57,10 @@ typedef struct GCheader {
 ** Union of all Lua values
 */
 typedef union {
-  GCObject *gc;
-  void *p;
-  lua_Number n;
-  int b;
+    GCObject* gc;
+    void* p;
+    lua_Number n;
+    int b;
 } Value;
 
 
@@ -68,14 +68,43 @@ typedef union {
 ** Tagged Values
 */
 
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define TValuefields	Value value; int tt
+#define LUA_TVALUE_NIL { NULL }, LUA_TNIL /* NaN-boxing */
 
 typedef struct lua_TValue {
-  TValuefields;
+    TValuefields;
 } TValue;
 
+/* NaN-boxing */
+#else
+
+#define TValuefields	union { \
+  struct { \
+    int _pad0; \
+    int tt_sig; \
+  } _ts; \
+  struct { \
+    int _pad; \
+    short tt; \
+    short sig; \
+  } _t; \
+  Value value; \
+}
+#define LUA_NOTNUMBER_SIG (-1)
+#define add_sig(tt) ( 0xffff0000 | (tt) )
+#define LUA_TVALUE_NIL {0, add_sig(LUA_TNIL)}
+
+typedef TValuefields TValue;
+
+#endif
+/* /NaN-boxing */
 
 /* Macros to test type */
+
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define ttisnil(o)	(ttype(o) == LUA_TNIL)
 #define ttisnumber(o)	(ttype(o) == LUA_TNUMBER)
 #define ttisstring(o)	(ttype(o) == LUA_TSTRING)
@@ -86,8 +115,37 @@ typedef struct lua_TValue {
 #define ttisthread(o)	(ttype(o) == LUA_TTHREAD)
 #define ttislightuserdata(o)	(ttype(o) == LUA_TLIGHTUSERDATA)
 
+/* NaN-boxing */
+#else
+
+#define ttisnil(o)	(ttype_sig(o) == add_sig(LUA_TNIL))
+#define ttisnumber(o)	((o)->_t.sig != LUA_NOTNUMBER_SIG)
+#define ttisstring(o)	(ttype_sig(o) == add_sig(LUA_TSTRING))
+#define ttistable(o)	(ttype_sig(o) == add_sig(LUA_TTABLE))
+#define ttisfunction(o)	(ttype_sig(o) == add_sig(LUA_TFUNCTION))
+#define ttisboolean(o)	(ttype_sig(o) == add_sig(LUA_TBOOLEAN))
+#define ttisuserdata(o)	(ttype_sig(o) == add_sig(LUA_TUSERDATA))
+#define ttisthread(o)	(ttype_sig(o) == add_sig(LUA_TTHREAD))
+#define ttislightuserdata(o)	(ttype_sig(o) == add_sig(LUA_TLIGHTUSERDATA))
+
+#endif
+/* /NaN-boxing */
+
+
 /* Macros to access values */
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define ttype(o)	((o)->tt)
+
+/* NaN-boxing */
+#else
+
+#define ttype(o)	((o)->_t.sig == LUA_NOTNUMBER_SIG ? (o)->_t.tt : LUA_TNUMBER)
+#define ttype_sig(o)	((o)->_ts.tt_sig)
+
+#endif
+/* /NaN-boxing */
+
 #define gcvalue(o)	check_exp(iscollectable(o), (o)->value.gc)
 #define pvalue(o)	check_exp(ttislightuserdata(o), (o)->value.p)
 #define nvalue(o)	check_exp(ttisnumber(o), (o)->value.n)
@@ -105,6 +163,8 @@ typedef struct lua_TValue {
 /*
 ** for internal debug only
 */
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define checkconsistency(obj) \
   lua_assert(!iscollectable(obj) || (ttype(obj) == (obj)->value.gc->gch.tt))
 
@@ -112,8 +172,23 @@ typedef struct lua_TValue {
   lua_assert(!iscollectable(obj) || \
   ((ttype(obj) == (obj)->value.gc->gch.tt) && !isdead(g, (obj)->value.gc)))
 
+/* NaN-boxing */
+#else
+
+#define checkconsistency(obj) \
+  lua_assert(!iscollectable(obj) || (ttype(obj) == (obj)->value.gc->gch._t.tt))
+
+#define checkliveness(g,obj) \
+  lua_assert(!iscollectable(obj) || \
+  ((ttype(obj) == (obj)->value.gc->gch._t.tt) && !isdead(g, (obj)->value.gc)))
+
+#endif
+/* /NaN-boxing */
+
 
 /* Macros to set values */
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define setnilvalue(obj) ((obj)->tt=LUA_TNIL)
 
 #define setnvalue(obj,x) \
@@ -163,6 +238,61 @@ typedef struct lua_TValue {
     o1->value = o2->value; o1->tt=o2->tt; \
     checkliveness(G(L),o1); }
 
+/* NaN-boxing */
+#else /* LUA_PACK_VALUE != 0 */
+
+#define setnilvalue(obj) ( ttype_sig(obj) = add_sig(LUA_TNIL) )
+
+#define setnvalue(obj,x) \
+  { TValue *i_o=(obj); i_o->value.n=(x); }
+
+#define setpvalue(obj,x) \
+  { TValue *i_o=(obj); i_o->value.p=(x); i_o->_ts.tt_sig=add_sig(LUA_TLIGHTUSERDATA);}
+
+#define setbvalue(obj,x) \
+  { TValue *i_o=(obj); i_o->value.b=(x); i_o->_ts.tt_sig=add_sig(LUA_TBOOLEAN);}
+
+#define setsvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TSTRING); \
+    checkliveness(G(L),i_o); }
+
+#define setuvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TUSERDATA); \
+    checkliveness(G(L),i_o); }
+
+#define setthvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TTHREAD); \
+    checkliveness(G(L),i_o); }
+
+#define setclvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TFUNCTION); \
+    checkliveness(G(L),i_o); }
+
+#define sethvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TTABLE); \
+    checkliveness(G(L),i_o); }
+
+#define setptvalue(L,obj,x) \
+  { TValue *i_o=(obj); \
+    i_o->value.gc=cast(GCObject *, (x)); i_o->_ts.tt_sig=add_sig(LUA_TPROTO); \
+    checkliveness(G(L),i_o); }
+
+
+
+
+#define setobj(L,obj1,obj2) \
+  { const TValue *o2=(obj2); TValue *o1=(obj1); \
+    o1->value = o2->value; \
+    checkliveness(G(L),o1); }
+
+#endif
+/* /NaN-boxing */
+
 
 /*
 ** different types of sets, according to destination
@@ -183,27 +313,39 @@ typedef struct lua_TValue {
 #define setobj2n	setobj
 #define setsvalue2n	setsvalue
 
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 #define setttype(obj, tt) (ttype(obj) = (tt))
+
+/* NaN-boxing */
+#else
+
+/* considering it used only in lgc to set LUA_TDEADKEY */
+/* we could define it this way */
+#define setttype(obj, _tt) ( ttype_sig(obj) = add_sig(_tt) )
+
+#endif
+/* /NaN-boxing */
 
 
 #define iscollectable(o)	(ttype(o) >= LUA_TSTRING)
 
 
 
-typedef TValue *StkId;  /* index to stack elements */
+typedef TValue* StkId;  /* index to stack elements */
 
 
 /*
 ** String headers for string table
 */
 typedef union TString {
-  L_Umaxalign dummy;  /* ensures maximum alignment for strings */
-  struct {
-    CommonHeader;
-    lu_byte reserved;
-    unsigned int hash;
-    size_t len;
-  } tsv;
+    L_Umaxalign dummy;  /* ensures maximum alignment for strings */
+    struct {
+        CommonHeader;
+        lu_byte reserved;
+        unsigned int hash;
+        size_t len;
+    } tsv;
 } TString;
 
 
@@ -213,13 +355,13 @@ typedef union TString {
 
 
 typedef union Udata {
-  L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
-  struct {
-    CommonHeader;
-    struct Table *metatable;
-    struct Table *env;
-    size_t len;
-  } uv;
+    L_Umaxalign dummy;  /* ensures maximum alignment for `local' udata */
+    struct {
+        CommonHeader;
+        struct Table* metatable;
+        struct Table* env;
+        size_t len;
+    } uv;
 } Udata;
 
 
@@ -229,27 +371,27 @@ typedef union Udata {
 ** Function Prototypes
 */
 typedef struct Proto {
-  CommonHeader;
-  TValue *k;  /* constants used by the function */
-  Instruction *code;
-  struct Proto **p;  /* functions defined inside the function */
-  int *lineinfo;  /* map from opcodes to source lines */
-  struct LocVar *locvars;  /* information about local variables */
-  TString **upvalues;  /* upvalue names */
-  TString  *source;
-  int sizeupvalues;
-  int sizek;  /* size of `k' */
-  int sizecode;
-  int sizelineinfo;
-  int sizep;  /* size of `p' */
-  int sizelocvars;
-  int linedefined;
-  int lastlinedefined;
-  GCObject *gclist;
-  lu_byte nups;  /* number of upvalues */
-  lu_byte numparams;
-  lu_byte is_vararg;
-  lu_byte maxstacksize;
+    CommonHeader;
+    TValue* k;  /* constants used by the function */
+    Instruction* code;
+    struct Proto** p;  /* functions defined inside the function */
+    int* lineinfo;  /* map from opcodes to source lines */
+    struct LocVar* locvars;  /* information about local variables */
+    TString** upvalues;  /* upvalue names */
+    TString* source;
+    int sizeupvalues;
+    int sizek;  /* size of `k' */
+    int sizecode;
+    int sizelineinfo;
+    int sizep;  /* size of `p' */
+    int sizelocvars;
+    int linedefined;
+    int lastlinedefined;
+    GCObject* gclist;
+    lu_byte nups;  /* number of upvalues */
+    lu_byte numparams;
+    lu_byte is_vararg;
+    lu_byte maxstacksize;
 } Proto;
 
 
@@ -260,9 +402,9 @@ typedef struct Proto {
 
 
 typedef struct LocVar {
-  TString *varname;
-  int startpc;  /* first point where variable is active */
-  int endpc;    /* first point where variable is dead */
+    TString* varname;
+    int startpc;  /* first point where variable is active */
+    int endpc;    /* first point where variable is dead */
 } LocVar;
 
 
@@ -272,15 +414,15 @@ typedef struct LocVar {
 */
 
 typedef struct UpVal {
-  CommonHeader;
-  TValue *v;  /* points to stack or to its own value */
-  union {
-    TValue value;  /* the value (when closed) */
-    struct {  /* double linked list (when open) */
-      struct UpVal *prev;
-      struct UpVal *next;
-    } l;
-  } u;
+    CommonHeader;
+    TValue* v;  /* points to stack or to its own value */
+    union {
+        TValue value;  /* the value (when closed) */
+        struct {  /* double linked list (when open) */
+            struct UpVal* prev;
+            struct UpVal* next;
+        } l;
+    } u;
 } UpVal;
 
 
@@ -293,22 +435,22 @@ typedef struct UpVal {
 	struct Table *env
 
 typedef struct CClosure {
-  ClosureHeader;
-  lua_CFunction f;
-  TValue upvalue[1];
+    ClosureHeader;
+    lua_CFunction f;
+    TValue upvalue[1];
 } CClosure;
 
 
 typedef struct LClosure {
-  ClosureHeader;
-  struct Proto *p;
-  UpVal *upvals[1];
+    ClosureHeader;
+    struct Proto* p;
+    UpVal* upvals[1];
 } LClosure;
 
 
 typedef union Closure {
-  CClosure c;
-  LClosure l;
+    CClosure c;
+    LClosure l;
 } Closure;
 
 
@@ -320,31 +462,50 @@ typedef union Closure {
 ** Tables
 */
 
+#if LUA_PACK_VALUE == 0 /* NaN-boxing */
+
 typedef union TKey {
-  struct {
-    TValuefields;
-    struct Node *next;  /* for chaining */
-  } nk;
-  TValue tvk;
+    struct {
+        TValuefields;
+        struct Node* next;  /* for chaining */
+    } nk;
+    TValue tvk;
 } TKey;
+
+#define LUA_TKEY_NIL {LUA_TVALUE_NIL, NULL} /* NaN-boxing */
+
+/* NaN-boxing */
+#else
+
+typedef struct TKey {
+    TValue tvk;
+    struct {
+        struct Node* next; /* for chaining */
+    } nk;
+} TKey;
+
+#define LUA_TKEY_NIL {LUA_TVALUE_NIL}, {NULL}
+
+#endif
+/* /NaN-boxing */
 
 
 typedef struct Node {
-  TValue i_val;
-  TKey i_key;
+    TValue i_val;
+    TKey i_key;
 } Node;
 
 
 typedef struct Table {
-  CommonHeader;
-  lu_byte flags;  /* 1<<p means tagmethod(p) is not present */ 
-  lu_byte lsizenode;  /* log2 of size of `node' array */
-  struct Table *metatable;
-  TValue *array;  /* array part */
-  Node *node;
-  Node *lastfree;  /* any free position is before this position */
-  GCObject *gclist;
-  int sizearray;  /* size of `array' array */
+    CommonHeader;
+    lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
+    lu_byte lsizenode;  /* log2 of size of `node' array */
+    struct Table* metatable;
+    TValue* array;  /* array part */
+    Node* node;
+    Node* lastfree;  /* any free position is before this position */
+    GCObject* gclist;
+    int sizearray;  /* size of `array' array */
 } Table;
 
 
@@ -366,16 +527,15 @@ LUAI_DATA const TValue luaO_nilobject_;
 
 #define ceillog2(x)	(luaO_log2((x)-1) + 1)
 
-LUAI_FUNC int luaO_log2 (unsigned int x);
-LUAI_FUNC int luaO_int2fb (unsigned int x);
-LUAI_FUNC int luaO_fb2int (int x);
-LUAI_FUNC int luaO_rawequalObj (const TValue *t1, const TValue *t2);
-LUAI_FUNC int luaO_str2d (const char *s, lua_Number *result);
-LUAI_FUNC const char *luaO_pushvfstring (lua_State *L, const char *fmt,
-                                                       va_list argp);
-LUAI_FUNC const char *luaO_pushfstring (lua_State *L, const char *fmt, ...);
-LUAI_FUNC void luaO_chunkid (char *out, const char *source, size_t len);
+LUAI_FUNC int luaO_log2(unsigned int x);
+LUAI_FUNC int luaO_int2fb(unsigned int x);
+LUAI_FUNC int luaO_fb2int(int x);
+LUAI_FUNC int luaO_rawequalObj(const TValue* t1, const TValue* t2);
+LUAI_FUNC int luaO_str2d(const char* s, lua_Number* result);
+LUAI_FUNC const char* luaO_pushvfstring(lua_State* L, const char* fmt,
+    va_list argp);
+LUAI_FUNC const char* luaO_pushfstring(lua_State* L, const char* fmt, ...);
+LUAI_FUNC void luaO_chunkid(char* out, const char* source, size_t len);
 
 
 #endif
-
