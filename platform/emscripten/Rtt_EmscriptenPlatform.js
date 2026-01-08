@@ -637,11 +637,6 @@ var platformLibrary =
 	},
 
 	jsContextSyncFS: function() {
-		if (Module.idbfsSynced == 0)
-		{
-			return;
-		}
-		
 		Module.idbfsSynced = 0;
 		try {
 			FS.syncfs(function (err) {
@@ -1035,3 +1030,4 @@ autoAddDeps(platformLibrary, '$jsLocaleCountry');
 autoAddDeps(platformLibrary, '$jsLanguage');
 autoAddDeps(platformLibrary, '$measureText');
 mergeInto(LibraryManager.library, platformLibrary);
+
