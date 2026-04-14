@@ -202,7 +202,7 @@ namespace Rtt
 			}
 		}
 		else
-		if (ext == ".jpg")
+		if (ext == ".jpg" || ext == ".jpeg")
 		{
 			FILE* f = fopen(path, "rb");
 			if (f)
