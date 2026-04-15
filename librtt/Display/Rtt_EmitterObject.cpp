@@ -98,6 +98,72 @@ const char *Util_GetString( LuaMap &lua_map, const char *field_name )
 	}
 }
 
+float Hermite(float x0, float x1, float t0, float t1, float t) {
+	return (2 * t * t * t - 3 * t * t + 1) * x0 +
+		(t * t * t - 2 * t * t + t) * t0 +
+		(-2 * t * t * t + 3 * t * t) * x1 +
+		(t * t * t - t * t) * t1;
+}
+
+struct SplinePoint {
+	float m_X;
+	float m_Y;
+	float m_TX;
+	float m_TY;
+};
+
+float GetValue(const SplinePoint* segments, int segment, float t)
+{
+	SplinePoint p0 = segments[segment];
+	SplinePoint p1 = segments[segment + 1];
+	float dx = p1.m_X - p0.m_X;
+
+	float py0 = p0.m_Y;
+	float py1 = p1.m_Y;
+	float pt0 = dx * p0.m_TY / p0.m_TX;
+	float pt1 = dx * p1.m_TY / p1.m_TX;
+
+	return Hermite(py0, py1, pt0, pt1, t);
+}
+
+float GetY(const SplinePoint* segments, uint32_t segment_count, float x)
+{
+	if (segment_count == 1)
+	{
+		// Fall-back to linear interpolation
+		const SplinePoint& p = *segments;
+		return p.m_Y + (x - p.m_X) * p.m_TY / p.m_TX;
+	}
+	uint32_t segment_index = 0;
+	float t = 0;
+	for (uint32_t s = 0; s < segment_count - 1; ++s) {
+		const SplinePoint& p0 = segments[s];
+		const SplinePoint& p1 = segments[s + 1];
+		// break when we found the appropriate segemnt, or the last one
+		if ((x >= p0.m_X && x < p1.m_X) || s == segment_count - 2) {
+			t = (x - p0.m_X) / (p1.m_X - p0.m_X);
+			segment_index = s;
+			break;
+		}
+	}
+
+	return GetValue(segments, segment_index, t);
+}
+
+/*
+	TEST DATA
+*/
+
+SplinePoint green_points[] = {
+		{0.0f, 0.0f, 1.0f, 0.0f},
+		{0.25f, 1.0f, 1.0f, 0.0f},
+		{0.5f, 0.0f, 1.0f, 0.0f},
+		{0.75f, 1.f, 1.0f, 0.0f},
+		{1.0f, 0.0f, 1.0f, 0.0f},
+};
+
+//END TEST DATA
+
 // -----------------------------------------------------------------------------
 
 // Particle type
@@ -139,11 +205,15 @@ struct EmitterObjectParticle
 	float fParticleSize;
 	float fParticleSizeDelta;
 	float fTimeToLiveInSeconds;
+	float fTotalLiveTime;
+	float fLiveTime;
 };
 
 void EmitterObjectParticle::Reset()
 {
 	fTimeToLiveInSeconds = 0.0f;
+	fTotalLiveTime = 0.0f;
+	fLiveTime = 0.0f;
 }
 
 void EmitterObjectParticle::Init( EmitterObject *eo, const Matrix &spawnTimeTransform )
@@ -176,6 +246,8 @@ void EmitterObjectParticle::Init( EmitterObject *eo, const Matrix &spawnTimeTran
 
     // Calculate the particles life span using the life span and variance passed in
 	fTimeToLiveInSeconds = std::max( 0.0f, ( eo->fParticleLifespanInSeconds + eo->fParticleLifespanInSecondsVariance * GET_RANDOM_MINUS_1_TO_1() ) );
+	fTotalLiveTime = fTimeToLiveInSeconds;
+	fLiveTime = 0.0f;
 
     float startRadius = std::max( 0.0f, ( eo->fMaxRadius + eo->fMaxRadiusVariance * GET_RANDOM_MINUS_1_TO_1() ) );
     float endRadius = std::max( 0.0f, ( eo->fMinRadius + eo->fMinRadiusVariance * GET_RANDOM_MINUS_1_TO_1() ) );
@@ -204,6 +276,18 @@ void EmitterObjectParticle::Init( EmitterObject *eo, const Matrix &spawnTimeTran
 	start.b = clamp( 0.0f, 1.0f, ( eo->fStartColor.b + eo->fStartColorVariance.b * GET_RANDOM_MINUS_1_TO_1() ) );
 	start.a = clamp( 0.0f, 1.0f, ( eo->fStartColor.a + eo->fStartColorVariance.a * GET_RANDOM_MINUS_1_TO_1() ) );
 
+	/*
+		TEST DATA
+	*/
+	//start.r = GetY(red_points, 3, fTotalLiveTime);
+	start.g = GetY(green_points, 4, 0.0f);
+	//start.b = GetY(blue_points, 3, fTotalLiveTime);
+
+	//CoronaLog("Spline data 0 %f, %f, %f, %f", green_points[0].m_X, green_points[0].m_Y, green_points[0].m_TX, green_points[0].m_TY);
+	//CoronaLog("Spline data 1 %f, %f, %f, %f", green_points[1].m_X, green_points[1].m_Y, green_points[1].m_TX, green_points[1].m_TY);
+	
+	// END TEST DATA
+	
 	// Calculate the color the particle should be when its life is over.  This is done the same
 	// way as the start color above
 	Vector4 end = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -235,7 +319,7 @@ void EmitterObjectParticle::Update( EmitterObject *eo, float time_delta )
 {
     // Reduce the life span of the particle
     fTimeToLiveInSeconds -= time_delta;
-
+	fLiveTime += time_delta;
 	// If the current particle is alive then update it
 	if( fTimeToLiveInSeconds <= 0.0f )
 	{
@@ -293,7 +377,16 @@ void EmitterObjectParticle::Update( EmitterObject *eo, float time_delta )
 	fColor.g += fDeltaColor.g * time_delta;
 	fColor.b += fDeltaColor.b * time_delta;
 	fColor.a += fDeltaColor.a * time_delta;
+	/*
+		TEST DATA
+	*/
 
+	//fColor.r = GetY(red_points, 2, fTotalLiveTime);
+	fColor.g = GetY(green_points, 4, fLiveTime/fTotalLiveTime);
+	//CoronaLog("Time %f / %f = %f", fLiveTime, fTotalLiveTime, fLiveTime / fTotalLiveTime);
+	//CoronaLog("Green Color %f", fColor.g);
+	//fColor.b = GetY(blue_points, 2, fTotalLiveTime);
+	//CoronaLog("Green %f", fColor.g);
 	// Update the particle size
 	fParticleSize += fParticleSizeDelta * time_delta;
     fParticleSize = std::max(0.0f, fParticleSize);
