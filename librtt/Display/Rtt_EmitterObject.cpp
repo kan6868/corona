@@ -280,7 +280,7 @@ void EmitterObjectParticle::Init( EmitterObject *eo, const Matrix &spawnTimeTran
 		TEST DATA
 	*/
 	//start.r = GetY(red_points, 3, fTotalLiveTime);
-	start.g = GetY(green_points, 4, 0.0f);
+	start.g = GetY(green_points, 5, 0.0f);
 	//start.b = GetY(blue_points, 3, fTotalLiveTime);
 
 	//CoronaLog("Spline data 0 %f, %f, %f, %f", green_points[0].m_X, green_points[0].m_Y, green_points[0].m_TX, green_points[0].m_TY);
@@ -382,7 +382,7 @@ void EmitterObjectParticle::Update( EmitterObject *eo, float time_delta )
 	*/
 
 	//fColor.r = GetY(red_points, 2, fTotalLiveTime);
-	fColor.g = GetY(green_points, 4, fLiveTime/fTotalLiveTime);
+	fColor.g = GetY(green_points, 5, fLiveTime/fTotalLiveTime);
 	//CoronaLog("Time %f / %f = %f", fLiveTime, fTotalLiveTime, fLiveTime / fTotalLiveTime);
 	//CoronaLog("Green Color %f", fColor.g);
 	//fColor.b = GetY(blue_points, 2, fTotalLiveTime);
