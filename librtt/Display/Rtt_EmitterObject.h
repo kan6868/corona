@@ -31,6 +31,13 @@ class LuaUserdataProxy;
 class TextureResource;
 struct EmitterObjectParticle;
 
+struct SplinePoint {
+	float m_X;
+	float m_Y;
+	float m_TX;
+	float m_TY;
+};
+
 #define EMITTER_ABSOLUTE_PARENT ((GroupObject*)-1)
 // ----------------------------------------------------------------------------
 
@@ -286,6 +293,11 @@ private:
 	Vector4 fStartColorVariance;
 	Vector4 fFinishColor;
 	Vector4 fFinishColorVariance;
+
+	std::vector<SplinePoint> fColorRedSpline;
+	std::vector<SplinePoint> fColorGreenSpline;
+	std::vector<SplinePoint> fColorBlueSpline;
+	std::vector<SplinePoint> fColorAlphaSpline;
 
 	float fStartParticleSize;
 	float fStartParticleSizeVariance;

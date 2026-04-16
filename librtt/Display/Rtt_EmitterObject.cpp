@@ -98,6 +98,28 @@ const char *Util_GetString( LuaMap &lua_map, const char *field_name )
 	}
 }
 
+std::vector<float> Util_GetFloatArray(LuaMap& map, const char* field)
+{
+	std::vector<float> out;
+	LuaData* raw = map.GetData(field);
+	if (!raw || raw->GetDataType() != LuaData::kMap) return out;
+	LuaMap* sub = static_cast<LuaMap*>(raw);
+
+	std::vector<std::string> keys = sub->GetKeys();
+	std::sort(keys.begin(), keys.end(),
+		[](const std::string& a, const std::string& b) {
+			return std::atoi(a.c_str()) < std::atoi(b.c_str());
+		});
+
+	for (size_t i = 0; i < keys.size(); ++i)
+	{
+		LuaData* d = sub->GetData(keys[i]);
+		if (d && d->GetDataType() == LuaData::kDouble)
+			out.push_back((float)*(double*)d->GetData());
+	}
+	return out;
+}
+
 float Hermite(float x0, float x1, float t0, float t1, float t) {
 	return (2 * t * t * t - 3 * t * t + 1) * x0 +
 		(t * t * t - 2 * t * t + t) * t0 +
@@ -105,14 +127,7 @@ float Hermite(float x0, float x1, float t0, float t1, float t) {
 		(t * t * t - t * t) * t1;
 }
 
-struct SplinePoint {
-	float m_X;
-	float m_Y;
-	float m_TX;
-	float m_TY;
-};
-
-float GetValue(const SplinePoint* segments, int segment, float t)
+float GetValue(const std::vector<SplinePoint> segments, int segment, float t)
 {
 	SplinePoint p0 = segments[segment];
 	SplinePoint p1 = segments[segment + 1];
@@ -126,12 +141,12 @@ float GetValue(const SplinePoint* segments, int segment, float t)
 	return Hermite(py0, py1, pt0, pt1, t);
 }
 
-float GetY(const SplinePoint* segments, uint32_t segment_count, float x)
+float GetY(const std::vector<SplinePoint> segments, uint32_t segment_count, float x)
 {
 	if (segment_count == 1)
 	{
 		// Fall-back to linear interpolation
-		const SplinePoint& p = *segments;
+		const SplinePoint& p = *segments.begin();
 		return p.m_Y + (x - p.m_X) * p.m_TY / p.m_TX;
 	}
 	uint32_t segment_index = 0;
@@ -271,16 +286,34 @@ void EmitterObjectParticle::Init( EmitterObject *eo, const Matrix &spawnTimeTran
 	// Calculate the color the particle should have when it starts its life.  All the elements
 	// of the start color passed in along with the variance are used to calculate the star color
 	Vector4 start = {0.0f, 0.0f, 0.0f, 0.0f};
-	start.r = clamp( 0.0f, 1.0f, ( eo->fStartColor.r + eo->fStartColorVariance.r * GET_RANDOM_MINUS_1_TO_1() ) );
-	start.g = clamp( 0.0f, 1.0f, ( eo->fStartColor.g + eo->fStartColorVariance.g * GET_RANDOM_MINUS_1_TO_1() ) );
-	start.b = clamp( 0.0f, 1.0f, ( eo->fStartColor.b + eo->fStartColorVariance.b * GET_RANDOM_MINUS_1_TO_1() ) );
-	start.a = clamp( 0.0f, 1.0f, ( eo->fStartColor.a + eo->fStartColorVariance.a * GET_RANDOM_MINUS_1_TO_1() ) );
+
+	if (eo->fColorRedSpline.empty())
+		start.r = clamp(0.0f, 1.0f, (eo->fStartColor.r + eo->fStartColorVariance.r * GET_RANDOM_MINUS_1_TO_1()));
+	else
+		start.r = clamp(0.0f, 1.0f, GetY(eo->fColorRedSpline, eo->fColorRedSpline.size(), 0.0));
+
+	if (eo->fColorGreenSpline.empty())
+		start.g = clamp(0.0f, 1.0f, (eo->fStartColor.g + eo->fStartColorVariance.g * GET_RANDOM_MINUS_1_TO_1()));
+	else
+		start.g = clamp(0.0f, 1.0f, GetY(eo->fColorGreenSpline, eo->fColorRedSpline.size(), 0.0));
+
+	if (eo->fColorBlueSpline.empty())
+		start.b = clamp(0.0f, 1.0f, (eo->fStartColor.b + eo->fStartColorVariance.b * GET_RANDOM_MINUS_1_TO_1()));
+	else
+		start.b = clamp(0.0f, 1.0f, GetY(eo->fColorBlueSpline, eo->fColorRedSpline.size(), 0.0));
+
+	if (eo->fColorAlphaSpline.empty())
+		start.a = clamp(0.0f, 1.0f, (eo->fStartColor.a + eo->fStartColorVariance.a * GET_RANDOM_MINUS_1_TO_1()));
+	else
+		start.a = clamp(0.0f, 1.0f, GetY(eo->fColorAlphaSpline, eo->fColorRedSpline.size(), 0.0));
+
 
 	/*
 		TEST DATA
 	*/
+
 	//start.r = GetY(red_points, 3, fTotalLiveTime);
-	start.g = GetY(green_points, 5, 0.0f);
+	//start.g = GetY(green_points, 5, 0.0f);
 	//start.b = GetY(blue_points, 3, fTotalLiveTime);
 
 	//CoronaLog("Spline data 0 %f, %f, %f, %f", green_points[0].m_X, green_points[0].m_Y, green_points[0].m_TX, green_points[0].m_TY);
@@ -373,18 +406,37 @@ void EmitterObjectParticle::Update( EmitterObject *eo, float time_delta )
 	}
 
 	// Update the particles color
-	fColor.r += fDeltaColor.r * time_delta;
-	fColor.g += fDeltaColor.g * time_delta;
-	fColor.b += fDeltaColor.b * time_delta;
-	fColor.a += fDeltaColor.a * time_delta;
-	/*
-		TEST DATA
-	*/
+	
+	float percent = fLiveTime / fTotalLiveTime;
+	
+	if (eo->fColorRedSpline.empty())
+	{
+		fColor.r += fDeltaColor.r * time_delta;
+	}
+	else
+		fColor.r = clamp(0.0f, 1.0f, GetY(eo->fColorRedSpline, eo->fColorRedSpline.size(), percent));
 
-	//fColor.r = GetY(red_points, 2, fTotalLiveTime);
-	fColor.g = GetY(green_points, 5, fLiveTime/fTotalLiveTime);
+	if (eo->fColorGreenSpline.empty())
+	{
+		fColor.g += fDeltaColor.g * time_delta;
+	}
+	else
+		fColor.g = clamp(0.0f, 1.0f, GetY(eo->fColorGreenSpline, eo->fColorGreenSpline.size(), percent));
+
+	if (eo->fColorBlueSpline.empty())
+	{
+		fColor.b += fDeltaColor.b * time_delta;
+	}
+	else
+		fColor.b = clamp(0.0f, 1.0f, GetY(eo->fColorBlueSpline, eo->fColorBlueSpline.size(), percent));
+
+	if (eo->fColorAlphaSpline.empty())
+		fColor.a += fDeltaColor.a * time_delta;
+	else
+		fColor.a = clamp(0.0f, 1.0f, GetY(eo->fColorAlphaSpline, eo->fColorAlphaSpline.size(), percent));
+
 	//CoronaLog("Time %f / %f = %f", fLiveTime, fTotalLiveTime, fLiveTime / fTotalLiveTime);
-	//CoronaLog("Green Color %f", fColor.g);
+	//CoronaLog("Color: {%f, %f, %f, %f}", fColor.r, fColor.g, fColor.b, fColor.a);
 	//fColor.b = GetY(blue_points, 2, fTotalLiveTime);
 	//CoronaLog("Green %f", fColor.g);
 	// Update the particle size
@@ -692,6 +744,10 @@ EmitterObject::EmitterObject()
 , fStartColorVariance( kVector4Zero )
 , fFinishColor( kVector4Zero )
 , fFinishColorVariance( kVector4Zero )
+, fColorRedSpline()
+, fColorGreenSpline()
+, fColorBlueSpline()
+, fColorAlphaSpline()
 , fStartParticleSize( 0.0f )
 , fStartParticleSizeVariance( 0.0f )
 , fFinishParticleSize( 0.0f )
@@ -784,6 +840,39 @@ bool EmitterObject::Initialize( lua_State *L, Display &display )
 	fStartColor.g = GET_FLOAT( params, "startColorGreen" );
 	fStartColor.b = GET_FLOAT( params, "startColorBlue" );
 	fStartColor.a = GET_FLOAT( params, "startColorAlpha" );
+
+	
+	std::vector<float> rawRedSpline = Util_GetFloatArray(params, "redSpline");
+	
+	if (!rawRedSpline.empty() && rawRedSpline.size() > 3) 
+	{
+		for (size_t i = 0; i + 3 < rawRedSpline.size(); i += 4)
+			fColorRedSpline.push_back({ rawRedSpline[i], rawRedSpline[i + 1], rawRedSpline[i + 2], rawRedSpline[i + 3] });
+	}
+
+	std::vector<float> rawGreenSpline = Util_GetFloatArray(params, "greenSpline");
+
+	if (!rawGreenSpline.empty() && rawGreenSpline.size() > 3)
+	{
+		for (size_t i = 0; i + 3 < rawGreenSpline.size(); i += 4)
+			fColorGreenSpline.push_back({ rawGreenSpline[i], rawGreenSpline[i + 1], rawGreenSpline[i + 2], rawGreenSpline[i + 3] });
+	}
+
+	std::vector<float> rawBlueSpline = Util_GetFloatArray(params, "blueSpline");
+
+	if (!rawBlueSpline.empty() && rawBlueSpline.size() > 3)
+	{
+		for (size_t i = 0; i + 3 < rawBlueSpline.size(); i += 4)
+			fColorBlueSpline.push_back({ rawBlueSpline[i], rawBlueSpline[i + 1], rawBlueSpline[i + 2], rawBlueSpline[i + 3] });
+	}
+
+	std::vector<float> rawAlphaSpline = Util_GetFloatArray(params, "alphaSpline");
+
+	if (!rawAlphaSpline.empty() && rawAlphaSpline.size() > 3)
+	{
+		for (size_t i = 0; i + 3 < rawAlphaSpline.size(); i += 4)
+			fColorAlphaSpline.push_back({ rawAlphaSpline[i], rawAlphaSpline[i + 1], rawAlphaSpline[i + 2], rawAlphaSpline[i + 3] });
+	}
 
 	fStartColorVariance.r = GET_FLOAT( params, "startColorVarianceRed" );
 	fStartColorVariance.g = GET_FLOAT( params, "startColorVarianceGreen" );
