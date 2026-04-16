@@ -1037,7 +1037,20 @@ bool EmitterObject::Initialize( lua_State *L, Display &display )
 												false ) ); // Store on GPU.
 
 		ShaderFactory &factory = display.GetShaderFactory();
-		fShader = &factory.GetDefault();
+		
+		
+		std::string customShaderName = Util_GetString(params, "customShader");
+
+		if (!customShaderName.empty())
+		{
+			Shader* customShader = factory.FindOrLoad(ShaderTypes::kCategoryFilter, customShaderName.c_str());
+
+			if (customShader)
+			{
+				CoronaLog("Set custom shader %s ", customShaderName);
+				fShader = customShader;
+			}
+		}
 
 		fData.fFillTexture0 = NULL;
 		fData.fFillTexture1 = NULL;
@@ -1115,8 +1128,9 @@ bool EmitterObject::Initialize( lua_State *L, Display &display )
 	// Shader.
 	{
 		fData.fFillTexture0 = &fTextureResource->GetTexture();
-
+		
 		ShaderData *d = ( fShader ? fShader->GetData() : NULL );
+		
 		if( d )
 		{
 			fData.fUserUniform0 = d->GetUniform( ShaderData::kData0 );
@@ -1169,7 +1183,7 @@ void EmitterObject::Draw( Renderer& renderer ) const
 	}
 
 	SUMMED_TIMING( ed, "Emitter: Draw" );
-
+	
 #if defined(Rtt_EMSCRIPTEN_ENV)
 	if (fData.fGeometry->GetStoredOnGPU())
 	{
@@ -1408,6 +1422,32 @@ void EmitterObject::SetEmissionRateInParticlesPerSeconds( float v )
 void EmitterObject::SetParticleLifespanInSeconds( float v )
 {
 	fParticleLifespanInSeconds = std::max( MIN_PARTICLE_LIFESPAN_IN_SECONDS, v );
+}
+
+void EmitterObject::SetUserUniform(lua_State* L, int index)
+{
+	// Ensure the value at 'index' is a table
+	if (!lua_istable(L, index))
+		return;
+
+	// Get "frame" field from the table
+	lua_getfield(L, index, "frame");
+
+	if (lua_isnumber(L, -1))
+	{
+		// Set uniform using the value on top of the stack
+		fShader->GetData()->SetUniform(L, -1, ShaderData::kData0);
+		
+		// Store the uniform locally
+		fData.fUserUniform0 = fShader->GetData()->GetUniform(ShaderData::kData0);
+		CoronaLog("UPdate uniform");
+	}
+	else
+	{
+		printf("ERROR: frame is not a number\n");
+	}
+	// Pop the "frame" value
+	lua_pop(L, 1);
 }
 
 void EmitterObject::Start()
