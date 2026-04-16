@@ -1051,6 +1051,8 @@ bool EmitterObject::Initialize( lua_State *L, Display &display )
 				fShader = customShader;
 			}
 		}
+		else
+			fShader = &factory.GetDefault();
 
 		fData.fFillTexture0 = NULL;
 		fData.fFillTexture1 = NULL;
