@@ -341,6 +341,14 @@ namespace Rtt
 			break;
 		}
 
+		case sdl::OnRotateLeft:
+			OnRotateLeft();
+			break;
+
+		case sdl::OnRotateRight:
+			OnRotateRight();
+			break;
+
 		case sdl::OnZoomIn:
 			OnZoomIn();
 			break;
@@ -383,6 +391,44 @@ namespace Rtt
 		}
 	}
 
+	void SolarSimulator::OnRotateLeft()
+	{
+		SDL_DisplayMode screen;
+		if (SDL_GetCurrentDisplayMode(0, &screen) == 0)
+		{
+			S32 angleAfterRotation = DeviceOrientation::AngleForOrientation(fContext->GetOrientation()) + 90;
+			DeviceOrientation::Type orientationAfterRotation = DeviceOrientation::OrientationForAngle(angleAfterRotation);
+			bool isOrientationSupported = fContext->GetProjectSettings()->IsSupported(orientationAfterRotation);
+
+			fContext->SetOrientation(orientationAfterRotation);
+			fContext->GetRuntime()->WindowDidRotate(orientationAfterRotation, isOrientationSupported);
+
+			int proposedWidth = fContext->GetHeight();
+			int proposedHeight = fContext->GetWidth();
+
+			fContext->SetSize(proposedWidth, proposedHeight);
+		}
+	}
+
+	void SolarSimulator::OnRotateRight()
+	{
+		SDL_DisplayMode screen;
+		if (SDL_GetCurrentDisplayMode(0, &screen) == 0)
+		{
+			S32 angleAfterRotation = DeviceOrientation::AngleForOrientation(fContext->GetOrientation()) - 90;
+			DeviceOrientation::Type orientationAfterRotation = DeviceOrientation::OrientationForAngle(angleAfterRotation);
+			bool isOrientationSupported = fContext->GetProjectSettings()->IsSupported(orientationAfterRotation);
+
+			fContext->SetOrientation(orientationAfterRotation);
+			fContext->GetRuntime()->WindowDidRotate(orientationAfterRotation, isOrientationSupported);
+
+			int proposedWidth = fContext->GetHeight();
+			int proposedHeight = fContext->GetWidth();
+
+			fContext->SetSize(proposedWidth, proposedHeight);
+		}
+	}
+
 	void SolarSimulator::OnZoomOut()
 	{
 		SDL_DisplayMode screen;
@@ -408,8 +454,8 @@ namespace Rtt
 
 			int w = skin->screenWidth;
 			int h = skin->screenHeight;
-			
-			if (orientation == DeviceOrientation::kSidewaysRight || orientation == DeviceOrientation::kSidewaysLeft)
+
+			if (DeviceOrientation::IsSideways(fContext->GetOrientation()))
 			{
 				std::swap(w, h);
 			}

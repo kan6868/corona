@@ -107,6 +107,21 @@ local function getDelegates(tmpDir)
 	return delegates
 end
 
+-- Replace the "@APP_NAME@" token in every string in the Info.plist with the app's name.
+-- The iOS template ships default NS*UsageDescription strings that use it, and it works in
+-- build.settings strings too since this runs after those have been merged in.
+local function substituteAppName( value, appName )
+	if type(value) == "string" then
+		-- escape "%" in the replacement so gsub doesn't treat it as a capture reference
+		return (value:gsub("@APP_NAME@", (appName:gsub("%%", "%%%%"))))
+	elseif type(value) == "table" then
+		for k, v in pairs(value) do
+			value[k] = substituteAppName(v, appName)
+		end
+	end
+	return value
+end
+
 local function inArray(array, item)
     for key, value in pairs(array) do
         if value == item then return key end
@@ -126,35 +141,46 @@ local function addLiveBuildsPlist(buildSettingsPlist, options)
 end
 
 function CoronaPListSupport.modifyPlist( options )
-	local delegates
+    local delegates
+    -- The local iOS builds don't have options.tmpDir specified, iOS builds through the simulator do
+    if options.tmpDir then
+        delegates = getDelegates(options.tmpDir)
+    end
+    if debugBuildProcess and debugBuildProcess ~= 0 then
+        print("CoronaPListSupport.modifyPlist: options: "..json.prettify(options))
+    end
+    local infoPlistFile
+    local tmpJSONFile = os.tmpname()
+    local infoPlist = nil
+    local basePath
 
-	-- The local iOS builds don't have options.tmpDir specified, iOS builds through the simulator do
-	if options.tmpDir then
-		delegates = getDelegates(options.tmpDir)
-	end
+    if options.targetPlatform == "OSX" then
+        basePath = options.appBundleFile .. "/Contents/"
+    elseif options.targetPlatform == "iOS" or options.targetPlatform == "tvOS" then
+        basePath = options.appBundleFile .. "/"
+    else
+        print("modifyPlist: unknown platform '"..tostring(options.targetPlatform).."', defaulting to 'iOS'")
+        basePath = options.appBundleFile .. "/"
+        options.targetPlatform = "iOS"
+    end
 
-	if debugBuildProcess and debugBuildProcess ~= 0 then
-		print("CoronaPListSupport.modifyPlist: options: "..json.prettify(options))
-	end
-
-	local infoPlistFile
-	local tmpJSONFile = os.tmpname()
-	local infoPlist = nil
-
-	if options.targetPlatform == "OSX" then
-		infoPlistFile = options.appBundleFile .. "/Contents/Info.plist"
-	elseif options.targetPlatform == "iOS" or options.targetPlatform == "tvOS" then
-		infoPlistFile = options.appBundleFile .. "/Info.plist"
-	else
-		print("modifyPlist: unknown platform '"..tostring(options.targetPlatform).."', defaulting to 'iOS'")
-		infoPlistFile = options.appBundleFile .. "/Info.plist"
-		options.targetPlatform = "iOS"
-	end
+    -- Check if Info.plist exists, if so use App-Info.plist instead
+    local defaultPlist = basePath .. "Info.plist"
+    local altPlist = basePath .. "App-Info.plist"
+    
+    local f = io.open(defaultPlist, "r")
+    if f then
+        f:close()
+        infoPlistFile = altPlist
+        print("Info.plist exists, using App-Info.plist instead")
+    else
+        infoPlistFile = defaultPlist
+    end
 
     print("Creating Info.plist...")
-	print(options.appBundleFile)
-	-- Convert the Info.plist to JSON and read it in
-	os.execute( "plutil -convert json -o '"..tmpJSONFile.."' "..infoPlistFile)
+    print(options.appBundleFile)
+    -- Convert the Info.plist to JSON and read it in
+    os.execute( "plutil -convert json -o '"..tmpJSONFile.."' "..infoPlistFile)
 
 	local jsonFP, errorMsg = io.open(tmpJSONFile, "r")
 	if jsonFP ~= nil then
@@ -206,7 +232,9 @@ function CoronaPListSupport.modifyPlist( options )
 	-- We process app Info.plists effectively twice, once when the templates are built and once when
 	-- the app itself is built. The meta Info.plist has the place holders prefixed with "TEMPLATE_"
 	-- so when we see that we replace it with the normal placeholders.
-	if infoPlist.CFBundleVersion == "@TEMPLATE_BUNDLE_VERSION@" then
+	local isTemplateBuild = (infoPlist.CFBundleVersion == "@TEMPLATE_BUNDLE_VERSION@")
+
+	if isTemplateBuild then
 		infoPlist.CFBundleVersion = "@BUNDLE_VERSION@"
 		infoPlist.CFBundleShortVersionString = "@BUNDLE_SHORT_VERSION_STRING@"
 	else
@@ -455,6 +483,17 @@ function CoronaPListSupport.modifyPlist( options )
 			end
 
 		end
+	end
+
+	-- Done last so that strings coming from build.settings can use "@APP_NAME@" as well. Skipped
+	-- when building the templates themselves, where the app's name isn't known yet.
+	if not isTemplateBuild then
+		local appName = options.bundledisplayname or options.bundlename or infoPlist.CFBundleDisplayName or infoPlist.CFBundleName
+		if type(appName) ~= "string" or appName == "" or appName:match("[%$@]") then
+			-- no name, or an unexpanded ${PRODUCT_NAME}/@PLACEHOLDER@ from the template
+			appName = "This app"
+		end
+		substituteAppName( infoPlist, appName )
 	end
 
 	if debugBuildProcess and debugBuildProcess ~= 0 then
