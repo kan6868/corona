@@ -941,13 +941,19 @@ namespace Rtt
 #endif
 				float w = event.window.data1 * devicePixelRatio;
 				float h = event.window.data2 * devicePixelRatio;
+				
+				SDL_Log("Pixel ratio: %f", devicePixelRatio);
+
+				SDL_Log("Window %d size changed from 0x0 to %dx%d", event.window.windowID, w, h);
+
+				SDL_Log("Window %d jsContext size %dx%d", event.window.windowID, jsContextGetWindowWidth(), jsContextGetWindowHeight());
 
 				// Fix error zoom
 				if (w == 0 || h == 0)
 				{
 					w = jsContextGetWindowWidth();
 					h = jsContextGetWindowHeight();
-					SDL_Log("Window %d size changed from 0x0 to %dx%d", event.window.windowID, w, h);
+					
 				}
 
 				// keep ratio
