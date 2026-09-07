@@ -939,8 +939,8 @@ namespace Rtt
 
 				devicePixelRatio = emscripten_get_device_pixel_ratio();
 #endif
-				float w = (float)event.window.data1;
-				float h = (float)event.window.data2;
+				float w = (float)event.window.data1 * devicePixelRatio;
+				float h = (float)event.window.data2 * devicePixelRatio;
 
 				SDL_Log("Pixel ratio: %f", devicePixelRatio);
 
@@ -949,11 +949,11 @@ namespace Rtt
 				SDL_Log("Window %d jsContext size %dx%d", event.window.windowID, jsContextGetWindowWidth(), jsContextGetWindowHeight());
 
 				// Fix error zoom
-				// if (w == 0 || h == 0)
-				// {
-				// 	w = jsContextGetWindowWidth();
-				// 	h = jsContextGetWindowHeight();
-				// }
+				if (w == 0 || h == 0)
+				{
+					w = jsContextGetWindowWidth();
+					h = jsContextGetWindowHeight();
+				}
 
 				// keep ratio
 				float scaleX = w / (float)fWidth;
@@ -1003,8 +1003,18 @@ namespace Rtt
 					else if (stricmp(fRuntimeDelegate->fScaleMode.c_str(), "letterBox") == 0)
 					{
 						// Scale to fullscreen
-						w = fWidth * scaleX;
-						h = fHeight * scaleY;
+
+						if ((fOrientation == DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight) && (w < h))
+						{
+							w = fWidth * scaleX;
+							h = fHeight;
+						}
+						else
+						{
+							w = fWidth * scaleX;
+							h = fHeight * scaleY;
+						}
+
 					}
 					else
 					{
@@ -1014,14 +1024,6 @@ namespace Rtt
 				}
 
 				// // Keep swap to landscape screen on portrait size in Mobile
-				// if ((fOrientation == DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight) && (w < h))
-				// {
-				// 	SDL_Log("WINDOW ORIENTATION FROM: %dx%d", w, h);
-				// 	float temp = w;
-				// 	w = h;
-				// 	h = temp;
-				// 	SDL_Log("WINDOW ORIENTATION TO: %dx%d", w, h);
-				// }
 
 				SDL_SetWindowSize(fWindow, (int)w, (int)h);
 
@@ -1031,9 +1033,9 @@ namespace Rtt
 
 				fRuntime->DispatchEvent(ResizeEvent());
 
-// #ifdef EMSCRIPTEN
-// 				emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));
-// #endif
+#ifdef EMSCRIPTEN
+				emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));
+#endif
 
 				// refresh native elements
 				jsContextResizeNativeObjects();
