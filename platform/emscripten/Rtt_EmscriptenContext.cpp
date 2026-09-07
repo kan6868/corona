@@ -955,9 +955,11 @@ namespace Rtt
 					h = jsContextGetWindowHeight();
 
 					//Keep swap to landscape screen on portrait size in Mobile
-					if ((orientation == "landscapeRight" || orientation == "landscapeLeft") && (w < h))
+					if ((fOrientation == DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight) && (w < h))
 					{
-						Swap(w, h);
+						float temp = w;
+						w = h;
+						h = temp;
 					}
 				}
 
