@@ -953,14 +953,6 @@ namespace Rtt
 				{
 					w = jsContextGetWindowWidth();
 					h = jsContextGetWindowHeight();
-
-					//Keep swap to landscape screen on portrait size in Mobile
-					if ((fOrientation == DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight) && (w < h))
-					{
-						float temp = w;
-						w = h;
-						h = temp;
-					}
 				}
 
 				// keep ratio
@@ -1019,6 +1011,16 @@ namespace Rtt
 						w = fWidth * scale;
 						h = fHeight * scale;
 					}
+				}
+
+				// Keep swap to landscape screen on portrait size in Mobile
+				if ((fOrientation == DeviceOrientation::kSidewaysLeft || fOrientation == DeviceOrientation::kSidewaysRight) && (w < h))
+				{
+					SDL_Log("WINDOW ORIENTATION FROM: %dx%d", w, h);
+					float temp = w;
+					w = h;
+					h = temp;
+					SDL_Log("WINDOW ORIENTATION TO: %dx%d", w, h);
 				}
 
 				SDL_SetWindowSize(fWindow, (int)w, (int)h);
