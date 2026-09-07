@@ -941,7 +941,7 @@ namespace Rtt
 #endif
 				float w = event.window.data1 * devicePixelRatio;
 				float h = event.window.data2 * devicePixelRatio;
-				
+
 				SDL_Log("Pixel ratio: %f", devicePixelRatio);
 
 				SDL_Log("Window %d size changed from 0x0 to %dx%d", event.window.windowID, w, h);
@@ -953,7 +953,12 @@ namespace Rtt
 				{
 					w = jsContextGetWindowWidth();
 					h = jsContextGetWindowHeight();
-					
+
+					//Keep swap to landscape screen on portrait size in Mobile
+					if ((orientation == "landscapeRight" || orientation == "landscapeLeft") && (w < h))
+					{
+						Swap(w, h);
+					}
 				}
 
 				// keep ratio
@@ -1023,8 +1028,7 @@ namespace Rtt
 				fRuntime->DispatchEvent(ResizeEvent());
 
 #ifdef EMSCRIPTEN
-
-				//emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));
+				emscripten_set_element_css_size("canvas", (int)(w / devicePixelRatio), (int)(h / devicePixelRatio));
 #endif
 
 				// refresh native elements
@@ -1032,7 +1036,7 @@ namespace Rtt
 				break;
 			}
 			case SDL_WINDOWEVENT_SIZE_CHANGED:
-				SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
+				// SDL_Log("Window %d size changed to %dx%d", event.window.windowID, event.window.data1, event.window.data2);
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 			{
