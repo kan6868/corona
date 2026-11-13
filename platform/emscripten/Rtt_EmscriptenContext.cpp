@@ -64,18 +64,42 @@ extern "C"
 
 namespace Rtt
 {
-	static U64 s_tick = 0;
+	// Called on every browser animation frame (requestAnimationFrame: 60, 120, 144 Hz... depending on the display).
+	// Runs the app at the fps from config.lua instead: a tick is due every 1000 / fps milliseconds.
+	// The deadline advances by exactly one frame per tick (not "now"), so 60 fps on a 144 Hz display averages
+	// 60 ticks per second, and 30 fps on a 60 Hz display runs every other frame.
+	static double s_nextTick = 0.0;
 	void TimerTickShim(void *userdata)
 	{
 		CoronaAppContext *context = (CoronaAppContext*) userdata;
-		float frameDuration = 1.0f / (float) context->getFPS();
-
-		U64 now = Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
-		if (now - s_tick > frameDuration)		// 60fps ==> 1000/60 = 16.66666 msec
+		int fps = context->getFPS();
+		if (fps <= 0)
 		{
-			s_tick = now;
-			context->TimerTick();
+			fps = 30;
 		}
+		const double frameMs = 1000.0 / (double) fps;
+
+#if defined(EMSCRIPTEN)
+		const double now = emscripten_get_now();	// milliseconds, sub-millisecond precision
+#else
+		const double now = (double) Rtt_AbsoluteToMilliseconds(Rtt_GetAbsoluteTime());
+#endif
+
+		// First call, or the page was hidden / stalled for a while: start counting from now, no catch-up burst
+		if (s_nextTick <= 0.0 || now - s_nextTick > 4.0 * frameMs)
+		{
+			s_nextTick = now;
+		}
+
+		// Animation frame timestamps jitter by about a millisecond; allow 1 ms early so fps = 60 on a 60 Hz
+		// display never skips a frame.
+		if (now + 1.0 < s_nextTick)
+		{
+			return;
+		}
+
+		s_nextTick += frameMs;
+		context->TimerTick();
 	}
 
 	MouseListener::MouseListener(Runtime &runtime)
@@ -540,14 +564,25 @@ namespace Rtt
 			SDL_SetWindowSize(fWindow, fWidth, fHeight);
 		}
 
+#if defined(EMSCRIPTEN)
+		// Ask for WebGL 2 (GLES 3) first: it can build mipmaps for textures of any size (see Rtt_GLTexture.cpp).
+		// Browsers without WebGL 2 get WebGL 1, as before. Needs -s MAX_WEBGL_VERSION=2 at link time.
+		// The context version must be set BEFORE SDL_GL_CreateContext.
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+		SDL_GLContext glContext = SDL_GL_CreateContext(fWindow);
+		if (glContext == NULL)
+		{
+			Rtt_Log("WebGL 2 is not available, using WebGL 1\n");
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+			glContext = SDL_GL_CreateContext(fWindow);
+		}
+#else
 		SDL_GL_CreateContext(fWindow);
+#endif
 		SDL_GL_SetSwapInterval(1); // Enable vsync
 		fPlatform->setWindow(fWindow, fOrientation);
-
-#if defined(EMSCRIPTEN)
-		// Tell it to use OpenGL version 2.0
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-#endif
 
 #if defined(Rtt_EMSCRIPTEN_ENV) && defined( WIN32 )
 		glewExperimental = GL_TRUE;

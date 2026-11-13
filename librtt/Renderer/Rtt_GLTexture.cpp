@@ -17,6 +17,8 @@
 
 #include "Rtt_Profiling.h"
 
+#include <string.h>
+
 // ----------------------------------------------------------------------------
 
 #define ENABLE_DEBUG_PRINT    0
@@ -30,6 +32,17 @@
 
 #if !defined(Rtt_OPENGLES) && !defined(GL_ABGR_EXT)
 #define GL_ABGR_EXT 0x8000
+#endif
+
+// Mipmaps for linear-filtered image textures. Without them, an image drawn at less than half its size samples
+// only the 4 nearest texels, so thin lines break up and edges turn jagged (very visible in small web canvases on
+// desktop, where devicePixelRatio is 1). Enabled for the web build only for now; define it to 1 to try elsewhere.
+#ifndef Rtt_GL_TEXTURE_MIPMAPS
+    #if defined( Rtt_EMSCRIPTEN_ENV )
+        #define Rtt_GL_TEXTURE_MIPMAPS 1
+    #else
+        #define Rtt_GL_TEXTURE_MIPMAPS 0
+    #endif
 #endif
 // ----------------------------------------------------------------------------
 
@@ -83,6 +96,44 @@ namespace /*anonymous*/
             default: Rtt_ASSERT_NOT_REACHED();
         }
     }
+
+#if Rtt_GL_TEXTURE_MIPMAPS
+    bool isPowerOfTwo( U32 value )
+    {
+        return value > 0 && 0 == ( value & ( value - 1 ) );
+    }
+
+    // OpenGL ES 3 / WebGL 2 can build mipmaps for any size; ES 2 / WebGL 1 only for power-of-two sizes.
+    bool canMipmapAnySize()
+    {
+        static int sResult = -1;
+        if ( sResult < 0 )
+        {
+            const char* version = (const char*)glGetString( GL_VERSION );
+            sResult = ( version && ( strstr( version, "OpenGL ES 3" ) || strstr( version, "WebGL 2" ) ) ) ? 1 : 0;
+        }
+        return 1 == sResult;
+    }
+
+    // Only image textures with real data: render targets (snapshots, canvas textures) change every frame,
+    // and "nearest" filtering (pixel art) must stay sharp.
+    bool shouldMipmap( Texture* texture, const U8* data, U32 w, U32 h )
+    {
+        if ( ! data || texture->IsTarget() ) { return false; }
+        if ( CPUResource::kTexture != texture->GetType() ) { return false; }
+        if ( Texture::kLinear != texture->GetFilter() ) { return false; }
+        if ( w < 2 && h < 2 ) { return false; }
+        return canMipmapAnySize() || ( isPowerOfTwo( w ) && isPowerOfTwo( h ) );
+    }
+
+    // Builds the mipmap chain of the bound texture; returns true when the chain is usable.
+    bool generateMipmaps()
+    {
+        while ( GL_NO_ERROR != glGetError() ) {} // drop stale errors
+        glGenerateMipmap( GL_TEXTURE_2D );
+        return GL_NO_ERROR == glGetError();
+    }
+#endif
 
     GLenum convertWrapToken( Texture::Wrap wrap )
     {
@@ -204,6 +255,15 @@ GLTexture::Create( CPUResource* resource )
         fCachedFormat = internalFormat;
         fCachedWidth = w;
         fCachedHeight = h;
+
+        fHasMipmaps = false;
+#if Rtt_GL_TEXTURE_MIPMAPS
+        if ( shouldMipmap( texture, data, w, h ) && generateMipmaps() )
+        {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+            fHasMipmaps = true;
+        }
+#endif
     }
     texture->ReleaseData();
 
@@ -247,6 +307,23 @@ GLTexture::Update( CPUResource* resource )
             fCachedHeight = h;
         }
         GL_CHECK_ERROR();
+
+#if Rtt_GL_TEXTURE_MIPMAPS
+        // New pixels: rebuild the chain, or fall back to plain linear if the new size cannot have one
+        if ( shouldMipmap( texture, data, w, h ) && generateMipmaps() )
+        {
+            if ( ! fHasMipmaps )
+            {
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+                fHasMipmaps = true;
+            }
+        }
+        else if ( fHasMipmaps )
+        {
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            fHasMipmaps = false;
+        }
+#endif
     }
     texture->ReleaseData();
 }
