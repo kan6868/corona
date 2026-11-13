@@ -1,0 +1,34 @@
+settings =
+{
+    orientation =
+    {
+        default = "landscapeRight",
+        supported = { "landscapeLeft", "landscapeRight" },
+    },
+    window =
+    {
+        defaultViewWidth = 1280,
+        defaultViewHeight = 720,
+        resizable = true,
+        titleText = { default = "Box3DDemo" },
+    },
+    -- Cài plugin bằng build.bat install trong test-projects/s3d-plugin và test-projects/box3d-plugin.
+    -- Trong Simulator Windows, plugin.s3d.dll / plugin.box3d.dll đặt trong thư mục project được ưu tiên (xem main.lua).
+    plugins =
+    {
+        ["plugin.s3d"] = { publisherId = "com.s3d" },
+        ["plugin.box3d"] = { publisherId = "com.s3d" },
+    },
+    android =
+    {
+        applicationChildElements =
+        {
+            -- gói plugin.s3d cũng tự thêm dòng này
+            [[<meta-data android:name="wantsDepthBuffer" android:value="true" />]],
+        },
+    },
+    excludeFiles =
+    {
+        all = { "*.dll" },
+    },
+}

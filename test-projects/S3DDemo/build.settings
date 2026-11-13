@@ -1,0 +1,48 @@
+settings =
+{
+    orientation =
+    {
+        default = "landscapeRight",
+        supported = { "landscapeLeft", "landscapeRight" },
+    },
+
+    -- Install the plugin with "build.bat install" in the s3d-plugin folder.
+    -- In the Windows Simulator a plugin.s3d.dll in the project folder takes precedence (see the top of main.lua).
+    plugins =
+    {
+        ["plugin.s3d"] = { publisherId = "com.s3d" },
+    },
+
+    android =
+    {
+        minSdkVersion = "21",
+        applicationChildElements =
+        {
+            -- required for a depth buffer (the plugin.s3d package adds this line too)
+            [[<meta-data android:name="wantsDepthBuffer" android:value="true" />]],
+        },
+    },
+
+    iphone =
+    {
+        plist =
+        {
+            UIStatusBarHidden = true,
+            UIRequiresFullScreen = true,
+        },
+    },
+
+    window =
+    {
+        defaultViewWidth = 1280,
+        defaultViewHeight = 720,
+        resizable = true,
+        titleText = { default = "S3DDemo" },
+    },
+
+    -- the DLL is only for the Simulator; models use the .obj.txt extension so Android builds keep them
+    excludeFiles =
+    {
+        all = { "*.dll", "plugin/*" },
+    },
+}
