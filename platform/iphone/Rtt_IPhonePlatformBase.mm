@@ -24,6 +24,7 @@
 #include "Rtt_IPhoneTextBoxObject.h"
 #include "Rtt_IPhoneTextFieldObject.h"
 #include "Rtt_IPhoneTimer.h"
+#include "Rtt_Event.h"
 #include "Rtt_IPhoneVideoObject.h"
 
 #include "Rtt_AppleFont.h"
@@ -582,6 +583,15 @@ IPhonePlatformBase::PushSystemInfo( lua_State *L, const char *key ) const
         lua_pushboolean(L, res);
         pushedValues = 1;
     }
+	else if ( Rtt_StringCompare( key, "foldState" ) == 0 )
+	{
+		// "closed", "halfOpen" or "open" on a foldable running iOS 27.1+; nil everywhere else.
+		// The first call starts observing the hinge, so the state may only be known a moment later.
+		[fView startHingeMonitoring];
+		const char *state = FoldEvent::StringForState( (FoldEvent::State)[fView foldState] );
+		state ? lua_pushstring( L, state ) : lua_pushnil( L ); // an explicit nil keeps tostring() happy
+		pushedValues = 1;
+	}
 	else
 	{
 		// Attempt to fetch the requested system info from the base class.
@@ -625,6 +635,33 @@ void IPhonePlatformBase::GetSafeAreaInsetsPixels(Rtt_Real &top, Rtt_Real &left, 
 	{
 		top = left = bottom = right = 0;
 	}
+}
+
+void IPhonePlatformBase::GetCornerAdaptedSafeAreaInsetsPixels(CornerAdaptation axis, Rtt_Real &top, Rtt_Real &left, Rtt_Real &bottom, Rtt_Real &right) const
+{
+#if __IPHONE_26_0
+	if (@available(iOS 26.0, tvOS 26.0, *))
+	{
+		// For content in a corner: iOS brings the edges along one axis in far enough to clear a rounded display
+		// corner or iPad window controls. Applied to the whole safe area this would cost a strip along each edge.
+		UIViewLayoutRegionAdaptivityAxis adaptivityAxis = ( kCornerAdaptationHorizontal == axis
+			? UIViewLayoutRegionAdaptivityAxisHorizontal : UIViewLayoutRegionAdaptivityAxisVertical );
+		UIEdgeInsets insets = [fView edgeInsetsForLayoutRegion:[UIViewLayoutRegion safeAreaLayoutRegionWithCornerAdaptation:adaptivityAxis]];
+		const CGFloat scaleFactor = fView.contentScaleFactor;
+		top = Rtt_FloatToReal(insets.top*scaleFactor);
+		left = Rtt_FloatToReal(insets.left*scaleFactor);
+		bottom = Rtt_FloatToReal(insets.bottom*scaleFactor);
+		right = Rtt_FloatToReal(insets.right*scaleFactor);
+		return;
+	}
+#endif
+	GetSafeAreaInsetsPixels(top, left, bottom, right);
+}
+
+int
+IPhonePlatformBase::GetReservedRegionsPixels( ReservedRegion *outRegions, int maxCount ) const
+{
+	return [fView copyReservedRegions:outRegions maxCount:maxCount kind:-1];
 }
 
 // ============================================================================

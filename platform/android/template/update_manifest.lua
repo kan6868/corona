@@ -88,6 +88,7 @@ local intentFilters = {}
 local usesExpansionFile = false
 local largeHeap = false
 local isGame = false
+local supportsFoldables = false
 local installLocation = "auto"
 local targetedAppStore = "none"
 local manifestChildXmlElements = {}
@@ -96,6 +97,7 @@ local googlePlayGamesAppId = false
 local facebookAppId = false
 local coronaWindowMovesWhenKeyboardAppears = false
 local initialSystemUiVisibility = nil
+local edgeToEdge = false
 local allowAppsReadOnlyAccessToFiles = true
 local strings = {}
 local apkFiles = { "...NONE..." } -- necessary due to the way ant treats empty filelists
@@ -475,6 +477,17 @@ if "table" == type(buildSettings) then
 			isGame = buildSettings.android.isGame
 		end
 
+		-- Fetch the "supportsFoldables" flag. It links Jetpack WindowManager (androidx.window) into the app,
+		-- which backs the Lua "fold" event and system.getInfo("foldState").
+		if type(buildSettings.android.supportsFoldables) == "boolean" then
+			supportsFoldables = buildSettings.android.supportsFoldables
+		end
+		-- Jetpack WindowManager needs Android 6.0 (API 23).
+		if supportsFoldables and (tonumber(minSdkVersion) or 0) < 23 then
+			print("WARNING: android.supportsFoldables requires minSdkVersion 23 or higher. Raising minSdkVersion to 23.")
+			minSdkVersion = "23"
+		end
+
 		-- Fetch install location.
 		stringValue = buildSettings.android.installLocation
 		if ("string" == type( stringValue )) and (string.len( stringValue ) > 0) then
@@ -526,6 +539,11 @@ if "table" == type(buildSettings) then
 		-- Fetch the "initialSystemUiVisibility" flag used to set the systemUiVisibility before the splashScreen is shown.
 		if type(buildSettings.android.initialSystemUiVisibility) == "string" then
 			initialSystemUiVisibility = buildSettings.android.initialSystemUiVisibility
+		end
+
+		-- Fetch the "edgeToEdge" flag. Off unless set, so existing apps keep their layout.
+		if type(buildSettings.android.edgeToEdge) == "boolean" then
+			edgeToEdge = buildSettings.android.edgeToEdge
 		end
 
 		-- Fetch a flag indicating if Corona's FileContentProvider should provide public read-only access to files.
@@ -713,6 +731,13 @@ if initialSystemUiVisibility then
 	stringBuffer = '<meta-data android:name="initialSystemUiVisibility" android:value="' .. initialSystemUiVisibility .. '" />'
 end
 manifestKeys.USER_INITIAL_SYSTEM_UI_VISIBILITY = stringBuffer
+
+-- Create a meta-data tag for edge-to-edge, only when opted in.
+stringBuffer = ""
+if edgeToEdge then
+	stringBuffer = '<meta-data android:name="edgeToEdge" android:value="true" />'
+end
+manifestKeys.USER_EDGE_TO_EDGE = stringBuffer
 
 -- Create a "largeHeap" application tag attribute if set.
 stringBuffer = ""

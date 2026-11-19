@@ -132,6 +132,20 @@ val parsedBuildProperties: JsonObject = run {
 
 extra["minSdkVersion"] = parsedBuildProperties.lookup<Any?>("buildSettings.android.minSdkVersion").firstOrNull()?.toString()?.toIntOrNull()
         ?: 15
+// build.settings android.supportsFoldables = true links Jetpack WindowManager, which backs the Lua "fold"
+// event and system.getInfo("foldState") on foldable devices. The library needs API 23, so the manifest
+// step raises a lower minSdkVersion to 23 (update_manifest.lua).
+val supportsFoldables = parsedBuildProperties.lookup<Any?>("buildSettings.android.supportsFoldables").firstOrNull()?.toString() == "true"
+if (supportsFoldables && (extra["minSdkVersion"] as Int) < 23) {
+    extra["minSdkVersion"] = 23
+}
+
+
+val coronaAndroidResourcesDir = file(coronaSrcDir).resolve(
+        parsedBuildProperties.lookup<Any?>("buildSettings.android.resources").firstOrNull()?.toString()
+                ?.takeIf { it.isNotBlank() }?.replace('\\', '/') ?: "AndroidResources"
+).normalize()
+
 
 val coronaBuilder = if (windows) {
     "$nativeDir/Corona/win/bin/CoronaBuilder.exe"
@@ -338,7 +352,7 @@ fun processPluginGradleScripts() {
             throw(ex)
         }
     }
-    fileTree("$coronaSrcDir/AndroidResources") {
+    fileTree(coronaAndroidResourcesDir) {
         include("**/corona.gradle", "**/corona.gradle.kts")
     }.forEach {
         try {
@@ -373,7 +387,7 @@ fun coronaAssetsCopySpec(spec: CopySpec) {
             }
         }
         exclude("**/Icon\r")
-        exclude("AndroidResources/**")
+        exclude { it.file.startsWith(coronaAndroidResourcesDir) }
         if (isLiveBuild) {
             into("corona_live_build_app_")
         } else {
@@ -961,7 +975,7 @@ tasks.create<Copy>("copyAdaptiveIconResources") {
     dependsOn(copyCoronaIconFiles, cleanupIconsDir)
 
     into(generatedMainIconsAndBannersDir)
-    from("$coronaSrcDir/AndroidResources/res")
+    from("$coronaAndroidResourcesDir/res")
 }
 
 tasks.create("copyCoronaIcons") {
@@ -1143,11 +1157,14 @@ dependencies {
     implementation(fileTree(coronaPlugins) {
         include("*/jarLibs/*.jar")
     })
-    implementation(fileTree("$coronaSrcDir/AndroidResources") {
+    implementation(fileTree(coronaAndroidResourcesDir) {
         include("**/*.jar", "**/*.aar")
     })
     if (file("../plugin").exists()) {
         implementation(project(":plugin"))
     }
     implementation("androidx.multidex:multidex:2.0.1")
+    if (supportsFoldables) {
+        implementation("androidx.window:window-java:1.5.1")
+    }
 }

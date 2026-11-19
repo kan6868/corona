@@ -71,7 +71,8 @@ class PlatformSimulator
 			kHeadingEventMask		= 0x0800,
 			kMultitouchEventMask	= 0x1000,
 			kGyroscopeEventMask		= 0x2000,
-			kMouseEventMask			= 0x4000
+			kMouseEventMask			= 0x4000,
+			kFoldEventMask			= 0x8000
 		}
 		PropertyMask;
 
@@ -97,6 +98,11 @@ class PlatformSimulator
 			float safeLandscapeScreenInsetLeft;
 			float safeLandscapeScreenInsetBottom;
 			float safeLandscapeScreenInsetRight;
+			// Insets for landscapeLeft, for skins where they aren't the landscape ones mirrored. Negative when not given.
+			float safeLandscapeLeftScreenInsetTop;
+			float safeLandscapeLeftScreenInsetLeft;
+			float safeLandscapeLeftScreenInsetBottom;
+			float safeLandscapeLeftScreenInsetRight;
 			String osName;
 			String deviceImageFile;
 			String displayManufacturer;
@@ -121,6 +127,15 @@ class PlatformSimulator
 			bool hasGyroscope;
 			String windowTitleBarName;
 			float defaultFontSize;
+			// Height in pixels that display.topStatusBarContentHeight reports, for skins whose status bar
+			// art is taller than the bar the device reports. 0 means use the art's height.
+			float statusBarHeight;
+			// The skin has an "unfolded" table describing the screen of an opened foldable.
+			bool isFoldable;
+			// From the "unfolded" table, whichever screen is loaded: the fold runs top to bottom in the
+			// art as drawn ("hingeOrientation", default "vertical"), and the art is wider than tall.
+			bool unfoldedHingeIsVertical;
+			bool unfoldedScreenIsWide;
 
 			// iOS skin-specific
 			S32 iosPointWidth;
@@ -159,9 +174,10 @@ class PlatformSimulator
 		U32 GetModulesFromBuildSettings( const char* platformkeyname, bool& isdefined, bool& iserror );
 	
 		// Device configuration --- not to be confused with config.lua
-		static void LoadConfig(const char deviceConfigFile[], Config& rConfig);
+		// When unfolded is true, a foldable skin's "unfolded" values replace the folded ones.
+		static void LoadConfig(const char deviceConfigFile[], Config& rConfig, bool unfolded = false);
 //TODO: Deprecate this function. MPlatform object is never used here and it is expensive to create one when not needed.
-		static void LoadConfig(const char deviceConfigFile[], const MPlatform& platform, Config& rConfig);
+		static void LoadConfig(const char deviceConfigFile[], const MPlatform& platform, Config& rConfig, bool unfolded = false);
 		static void ValidateSettings( const MPlatform& platform );
 
 //		virtual PlatformStringRef CreatePlatformString( const char* src ) const = 0;
@@ -182,10 +198,24 @@ class PlatformSimulator
 
 		void Rotate( bool clockwise );
 		virtual void Shake();
+
+		// Foldable skins. Set the initial state before Initialize(); ToggleFold() swaps the screen and
+		// raises "fold" and "resize", like opening or closing the device does on iOS and Android.
+		bool IsFoldable() const { return fIsFoldable; }
+		bool IsUnfolded() const { return fIsUnfolded; }
+		void SetUnfolded( bool newValue ) { fIsUnfolded = newValue; }
+		void ToggleFold();
+		// What system.getInfo("foldState") reports: "open" or "closed" for a foldable skin, NULL otherwise.
+		const char *FoldStateName() const;
+		// Raises a "fold" event for the current state when the app listens for one.
+		void DispatchFoldEvent();
 		DeviceOrientation::Type GetOrientation() const { return (DeviceOrientation::Type)fOrientation; }
 		virtual const char *GetOSName() const { return "simulator"; }
 
 		virtual void DidRotate( bool clockwise, DeviceOrientation::Type start, DeviceOrientation::Type end ) = 0;
+
+		// Platforms that support foldable skins swap in the screen for the new fold state and return true.
+		virtual bool DidChangeFold( bool unfolded ) { return false; }
 
 		// Optional callback for systems when the zoom/scale change finishes.
 		// On Mac, it is used to save the scale factor to user preferences so the next launch can be reopened at the same level.
@@ -199,6 +229,9 @@ class PlatformSimulator
 
 	protected:
 		void SetOrientationSupported( DeviceOrientation::Type orientation );
+		void SetIsFoldable( bool newValue ) { fIsFoldable = newValue; }
+		// Records the skin's fold support and hinge for FoldStateName() and DispatchFoldEvent().
+		void SetFoldableConfig( const Config& config );
 
 	protected:
 		void SetIsTransparent( bool newValue ) { fIsTransparent = newValue; }
@@ -234,6 +267,10 @@ class PlatformSimulator
 		S32 fLastDeviceWidth;
 		S32 fLastDeviceHeight;
 		bool fIsTransparent;
+		bool fIsFoldable;
+		bool fIsUnfolded;
+		bool fUnfoldedHingeIsVertical;
+		bool fUnfoldedScreenIsWide;
 };
 
 // ----------------------------------------------------------------------------

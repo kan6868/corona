@@ -17,6 +17,7 @@
 
 #ifdef Rtt_ORIENTATION
 #include "Rtt_IPhoneDevice.h"
+#include "Rtt_IPhoneOrientation.h"
 #endif
 
 #import "CoronaOrientationProvider.h"
@@ -59,7 +60,7 @@ DeviceOrientation::Type
 IPhoneScreenSurface::GetOrientation() const
 {
 #ifdef Rtt_ORIENTATION
-	UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+	UIInterfaceOrientation orientation = IPhoneOrientation::CurrentInterfaceOrientation( fView );
 	return IPhoneDevice::ToOrientationTypeFromUIInterfaceOrientation( orientation );
 #else
 	// TODO: Pull this out to tvOS-specific code.
@@ -74,15 +75,21 @@ IPhoneScreenSurface::GetOrientation() const
 S32
 IPhoneScreenSurface::Width() const
 {
-	// Return size in pixels
+	// Use live contentScaleFactor — fScale may become stale on Mac Catalyst
+	// when the window moves between displays or the window is resized.
+	CGFloat liveScale = fView.contentScaleFactor;
+	if ( liveScale != fScale )
+	{
+		fScale = liveScale;
+	}
 	return fScale * fView.bounds.size.width;
 }
 
 S32
 IPhoneScreenSurface::Height() const
 {
-	// Return size in pixels
-	return fScale * fView.bounds.size.height;
+	// Return size in pixels using live contentScaleFactor
+	return fView.contentScaleFactor * fView.bounds.size.height;
 }
 
 S32

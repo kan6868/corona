@@ -1696,6 +1696,14 @@ public class NativeToJavaBridge {
 		return result;
 	}
 	
+	/** True when this device and build can report the posture of a foldable (Jetpack WindowManager present, Android 6+). */
+	protected static boolean callIsFoldStateAvailable(CoronaRuntime runtime)
+	{
+		CoronaActivity activity = CoronaEnvironment.getCoronaActivity();
+		FoldStateMonitor monitor = (activity != null) ? activity.getFoldStateMonitor() : null;
+		return (monitor != null) && monitor.isAvailable();
+	}
+
 	protected static void callShowNativeAlert( CoronaRuntime runtime, String title, String msg, String[] buttonLabels )
 	{
 		runtime.getController().showNativeAlert( title, msg, buttonLabels );
@@ -2152,6 +2160,16 @@ public class NativeToJavaBridge {
 		else if (key.equals("hasSoftwareKeys")) {
 			luaState.pushBoolean(CoronaEnvironment.getCoronaActivity().HasSoftwareKeys());
 			valuesPushed = 1;
+		}
+		else if (key.equals("foldState")) {
+			// "closed", "halfOpen" or "open" on a foldable; nil on other devices or without Jetpack WindowManager.
+			CoronaActivity activity = CoronaEnvironment.getCoronaActivity();
+			FoldStateMonitor monitor = (activity != null) ? activity.getFoldStateMonitor() : null;
+			String state = (monitor != null) ? monitor.getStateName() : null;
+			if (state != null) {
+				luaState.pushString(state);
+				valuesPushed = 1;
+			}
 		}
 
 		// Push nil if failed to fetch the requested value.
@@ -3291,7 +3309,7 @@ public class NativeToJavaBridge {
 	}
 	protected static void callSetNavigationBarColor(CoronaRuntime runtime, double red, double green, double blue) {
 		if (runtime != null) {
-			Activity activity = CoronaEnvironment.getCoronaActivity();
+			CoronaActivity activity = CoronaEnvironment.getCoronaActivity();
 			if (activity == null) return;
 			int color = Color.rgb(
 					(int)(255 * red),
@@ -3300,23 +3318,10 @@ public class NativeToJavaBridge {
 			);
 
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) { // Android 15+
-				Window window = activity.getWindow();
-				View decorView = window.getDecorView();
-				// Add bottom insert
-				decorView.setOnApplyWindowInsetsListener((view, insets) -> {
-					Insets navBarInsets = insets.getInsets(WindowInsets.Type.navigationBars());
-					view.setBackgroundColor(color);
-					view.setPadding(0, 0, 0, navBarInsets.bottom);
-					return insets;
-				});
-
-				window.setNavigationBarColor(color);
-				// Update Insert
-				decorView.post(() -> {
-					decorView.requestApplyInsets();
-				});
+				// setNavigationBarColor is ignored. Pad the navigation bar inset instead.
+				activity.setNavigationBarInsetColor(color);
 			} else {
-				CoronaEnvironment.getCoronaActivity().setNavigationBarColor(red, green, blue);
+				activity.setNavigationBarColor(red, green, blue);
 			}
 		}
 	}
