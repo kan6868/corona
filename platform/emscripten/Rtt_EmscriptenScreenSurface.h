@@ -34,12 +34,18 @@ class EmscriptenScreenSurface : public PlatformSurface
 		virtual S32 DeviceWidth() const;
 		virtual S32 DeviceHeight() const;
 
+		// "adaptive" content size: the canvas size in CSS pixels (about 160 per inch on phones, like dp / points)
+		virtual S32 AdaptiveWidth() const;
+		virtual S32 AdaptiveHeight() const;
+
 		void setWindow(SDL_Window *window, DeviceOrientation::Type orientation) { fWindow = window; fOrientation = orientation; }
+		void setPixelRatio(float ratio) { fPixelRatio = ratio > 0 ? ratio : 1.0f; }
 		void getWindowSize(int* w, int* h);
 
 	private:
 		SDL_Window* fWindow;
 		DeviceOrientation::Type fOrientation;
+		float fPixelRatio;		// canvas pixels per CSS pixel
 };
 
 class EmscriptenOffscreenSurface : public PlatformSurface

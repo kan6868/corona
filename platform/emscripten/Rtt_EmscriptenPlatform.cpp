@@ -772,7 +772,7 @@ namespace Rtt
 			// Show/hide the mouse cursor. (Only supported when running in desktop app mode.)
 			if (lua_type(L, valueIndex) == LUA_TBOOLEAN)
 			{
-				SDL_ShowCursor(lua_toboolean(L, valueIndex) ? SDL_ENABLE : SDL_DISABLE);
+				RttSDL_SetCursorVisible(lua_toboolean(L, valueIndex) ? true : false);
 			}
 			else
 			{
@@ -797,8 +797,7 @@ namespace Rtt
 
 		if (Rtt_StringCompare(key, "mouseCursorVisible") == 0)
 		{
-			int val = SDL_ShowCursor(SDL_QUERY);
-			lua_pushboolean(L, val == SDL_ENABLE ? true : false);
+			lua_pushboolean(L, RttSDL_IsCursorVisible() ? 1 : 0);
 			pushedValues = 1;
 		}
 		else
@@ -992,6 +991,12 @@ namespace Rtt
 	{
 		Rtt_ASSERT(fScreenSurface);
 		fScreenSurface->setWindow(window, orientation); 
+	}
+
+	void EmscriptenPlatform::setPixelRatio(float ratio)
+	{
+		Rtt_ASSERT(fScreenSurface);
+		fScreenSurface->setPixelRatio(ratio);
 	}
 
 	// ----------------------------------------------------------------------------

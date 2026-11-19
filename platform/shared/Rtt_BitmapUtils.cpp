@@ -14,7 +14,11 @@
 #include <jpeglib.h>
 #include <cstring>		// for memcpy
 #include <memory>
-#include <SDL.h>
+#if defined(Rtt_SDL_MAJOR) && Rtt_SDL_MAJOR >= 3
+	#include <SDL3/SDL.h>
+#else
+	#include <SDL.h>
+#endif
 
 namespace bitmapUtil
 {
@@ -85,31 +89,6 @@ namespace bitmapUtil
 		jpeg_finish_decompress(&cinfo);
 		jpeg_destroy_decompress(&cinfo);
 		return im;
-	}
-
-	// get pixel value from SDL surface
-	Uint32 getSurfacePixel(SDL_Surface* surface, int x, int y)
-	{
-		int bpp = surface->format->BytesPerPixel;
-
-		// Here p is the address to the pixel we want to retrieve
-		Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
-		switch (bpp)
-		{
-		case 1:
-			return *p;
-		case 2:
-			return *(Uint16*)p;
-		case 3:
-			if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-				return p[0] << 16 | p[1] << 8 | p[2];
-			else
-				return p[0] | p[1] << 8 | p[2] << 16;
-		case 4:
-			return (SDL_BYTEORDER == SDL_BIG_ENDIAN) ? p[0] << 24 | p[1] << 16 | p[2] << 8 | p[3] : p[0] | p[1] << 8 | p[2] << 16 | p[3] << 24;
-		default:
-			return 0;       // shouldn't happen, but avoids warnings
-		}
 	}
 
 	bool	saveJPG(const char* filename, uint8_t* data, int width, int height, Rtt::PlatformBitmap::Format format, float jpegQuality)
@@ -210,40 +189,53 @@ namespace bitmapUtil
 	uint8_t* loadBMP(const char* path, int& w, int& h, Rtt::PlatformBitmap::Format& format)
 	{
 		SDL_Surface* img = SDL_LoadBMP(path);
-		if (img)
+		if (img == NULL)
 		{
-			w = img->w;
-			h = img->h;
+			return NULL;
+		}
 
-			int size = w * h * 4;
-			uint8_t* im = (uint8_t*)malloc(size);
-			memset(im, 0, size);
+		// Any BMP layout (palette, 16/24/32 bit, with or without alpha) -> R, G, B, A bytes
+#if defined(Rtt_SDL_MAJOR) && Rtt_SDL_MAJOR >= 3
+		SDL_Surface* rgba = SDL_ConvertSurface(img, SDL_PIXELFORMAT_RGBA32);
+		SDL_DestroySurface(img);
+#else
+		SDL_Surface* rgba = SDL_ConvertSurfaceFormat(img, SDL_PIXELFORMAT_RGBA32, 0);
+		SDL_FreeSurface(img);
+#endif
+		if (rgba == NULL)
+		{
+			return NULL;
+		}
 
+		w = rgba->w;
+		h = rgba->h;
+		uint8_t* im = (uint8_t*)malloc(w * h * 4);
+		if (im)
+		{
+			SDL_LockSurface(rgba);
 			uint8_t* dst = im;
-			SDL_LockSurface(img);
-			for (int y = 0; y < img->h; y++)
+			for (int y = 0; y < h; y++)
 			{
-				for (int x = 0; x < img->w; x++)
+				const uint8_t* src = (const uint8_t*)rgba->pixels + y * rgba->pitch;
+				for (int x = 0; x < w; x++, src += 4, dst += 4)
 				{
-					Uint32 pixel = getSurfacePixel(img, x, y);
-					SDL_GetRGBA(pixel, img->format, dst, dst + 1, dst + 2, dst + 3);
-
-					// premultiple alpha
-					if (dst[3] < 255)
-					{
-						dst[0] = (dst[0] * dst[3]) >> 8;
-						dst[1] = (dst[1] * dst[3]) >> 8;
-						dst[2] = (dst[2] * dst[3]) >> 8;
-					}
-					dst += 4;
+					// premultiplied alpha
+					const unsigned a = src[3];
+					dst[0] = (uint8_t)((src[0] * a + 127) / 255);
+					dst[1] = (uint8_t)((src[1] * a + 127) / 255);
+					dst[2] = (uint8_t)((src[2] * a + 127) / 255);
+					dst[3] = (uint8_t)a;
 				}
 			}
-			SDL_UnlockSurface(img);
-			SDL_FreeSurface(img);
-
+			SDL_UnlockSurface(rgba);
 			format = Rtt::PlatformBitmap::Format::kRGBA;
-			return im;
 		}
+#if defined(Rtt_SDL_MAJOR) && Rtt_SDL_MAJOR >= 3
+		SDL_DestroySurface(rgba);
+#else
+		SDL_FreeSurface(rgba);
+#endif
+		return im;
 	}
 
 	//

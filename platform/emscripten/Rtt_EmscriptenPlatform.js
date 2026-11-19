@@ -539,6 +539,7 @@ var platformLibrary =
 		Module.appOrientation = orientation;
 		Module.appContentWidth = 0;
 		Module.appContentHeight = 0;
+		Module.appContentToCss = null;	// set by jsContextSetContentTransform
 		Module.documentsDirLoaded = 0;
 		Module.appTextMeters = {};
 
@@ -588,22 +589,26 @@ var platformLibrary =
 		var pix = img.data;		// byte array, rgba
 		Module.isSafari = (pix[3] != 0);	// alpha in Safari is not zero
 
+		// Content coordinates -> CSS pixels relative to the canvas' top left corner
+		Module.contentToCss = function (x, y) {
+			var t = Module.appContentToCss;
+			return t ? { x: t.x + x * t.sx, y: t.y + y * t.sy } : { x: x, y: y };
+		};
+
+		// Places a native element (obj.x, obj.y, obj.w, obj.h are content coordinates) over the canvas.
+		// The element is laid out at its content size and scaled by the content scale.
 		window.refreshNativeObject = function (id) {
 			var obj = document.getElementById(id);
-			if (obj) {
-				var viewPort = canvas.getBoundingClientRect();
-				var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-				var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-				var scale = viewPort.width / Module.appInitWidth;
-				scale *= (Module.appContentWidth > 0) ? Module.appInitWidth / Module.appContentWidth : 0.5;
-
-				var left = scrollLeft + viewPort.left + Math.ceil((obj.x + obj.w / 2) * scale);
-				var top = scrollTop + viewPort.top + Math.ceil((obj.y + obj.h / 2) * scale);
-				obj.style.left = left + 'px';
-				obj.style.top = top + 'px';
-				obj.style.transform = "translate(-50%, -50%) " + "scale(" + scale + ")";
+			var t = Module.appContentToCss;
+			if (!obj || !t) {
+				return;
 			}
+			var canvasRect = canvas.getBoundingClientRect();
+			var parentRect = obj.offsetParent ? obj.offsetParent.getBoundingClientRect() : { left: -window.pageXOffset, top: -window.pageYOffset };
+			var center = Module.contentToCss(obj.x + obj.w / 2, obj.y + obj.h / 2);
+			obj.style.left = (canvasRect.left - parentRect.left + center.x) + 'px';
+			obj.style.top = (canvasRect.top - parentRect.top + center.y) + 'px';
+			obj.style.transform = 'translate(-50%, -50%) scale(' + t.sx + ', ' + t.sy + ')';
 		};
 
 		window.addEventListener("click", function (e) {
@@ -620,6 +625,39 @@ var platformLibrary =
 	jsContextConfig: function(w, h)	{
 		Module.appContentWidth = w;
 		Module.appContentHeight = h;
+	},
+
+	// Space the canvas may use, in CSS pixels, and the canvas pixels per CSS pixel: out = [width, height, ratio].
+	// The browser window (or the iframe the game runs in, or the screen in full screen), unless the page
+	// defines Module.getCanvasAreaSize() returning [width, height], e.g. to fit the game in a page element:
+	//   Module.getCanvasAreaSize = function () { var r = myBox.getBoundingClientRect(); return [r.width, r.height]; };
+	// (The element must not take its size from the canvas.)
+	// Module.maxPixelRatio, if the page sets it, caps the ratio (for slow devices with very dense screens).
+	jsContextGetCanvasArea: function(out) {
+		var w = 0;
+		var h = 0;
+		if (typeof Module['getCanvasAreaSize'] === 'function') {
+			var size = Module['getCanvasAreaSize']();
+			w = size[0];
+			h = size[1];
+		}
+		if (!(w > 0 && h > 0)) {
+			w = window.innerWidth;
+			h = window.innerHeight;
+		}
+		var ratio = window.devicePixelRatio || 1;
+		var maxRatio = Module['maxPixelRatio'];
+		if (maxRatio > 0 && ratio > maxRatio) {
+			ratio = maxRatio;
+		}
+		HEAPF64[(out >> 3) + 0] = w;
+		HEAPF64[(out >> 3) + 1] = h;
+		HEAPF64[(out >> 3) + 2] = ratio;
+	},
+
+	// Where content coordinates are on the canvas, in CSS pixels: cssX = x + contentX * sx (see Rtt_EmscriptenContext.cpp)
+	jsContextSetContentTransform: function(x, y, sx, sy) {
+		Module.appContentToCss = { x: x, y: y, sx: sx, sy: sy };
 	},
 
 	jsContextGetWindowWidth: function() {	return window.innerWidth;	},

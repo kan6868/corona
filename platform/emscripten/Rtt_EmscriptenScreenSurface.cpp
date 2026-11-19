@@ -7,7 +7,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
-#include <SDL2/SDL.h>
+#include "Rtt_EmscriptenSDL.h"
 #include "Core/Rtt_Build.h"
 #include "Rtt_EmscriptenScreenSurface.h"
 
@@ -22,6 +22,7 @@ namespace Rtt
 EmscriptenScreenSurface::EmscriptenScreenSurface()
 	: fWindow(NULL)
 	, fOrientation(DeviceOrientation::kUpright)
+	, fPixelRatio(1.0f)
 {
 }
 
@@ -92,9 +93,19 @@ S32 EmscriptenScreenSurface::DeviceHeight() const
 	return 0;	
 }
 
+S32 EmscriptenScreenSurface::AdaptiveWidth() const
+{
+	return (S32) (DeviceWidth() / fPixelRatio + 0.5f);
+}
+
+S32 EmscriptenScreenSurface::AdaptiveHeight() const
+{
+	return (S32) (DeviceHeight() / fPixelRatio + 0.5f);
+}
+
 void EmscriptenScreenSurface::getWindowSize(int* w, int* h)
 {
-	SDL_GetWindowSize(fWindow, w, h);
+	RttSDL_GetWindowPixelSize(fWindow, w, h);
 }
 
 DeviceOrientation::Type EmscriptenScreenSurface::GetOrientation() const

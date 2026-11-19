@@ -15,7 +15,7 @@
 #include "Display/Rtt_Display.h"
 #include "Core/Rtt_Types.h"
 #include "Rtt_BitmapUtils.h"
-#include <SDL2/SDL.h>
+#include "Rtt_EmscriptenSDL.h"
 #include <cctype>
 #include <cstring>
 

@@ -30,7 +30,8 @@ var videoLibrary =
 					//console.log('JS objID', objID);
 
 					var viewPort = canvas.getBoundingClientRect();
-					var scale = viewPort.width / Module.appInitWidth;
+					var origin = Module.contentToCss(0, 0);
+					var scale = Module.appContentToCss ? Module.appContentToCss.sx : 1;
 					var video = document.createElement('video');
 					video.id = Module.appElementCounter++;
 					video.type = 'video';
@@ -40,8 +41,8 @@ var videoLibrary =
 					video.h = h;
 
 					video.style.position = "absolute";
-					video.style.left = (viewPort.left + video.x * scale) + 'px';
-					video.style.top = (viewPort.top + video.y * scale) + 'px';
+					video.style.left = (viewPort.left + origin.x + video.x * scale) + 'px';
+					video.style.top = (viewPort.top + origin.y + video.y * scale) + 'px';
 					video.style.width = video.w + 'px';
 					video.style.height = video.h + 'px';
 
@@ -59,8 +60,8 @@ var videoLibrary =
 					btn.h = bsize;
 
 					btn.style.position = "absolute";
-					btn.style.left = (viewPort.left + btn.x * scale) + 'px';
-					btn.style.top = (viewPort.top + btn.y * scale) + 'px';
+					btn.style.left = (viewPort.left + origin.x + btn.x * scale) + 'px';
+					btn.style.top = (viewPort.top + origin.y + btn.y * scale) + 'px';
 					btn.style.width = btn.w + 'px';
 					btn.style.height = btn.h + 'px';
 					btn.style.backgroundColor = "yellow";

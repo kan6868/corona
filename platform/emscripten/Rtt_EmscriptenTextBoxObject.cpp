@@ -18,7 +18,7 @@
 
 #if defined(EMSCRIPTEN)
 #include "emscripten/emscripten.h"		// for native alert and etc
-#include <SDL2/SDL.h>
+#include "Rtt_EmscriptenSDL.h"
 
 extern "C"
 {
@@ -51,9 +51,8 @@ extern "C"
 
 	void EMSCRIPTEN_KEEPALIVE jsEnableKeyboard(int val)
 	{
-		SDL_EventState(SDL_TEXTINPUT, val == 0 ? SDL_DISABLE : SDL_ENABLE);
-		SDL_EventState(SDL_KEYDOWN, val == 0 ? SDL_DISABLE : SDL_ENABLE);
-		SDL_EventState(SDL_KEYUP, val == 0 ? SDL_DISABLE : SDL_ENABLE);
+		// off while an HTML text field has the focus, so typing does not also send key events to the app
+		RttSDL_SetKeyboardEventsEnabled(val != 0);
 	}
 
 

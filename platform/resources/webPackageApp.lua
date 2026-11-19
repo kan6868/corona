@@ -480,6 +480,12 @@ local function buildTemplate(templateFolder)
 --]]
 end
 
+-- string.gsub with a plain search string and a literal replacement (no pattern or '%' surprises)
+local function replacePlain(s, search, replacement, n)
+	local escaped = search:gsub("[%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")
+	return s:gsub(escaped, function() return replacement end, n)
+end
+
 local function makeHtmlFile(name)
 	local htmlFile = pathJoin(webappFolder, name..".html")
 	log3(htmlFile)
@@ -491,10 +497,10 @@ local function makeHtmlFile(name)
 	fi:close()
 
 	local count
- 	s, count = s:gsub('coronaHtml5App.bin', args.applicationName .. ".bin", 1)
+ 	s, count = replacePlain(s, 'coronaHtml5App.bin', args.applicationName .. ".bin", 1)
 	if count > 0 then
 		-- replace title
-		s = s:gsub('Corona HTML5 App', args.applicationName)
+		s = replacePlain(s, 'Corona HTML5 App', args.applicationName)
 
 		-- rewrite file
 		local out = io.open(htmlFile, "wb");
@@ -629,7 +635,7 @@ function webPackageApp( options )
 
 	local function copyHtmlTemplateFile(srcFileName, dstFileName, skipIfExists)
 		local destinationFile = pathJoin(webappFolder, dstFileName)
-		if skipIfExists and file_exists(dstFileName) then
+		if skipIfExists and file_exists(destinationFile) then
 			log('Using existing ', dstFileName)
 		else
 			local templateFile = pathJoin(templateFolder, 'html', srcFileName)
@@ -726,7 +732,7 @@ function webPackageApp( options )
 		pos = pos + dataFiles[i].size
 		loadPackage = loadPackage .. '"crunched":0,';
 		loadPackage = loadPackage .. '"end":' .. pos .. ',';
-		loadPackage = loadPackage .. '"filename":"' .. dataFiles[i].name ..'"}';
+		loadPackage = loadPackage .. '"filename":' .. json.encode(dataFiles[i].name) .. '}';
 		if i == #dataFiles then loadPackage = loadPackage .. ']' else loadPackage = loadPackage .. "," end
 
 		-- print log
@@ -750,11 +756,11 @@ function webPackageApp( options )
 	
 	local createPaths = ''
 	for i = 1, #folders do
-		createPaths = createPaths .. 'Module["FS_createPath"]("'
-		createPaths = createPaths .. folders[i].parent
-		createPaths = createPaths .. '","'
-		createPaths = createPaths .. folders[i].name
-		createPaths = createPaths .. '",true,true);'
+		createPaths = createPaths .. 'Module["FS_createPath"]('
+		createPaths = createPaths .. json.encode(folders[i].parent)
+		createPaths = createPaths .. ','
+		createPaths = createPaths .. json.encode(folders[i].name)
+		createPaths = createPaths .. ',true,true);'
 	end
 	log3('FS_createPath:',createPaths);
 
@@ -771,28 +777,29 @@ function webPackageApp( options )
 
 	-- seek loadPackage({"files":[{"audio":0,"start":0,"crunched":0,"end":359,"filename":"/main.lua"},{"audio":0,"start":359,"crunched":0,"end":718,"filename":"/zzz/main.lua"}],"remote_package_size":718,"package_uuid":"be67bd33-1e30-46ab-85c8-ab4d3f06cf1d"})
 	local count
- 	src, count = src:gsub('loadPackage%b()', loadPackage, 1)
+ 	-- match the call "loadPackage({...})", not the declaration "function loadPackage(metadata)" (emscripten 3.1+)
+	src, count = src:gsub('loadPackage%(%b{}%)', function() return loadPackage end, 1)
  	if count < 1 then
 		return 'Source .js file does not contain loadPackage(...)';
  	end
 
 	-- seek Module["FS_createPath"]("/","CORONA_FOLDER_PLACEHOLDER",true,true);
- 	src, count = src:gsub("Module%['FS_createPath']%b();", createPaths, 1)
+ 	src, count = src:gsub("Module%['FS_createPath']%b();", function() return createPaths end, 1)
  	if count < 1 then
-	 	src, count = src:gsub('Module%["FS_createPath"]%b();', createPaths, 1)
+	 	src, count = src:gsub('Module%["FS_createPath"]%b();', function() return createPaths end, 1)
 	 	if count < 1 then
 			return 'Source .js file does not contain FS_createPath()';
 		end
  	end
 
  	-- rename .data
- 	src, count = src:gsub('coronaHtml5App.data', args.applicationName .. ".data")
+ 	src, count = replacePlain(src, 'coronaHtml5App.data', args.applicationName .. ".data")
  	if count < 1 then
 		return 'Source .js file does not contain coronaHtml5App.data';
  	end
 
  	-- rename .wasm
- 	src, count = src:gsub('coronaHtml5App.wasm', args.applicationName .. ".wasm")
+ 	src, count = replacePlain(src, 'coronaHtml5App.wasm', args.applicationName .. ".wasm")
  	if count < 1 then
 		return 'Source .js file does not contain coronaHtml5App.wasm';
  	end
@@ -809,11 +816,11 @@ function webPackageApp( options )
 
 	-- make index.html 
 	local err = makeHtmlFile("index")
-	if (res ~= nil) then return res end
+	if (err ~= nil) then return err end
 	err = makeHtmlFile("index-debug")
-	if (res ~= nil) then return res end
+	if (err ~= nil) then return err end
 	err = makeHtmlFile("index-nosplash")
-	if (res ~= nil) then return res end
+	if (err ~= nil) then return err end
 
 	-- compress .js & .wasm into .bin
 	gzip(webappFolder, args.applicationName , {'.js', '.wasm'}, args.applicationName .. '.bin')
@@ -867,7 +874,7 @@ function webPackageApp( options )
 		fi:close()
 
 		local count
- 		s, count = s:gsub('coronaHtml5App.data', args.applicationName .. ".data", 1)
+ 		s, count = replacePlain(s, 'coronaHtml5App.data', args.applicationName .. ".data", 1)
 		if count > 0 then
 			-- rewrite file
 			local out = io.open(src, "wb");

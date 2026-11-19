@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "Rtt_EmscriptenSDL.h"
 
 #include "Rtt_EmscriptenDevice.h"
 #include "Rtt_MPlatform.h"
@@ -190,6 +190,7 @@ namespace Rtt
 		virtual bool SupportsNetworkStatus() const;
 
 		void setWindow(SDL_Window* window, DeviceOrientation::Type orientation);
+		void setPixelRatio(float ratio);
 
 	protected:
 		Rtt_Allocator* fAllocator;
