@@ -26,6 +26,10 @@ stoplist = {
 	"xcassets",
 }
 
+choices = {
+	["?FS"] = { "", function() end }
+}
+
 settings =
 {
 	android =
@@ -283,6 +287,18 @@ settings =
 			image = "",
 		},
 	},
+
+	callbacks =
+	{
+		simulatorStart = "?FS",
+		appStart = "?FS",
+		preBuild = "?FS"
+	},
+
+	luaExcludeDirs = "",
+	luaExcludeFiles = "",
+	transientLuaExcludeDirs = "",
+	transientLuaExcludeFiles = "",
 
 	plugins =
 	{

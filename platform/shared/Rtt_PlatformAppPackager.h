@@ -31,6 +31,10 @@ class MPlatformServices;
 
 // ----------------------------------------------------------------------------
 
+#if !defined( Rtt_NO_GUI )
+	struct PackagerParamsFilterState;
+#endif
+
 class AppPackagerParams
 {
 	private:
@@ -60,6 +64,11 @@ class AppPackagerParams
 		bool fLiveBuild;
         bool fIncludeStandardResources = true;
 		String fCoronaUser;
+
+	#if !defined( Rtt_NO_GUI )
+		Runtime* fRuntime;
+		PackagerParamsFilterState* fFilterState;
+	#endif
 
 	public:
 		AppPackagerParams( const char* appName,
@@ -124,6 +133,15 @@ class AppPackagerParams
 		DeviceBuildData& GetDeviceBuildData( const MPlatform& platform, const MPlatformServices& services ) const;
 
 	public:
+	#if !defined( Rtt_NO_GUI )
+		void SetRuntime( Runtime* value ) { fRuntime = value; }
+		Runtime* GetRuntime() const { return fRuntime; }
+		
+		void SetFilterState( PackagerParamsFilterState* state ) { fFilterState = state; }
+		PackagerParamsFilterState* GetFilterState() const { return fFilterState; }
+	#endif
+
+	public:
 		virtual void Print();
 
 	public:
@@ -185,8 +203,18 @@ class PlatformAppPackager
 
 	protected:
 		virtual char* Prepackage( AppPackagerParams * params, const char* tmpDir );
-		bool CompileScripts( AppPackagerParams * params, const char* tmpDir );
+		bool CompileScripts( AppPackagerParams * params, const char* tmpDir, const char* stageDir = NULL );
 
+	public:
+		/**
+		 * Compiles the app's own scripts: the project (minus any filtered-out files), the
+		 * transient scripts that `preBuild` left under "<stageDir>/lua", and `appStart`.
+		 * Plugin compilation should keep using CompileScripts() directly.
+		 */
+		bool CompileAppScripts( AppPackagerParams * params, const char* dstDir );
+
+	protected:
+	
 		/**
 		 * Archives all files in a given directory tree to a "resource.car" file.
 		 * The files to be archived are expected to be compiled *.lu files, but will archive any file under the directory.
@@ -281,6 +309,25 @@ class PlatformAppPackager
 	public:
 		static bool IsAppSettingsEmpty( const MPlatform& platform );
 
+	public:
+	#if !defined( Rtt_NO_GUI )
+		bool DoPreBuild( Runtime *runtime, const char* srcDir, const char* stageDir, const char* platform );
+
+		/**
+		 * Per-build setup shared by the device packagers: creates the stage directory (under
+		 * tmpDirBase), runs `preBuild`, and turns on the Lua filters for the app's scripts.
+		 * Must be paired with EndBuildCallbacks(), even on failure.
+		 */
+		bool BeginBuildCallbacks( AppPackagerParams* params, const char* tmpDirBase, const char* platform );
+		void EndBuildCallbacks();
+
+		const char* GetStageDir() const { return fStageDir.IsEmpty() ? NULL : fStageDir.GetString(); }
+ 	#endif
+ 
+	protected:
+		bool WriteAppStart( const char* dstDir, bool stripDebug );
+		void ClearBuildCallbacks();
+
 	protected:
 		const MPlatformServices& fServices;
 		lua_State *fVM;
@@ -292,6 +339,23 @@ class PlatformAppPackager
 		String fSplashImageFile;
         bool fNeverStripDebugInfo;
 		TargetDevice::Platform fTargetPlatform;
+		char *fPreBuildFunc;
+		size_t fPreBuildFuncLength;
+		char *fAppStartFunc;
+		size_t fAppStartFuncLength;
+		
+	#if !defined( Rtt_NO_GUI )
+		String fExcludeDirs;
+		String fExcludeFiles;
+		String fTransientExcludeDirs;
+		String fTransientExcludeFiles;
+		String fStageDir;
+		bool fUseFilters;
+		
+		void EnableFilters( bool newValue ) { fUseFilters = newValue; }
+		void ReadFilter( lua_State *L, const char *key, String& exclude, bool isForFiles );
+		void PrepareFilters( AppPackagerParams* params );
+	#endif
 };
 
 Rtt_EXPORT int Rtt_LuaCompile( lua_State *L, int numSources, const char** sources, const char* dstFile, int stripDebug );

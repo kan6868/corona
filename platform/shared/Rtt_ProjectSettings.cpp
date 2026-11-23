@@ -328,6 +328,26 @@ bool ProjectSettings::LoadFromDirectory(const char* directoryPath)
 		{
 			fOrientationsSupportedSet.insert(fDefaultOrientation);
 		}
+		
+	#if !defined( Rtt_AUTHORING_SIMULATOR ) /* are we in the shell? */
+		lua_getfield(luaStatePointer, -1, "callbacks");
+		if (lua_istable(luaStatePointer, -1))
+		{
+			int result = Lua::DumpFuncOrFilename( directoryPath, luaStatePointer, "appStart" );
+			if ( result < 0 )
+			{
+				Rtt_LogException( "Failed to load `appStart` from project settings" );
+			}
+			else if ( result > 0 )
+			{
+				fStartFunc.assign( lua_tostring( luaStatePointer, -1 ), lua_objlen( luaStatePointer, -1 ) );
+				
+				lua_pop( luaStatePointer, 1 );
+			}
+		}
+		
+		lua_pop( luaStatePointer, 1 );
+	#endif
 	}
 	lua_pop(luaStatePointer, 1);
 

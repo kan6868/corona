@@ -1048,6 +1048,13 @@ Runtime::FindDownloadablePlugins( const char *simPlatformName )
 					// key at -2, value at -1
 					const char *pluginName = lua_tostring(L, -2);
 
+					if ( !fRequiredPlugins.empty() )
+					{
+						fRequiredPlugins += ';';
+					}
+					
+					fRequiredPlugins += pluginName;
+
 					// these names are compatible with those used in things like "excludeFiles"
 					// (they should probably be defined in a central place but are not)
 #ifdef Rtt_MAC_ENV
@@ -1126,6 +1133,34 @@ Runtime::FindDownloadablePlugins( const char *simPlatformName )
 				lua_pop(runtimeL, 1); // pop downloadablePlugins table
 			}
 			lua_pop(L, 1); // pop plugins
+			
+			lua_getfield( L, -1, "callbacks" ); // push settings.callbacks
+
+			if ( lua_istable( L, -1 ) )
+			{
+			#if defined( Rtt_NO_GUI )
+				Rtt_TRACE(( "`callbacks` not yet supported in builder" ));
+			#else
+				int top = lua_gettop( L );
+				
+				String projectDir( & fPlatform.GetAllocator() );
+				fPlatform.PathForFile( NULL, MPlatform::kResourceDir, MPlatform::kDefaultPathFlags, projectDir );
+				
+				int result = Lua::DumpFuncOrFilename( projectDir.GetString(), L, "simulatorStart" );
+				if ( result < 0 )
+				{
+					Rtt_LogException(( "Error loading `simulatorStart`" ));
+				}
+				else if ( result > 0 )
+				{
+					fStartFunc.assign( lua_tostring( L, -1 ), lua_objlen( L, -1 ) );
+				}
+
+				lua_settop( L, top );
+			#endif
+			}
+
+			lua_pop( L, 1 ); // pop	settings.callbacks
 		}
 	}
 
@@ -1300,6 +1335,79 @@ Runtime::LoadApplication( const LoadParameters& parameters )
 		}
 
 		PopAndClearConfig( L );
+		
+		// ---------------------------------------------------------------
+
+		int top = lua_gettop( L );
+	
+		lua_getglobal( L, "_callStartFunction" );
+
+		if ( !lua_isfunction( L, -1 ) )
+		{
+			Rtt_LogException( "Error: failed to find valid '_callStartFunction'" );
+		}
+		else
+		{
+		#ifdef Rtt_AUTHORING_SIMULATOR
+			lua_getglobal( L, "_requireDumped" );
+			if ( lua_isstring( L, -1 ) )
+			{
+				std::string str( lua_tostring( L, -1 ), lua_objlen( L, -1 ) );
+
+				SetRequireFunction( str );
+			}
+			else
+			{
+				Rtt_LogException( "Error: failed to find valid '_requireDumped'" );	
+			}
+			lua_pop( L, 1 );
+		#endif
+		
+			int result = LUA_ERRFILE;
+			if ( ! IsProperty( kIsApplicationNotArchived ) && GetArchive() )
+			{
+				const char kAppStart[] = Rtt_LUA_OBJECT_FILE( "_appStart_" );
+				result = GetArchive()->LoadResource( L, kAppStart );
+				
+				if ( LUA_ERRFILE == result )
+				{
+					lua_pop( L, 1 );
+				}
+			}
+			
+			if ( ( LUA_ERRFILE == result ) && !fStartFunc.empty() )
+			{
+				if ( 0 == luaL_loadbuffer( L, fStartFunc.data(), fStartFunc.size(), "start" ) )
+				{
+					result = 0;
+				}
+				else
+				{
+					Rtt_LogException( "Error: failed to load '_callStartFunction': %s", lua_tostring( L, -1 ) );
+				}
+			}
+		
+			if ( LUA_ERRFILE != result ) // resource found, or had start function?
+			{
+				lua_pushboolean( L, 0 == result ); // load succeeded?
+
+				if ( 0 == fVMContext->DoCall( L, 2, 1 ) )
+				{
+					// TODO: use results?
+				}
+			}
+		
+			SetStartFunction( "" );
+		}
+		
+		const char *tempGlobals[] = { "_callStartFunction", "_requireDumped" };
+		for ( const char *name : tempGlobals )
+		{
+			lua_pushnil( L );
+			lua_setglobal( L, name );
+		}
+		
+		lua_settop( L, top );
 		
 		// ---------------------------------------------------------------
 		

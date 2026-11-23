@@ -124,7 +124,18 @@ IOSAppPackager::Build( AppPackagerParams * params, const char* tmpDirBase )
 
 	if ( Rtt_VERIFY( 0 == system( cmd ) ) )
 	{
-		char* inputFile = Prepackage( params, tmpDir );
+		char* inputFile = NULL;
+
+ 	#if !defined( Rtt_NO_GUI )
+		if ( BeginBuildCallbacks( params, tmpDirBase, "iphone" ) )
+	#endif
+ 		{
+			inputFile = Prepackage( params, tmpDir ); // n.b. picks up the stage directory, filters, and `appStart`
+ 		}
+
+	#if !defined( Rtt_NO_GUI )
+		EndBuildCallbacks(); // n.b. everything after this only consumes tmpDir / input.zip
+	#endif
 
 		if ( inputFile )
 		{

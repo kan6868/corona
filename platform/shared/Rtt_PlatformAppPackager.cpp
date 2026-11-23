@@ -18,6 +18,9 @@
 #include "Rtt_MPlatform.h"
 #include "Rtt_MPlatformDevice.h"
 #include "Rtt_MPlatformServices.h"
+
+#include "Rtt_LuaLibSystem.h"
+
 #if defined(Rtt_WIN_ENV) && !defined(Rtt_LINUX_ENV)
 #	include "Core/Rtt_FileSystem.h"
 #	include "stdafx.h"
@@ -64,8 +67,24 @@
 
 // ----------------------------------------------------------------------------
 
+
+#if !defined(Rtt_NO_GUI)
+
+extern "C" {
+	int luaopen_coronabaselib(lua_State *L);
+	int luaopen_lfs(lua_State *L);
+}
+
+#endif
+
 namespace Rtt
 {
+
+#if !defined(Rtt_NO_GUI)
+
+int luaload_json(lua_State* L);
+
+#endif
 
 static const char *kUserPreferenceCustomBuildID = "userPreferenceCustomBuildID";
 static const char *kUserPreferenceCustomDailyBuild = "userPreferenceCustomDailyBuild";
@@ -87,7 +106,213 @@ Rtt_EXPORT int Rtt_LuaCompile(lua_State *L, int numSources, const char** sources
 
 // ----------------------------------------------------------------------------
 
-#define kDefaultNumBytes 128
+#if !defined( Rtt_NO_GUI )
+
+struct ListOfStringsIter {
+	void FindNextSeparator()
+	{
+		fSeparator = strchr( fStr, fSeparatorChar );
+	}
+
+	ListOfStringsIter( const char * str, char sep = ';' )
+	:	fStr( str ),
+		fSeparatorChar( sep )
+	{
+		if ( str )
+		{
+			FindNextSeparator();
+		}
+	}
+
+	std::string operator*() const
+	{
+		if ( fSeparator )
+		{
+			return std::string( fStr, fSeparator - fStr );
+		}
+		else
+		{
+			return fStr;
+		}
+	}
+
+	ListOfStringsIter& operator++()
+	{
+		if ( NULL != fSeparator )
+		{
+			fStr = fSeparator + 1;
+			
+			FindNextSeparator();
+		}
+		else
+		{
+			fStr = NULL;
+		}
+		
+		return *this;
+	}
+	
+	ListOfStringsIter& begin() { return *this; }
+	ListOfStringsIter& end() { return *this; }
+	
+	bool operator!=( const ListOfStringsIter& ) const
+	{
+		return NULL != fStr;
+	}
+
+	const char * fStr;
+	const char * fSeparator;
+	char fSeparatorChar;
+};
+
+struct PackagerParamsFilterState {
+	const String* fExcludeFilesPattern;
+	const String* fExcludeDirsPattern;
+	
+	
+	
+	PackagerParamsFilterState()
+	{
+		Reset();
+	}
+	
+	void
+	Reset()
+	{
+		fExcludeFilesPattern = NULL;
+		fExcludeDirsPattern = NULL;
+	}
+	
+	static const String*
+	AuxAssignPattern( const String& filter )
+	{
+		if( filter.GetLength() > 0 )
+		{
+			return &filter;
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	
+	void
+	AssignPatterns( const String& excludeFiles, const String& excludeDirs )
+	{
+		fExcludeFilesPattern = AuxAssignPattern( excludeFiles );
+		fExcludeDirsPattern = AuxAssignPattern( excludeDirs );
+	}
+	
+	bool
+	CanInclude( const char* name, const String *exclude ) const
+	{
+		Rtt_ASSERT( exclude );
+	
+		for ( std::string&& clause : ListOfStringsIter( exclude->GetString(), '|' ) )
+		{
+			bool isNegation = ( '~' == clause[0] );
+			bool isMatch = MatchPattern( name, clause.c_str() + isNegation );
+			bool shouldExclude = isMatch;
+			
+			if ( isNegation )
+			{
+				shouldExclude = !shouldExclude;
+			}
+			
+			if ( shouldExclude )
+			{
+				Rtt_TRACE_SIM(( "Filtering out '%s'", name ));
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	bool
+	CanIncludeFile( const char *file ) const
+	{
+		return ( NULL == fExcludeFilesPattern ) || CanInclude( file, fExcludeFilesPattern );
+	}
+
+	bool
+	CanIncludeDir( const char *dir ) const
+	{
+		return ( NULL == fExcludeDirsPattern ) || CanInclude( dir, fExcludeDirsPattern );
+	}
+
+	/* The following is boiled down from str_match(), in lstrlib.c */
+	
+	#define uchar(p) ((unsigned char)p)
+
+	static const char *
+	ClassEnd( const char *p )
+	{
+		bool isEscape = ( '%' == *p++ );
+		return isEscape ? ( p + 1 ) : p;
+	}
+
+	static bool
+	SingleMatch( int c, const char *p )
+	{
+		return ( '%' == *p ) ? ( uchar( p[1] ) == c ) : ( '.' == *p ) || ( uchar( *p ) == c );
+	}
+
+	static bool
+	MaxExpand( const char *s, const char *p, const char *ep )
+	{
+		ptrdiff_t i = 0;  /* counts maximum expand for item */
+
+		while ( *( s + i ) && SingleMatch( uchar( s[i] ), p ) )
+		{
+			i++;
+		}
+
+		/* keeps trying to match with the maximum repetitions */
+		while ( i >= 0 )
+		{
+			if ( MatchPattern( s + i, ep + 1 ) )
+			{
+				return true;
+			}
+
+			i--;  /* else didn't match; reduce 1 repetition to try again */
+		}
+
+		return false;
+	}
+
+	static bool
+	MatchPattern( const char *s, const char *p )
+	{
+		while ( *p ) /* end of pattern? */
+		{
+			const char *ep = ClassEnd( p );  /* points to what is next */
+			if ( '*' == *ep ) /* 0 or more repetitions */
+			{ 
+				return MaxExpand( s, p, ep );
+			}
+			else if ( *s && SingleMatch( uchar( *s ), p ) )
+			{
+				s++;
+				
+				p = ep;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return ( '\0' == *s );
+	}
+
+	#undef uchar
+};
+
+#endif
+
+#define kDefaultNumBytes 1024
 
 AppPackagerParams::AppPackagerParams( const char* appName, 
 	const char* version,
@@ -109,8 +334,11 @@ AppPackagerParams::AppPackagerParams( const char* appName,
 	fTargetDevice( targetDevice ),
 	fIsStripDebug( true ),
 	fDeviceBuildData( NULL ),
-	fIncludeBuildSettings( false )
-,   fLiveBuild( false )
+	fIncludeBuildSettings( false ),
+	fLiveBuild( false )
+#if !defined( Rtt_NO_GUI )
+	, fRuntime( NULL ), fFilterState( NULL )
+#endif
 {
 	fAppName.Set(appName);
 	fVersion.Set(version);
@@ -140,6 +368,10 @@ AppPackagerParams::AppPackagerParams( const char* appName,
 
 AppPackagerParams::~AppPackagerParams()
 {
+#if !defined( Rtt_NO_GUI)
+	Rtt_DELETE( fFilterState );
+#endif
+
 	delete fDeviceBuildData;
 }
 
@@ -258,7 +490,16 @@ PlatformAppPackager::PlatformAppPackager( const MPlatformServices& services,
 	fCustomBuildId( & fServices.Platform().GetAllocator() ),
 	fGlobalCustomBuildId( & fServices.Platform().GetAllocator() ),
 	fAppSettingsCustomBuildId( & fServices.Platform().GetAllocator() ),
-    fNeverStripDebugInfo( false )
+    fNeverStripDebugInfo( false ),
+#if !defined( Rtt_NO_GUI )
+	fExcludeDirs( & fServices.Platform().GetAllocator() ),
+	fExcludeFiles( & fServices.Platform().GetAllocator() ),
+	fUseFilters( false ),
+#endif
+    fPreBuildFunc( NULL ),
+    fPreBuildFuncLength( 0 ),
+	fAppStartFunc( NULL ),
+	fAppStartFuncLength( 0 )
 {
 	fCustomBuildId.Set( "" );
 	fGlobalCustomBuildId.Set( "" );
@@ -267,6 +508,12 @@ PlatformAppPackager::PlatformAppPackager( const MPlatformServices& services,
 
 PlatformAppPackager::~PlatformAppPackager()
 {
+#if !defined( Rtt_NO_GUI )
+	EndBuildCallbacks(); // in case a Build() bailed out early
+#endif
+
+	ClearBuildCallbacks();
+
 	Lua::Delete( fVM );
 }
 
@@ -289,7 +536,7 @@ PlatformAppPackager::mkdir( const char *sDir )
 	Rtt_ASSERT( kDefaultNumBytes > ( sizeof( kCmdFormat ) + strlen( sDir ) ) );
 	snprintf( cmd, kDefaultNumBytes, kCmdFormat, sDir );
     int result = system( cmd );
-	if (0 == result)
+	if ( 0 == result )
 	{
 		hasSucceeded = true;
 	}
@@ -332,6 +579,8 @@ PlatformAppPackager::rmdir( const char *sDir )
 	snprintf( cmd, kDefaultNumBytes, "rm -rf \"%s\"", sDir );
     result = system( cmd );
 #endif
+	// TODO: can this just use Rtt_DeleteDirectory()?
+		// or rather, how can we modify things to allow for that?
 
 	return (0 == result);
 }
@@ -379,7 +628,7 @@ PlatformAppPackager::Prepackage( AppPackagerParams * params, const char* tmpDir 
 	}
 
 	// Build *.lu into tmpDir
-	if ( CompileScripts( params, tmpDir ) )
+	if ( CompileAppScripts( params, tmpDir ) )
 	{
 		// Compress files in tmpDir into a file kDstName and place it in tmpDir
 		const char kDstName[] = "input.zip";
@@ -490,9 +739,13 @@ IsDirectory( const char *path )
 }
 
 bool
-CompileScriptsInDirectory( lua_State *L, AppPackagerParams& params, const char *dstDir, const char *srcDir )
+CompileScriptsInDirectory( lua_State *L, AppPackagerParams& params, const char *dstDir, const char *srcDir, const char *baseDir )
 {
-	const char *baseDir = params.GetSrcDir(); // this is the project directory
+#if !defined( Rtt_NO_GUI )
+	const PackagerParamsFilterState *filterState = params.GetFilterState();
+#endif
+
+//	const char *baseDir = params.GetSrcDir(); // this is the project directory
 	bool isDirectory = false;
 	bool result = false;
 
@@ -574,7 +827,17 @@ CompileScriptsInDirectory( lua_State *L, AppPackagerParams& params, const char *
 					// If the next item is a directory, then recursively compile the files under that directory.
 					if ( IsDirectory( srcPath ) )
 					{
-						result = CompileScriptsInDirectory( L, params, dstDir, srcPath );
+						if ( Rtt_StringCompare( filename, "buildScripts" ) == 0 )
+						{
+							continue;
+						}
+					#if !defined( Rtt_NO_GUI )
+						else if ( filterState && !filterState->CanIncludeDir( filename ) )
+						{
+							continue;
+						}
+					#endif
+						result = CompileScriptsInDirectory( L, params, dstDir, srcPath, baseDir );
 						continue;
 					}
 
@@ -587,6 +850,12 @@ CompileScriptsInDirectory( lua_State *L, AppPackagerParams& params, const char *
 					{
 						isBuildSettingsFile = (Rtt_StringCompare( filename, "build.settings" ) == 0);
 					}
+				#if !defined( Rtt_NO_GUI )
+					if ( isLuaFile && filterState && !filterState->CanIncludeFile( filename ) )
+					{
+						continue;
+					}
+				#endif
 					if ( isLuaFile || ( isBuildSettingsFile && params.IncludeBuildSettings() ) )
 					{
 						// Create a destination file path for the resulting compiled file.
@@ -857,7 +1126,7 @@ ReplaceMainLuaWithLiveDebug( lua_State *L, AppPackagerParams& params, const char
 }
 
 bool
-PlatformAppPackager::CompileScripts( AppPackagerParams * params, const char* tmpDir )
+PlatformAppPackager::CompileScripts( AppPackagerParams * params, const char* tmpDir, const char* stageDir )
 {
 #if 0
 	const char* srcDir = params->GetSrcDir();
@@ -880,6 +1149,22 @@ PlatformAppPackager::CompileScripts( AppPackagerParams * params, const char* tmp
 	free( srcMain );
 #else
 
+#if !defined( Rtt_NO_GUI )
+	PackagerParamsFilterState* state = params->GetFilterState();
+
+	if ( NULL != state )
+	{
+		if ( !fUseFilters )
+		{
+			state->Reset();
+		}
+		else
+		{
+			state->AssignPatterns( fExcludeFiles, fExcludeDirs );
+		}
+	}
+#endif
+
 	const char* baseDir = params->GetSrcDir();
 	const char* dstDir = tmpDir;
 
@@ -892,7 +1177,31 @@ PlatformAppPackager::CompileScripts( AppPackagerParams * params, const char* tmp
         params->SetStripDebug(false);
     }
     
-	bool result = CompileScriptsInDirectory( fVM, * params, dstDir, baseDir );
+	bool result = CompileScriptsInDirectory( fVM, * params, dstDir, baseDir, params->GetSrcDir() );
+#endif
+
+#if !defined( Rtt_NO_GUI )
+	if ( result && stageDir )
+	{
+		std::string root = stageDir;
+		
+		root += LUA_DIRSEP "lua";
+
+		// `preBuild` is free to not generate anything; compiling a missing directory would
+		// otherwise fail the build with "source directory is inaccessible"
+		if ( Rtt_IsDirectory( root.c_str() ) )
+ 		{
+			if ( NULL != state && fUseFilters )
+			{
+				state->AssignPatterns( fTransientExcludeFiles, fTransientExcludeDirs );
+			}
+			
+			if ( !CompileScriptsInDirectory( fVM, * params, dstDir, root.c_str(), root.c_str() ) )
+			{
+				result = false;
+			}
+ 		}
+	}
 #endif
 
 	if(result)
@@ -1501,9 +1810,356 @@ PlatformAppPackager::OpenBuildSettings( const char * srcDir )
 	return status;
 }
 
+
+#if !defined( Rtt_NO_GUI )
+
+static int
+SaveStack( lua_State *L )
+{
+	int top = lua_gettop( L );
+	if ( top  > 0 )
+	{
+		lua_createtable( L, top, 1 );
+		lua_pushinteger( L, top );
+		lua_setfield( L, -1, "n" );
+		lua_insert( L, 1 );
+		
+		for ( int i = top; i > 0; i-- )
+		{
+			lua_rawseti( L, 1, i );
+		}
+	
+		return -1;
+	}
+	else
+	{
+		return LUA_REFNIL;
+	}
+}
+
+static void
+RestoreStack( lua_State *L, int ref )
+{
+	if ( LUA_REFNIL != ref )
+	{
+		lua_getref( L, ref );
+		lua_getfield( L, -1, "n" );
+		
+		int n = luaL_checkint( L, -1 );
+		
+		lua_pop( L, 1 );
+		
+		for ( int i = 1; i <= n; i++ )
+		{
+			lua_rawgeti( L, -i, i );
+		}
+	
+		lua_remove( L, -( n + 1 ) );
+		lua_unref( L, ref );
+	}
+}
+
+#ifdef Rtt_WIN_ENV
+	#undef CreateFont
+#endif
+
+class ProxyPlatform : public MPlatform
+{
+public:
+	ProxyPlatform( const MPlatform& platform ) : fPlatform( platform ) {}
+
+private:
+	const MPlatform& fPlatform;
+
+	virtual Rtt_Allocator& GetAllocator() const { return fPlatform.GetAllocator(); }
+	virtual MPlatformDevice& GetDevice() const { return fPlatform.GetDevice(); }
+
+public:
+	virtual RenderingStream* CreateRenderingStream( bool _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformSurface* CreateScreenSurface() const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformSurface* CreateOffscreenSurface( const PlatformSurface& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformTimer* CreateTimerWithCallback( MCallback& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformBitmap* CreateBitmap( const char* _1, bool _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformBitmap* CreateBitmapMask( const char _1[], const PlatformFont& _2, Real _3, Real _4, const char _5[], Real& _6 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual bool SaveImageToPhotoLibrary( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual bool SaveBitmap( PlatformBitmap* _1, const char* _2, float _3 ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual bool AddBitmapToPhotoLibrary( PlatformBitmap* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual bool OpenURL( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual int CanOpenURL( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual FontMetricsMap GetFontMetrics( const PlatformFont& _ ) const { Rtt_ASSERT_NOT_REACHED(); return FontMetricsMap(); }
+	virtual const MCrypto& GetCrypto() const { Rtt_ASSERT_NOT_REACHED(); return fPlatform.GetCrypto(); }
+	virtual void GetPreference( Category _1, Rtt::String* _2 ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual Preference::ReadValueResult GetPreference( const char* _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); return Preference::ReadValueResult::kPreferenceNotFound; }
+	virtual OperationResult SetPreferences( const char* _1, const PreferenceCollection& _2 ) const { Rtt_ASSERT_NOT_REACHED(); return OperationResult::kSucceeded; }
+	virtual OperationResult DeletePreferences( const char* _1, const char** _2, U32 _3 ) const { Rtt_ASSERT_NOT_REACHED(); return OperationResult::kSucceeded; }
+	virtual PlatformEventSound* CreateEventSound( const ResourceHandle<lua_State>& _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void ReleaseEventSound( PlatformEventSound* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void PlayEventSound( PlatformEventSound* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual PlatformAudioRecorder* CreateAudioRecorder( const ResourceHandle<lua_State>& _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformAudioPlayer* GetAudioPlayer( const ResourceHandle<lua_State>& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformVideoPlayer* GetVideoPlayer( const ResourceHandle<lua_State>& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformImageProvider* GetImageProvider( const ResourceHandle<lua_State>& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformVideoProvider* GetVideoProvider( const ResourceHandle<lua_State>& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformStoreProvider* GetStoreProvider( const ResourceHandle<lua_State>& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void SetStatusBarMode( StatusBarMode newValue ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual StatusBarMode GetStatusBarMode() const { Rtt_ASSERT_NOT_REACHED(); return MPlatform::kHiddenStatusBar; }
+	virtual int GetStatusBarHeight() const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual int GetTopStatusBarHeightPixels() const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual int GetBottomStatusBarHeightPixels() const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual void SetIdleTimer( bool enabled ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual bool GetIdleTimer() const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual void GetSafeAreaInsetsPixels( Rtt_Real& _1, Rtt_Real& _2, Rtt_Real& _3, Rtt_Real& _4 ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual NativeAlertRef ShowNativeAlert( const char* _1, const char* _2, const char** _3, U32 _4, LuaResource* _5 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void CancelNativeAlert( NativeAlertRef _1, S32 _2 ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void SetActivityIndicator( bool _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual PlatformWebPopup* GetWebPopup() const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual bool CanShowPopup( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual bool ShowPopup( lua_State* _1, const char* _2, int _3 ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual bool HidePopup( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual PlatformDisplayObject* CreateNativeTextBox( const Rect& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformDisplayObject* CreateNativeTextField( const Rect& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void SetKeyboardFocus( PlatformDisplayObject* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual PlatformDisplayObject* CreateNativeMapView( const Rect& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformDisplayObject* CreateNativeWebView( const Rect& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformDisplayObject* CreateNativeVideo( const Rect& _ ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformFBConnect* GetFBConnect() const { return NULL; }
+	virtual Rtt_Real GetStandardFontSize() const { return Rtt_REAL_0; }
+	virtual S32 GetFontNames( lua_State* _1, int _2 ) const { Rtt_ASSERT_NOT_REACHED(); return -1; }
+	virtual PlatformFont* CreateFont( PlatformFont::SystemFont _1, Rtt_Real _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual PlatformFont* CreateFont( const char* _1, Rtt_Real _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void SetTapDelay( Rtt_Real _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual Rtt_Real GetTapDelay() const { Rtt_ASSERT_NOT_REACHED(); return Rtt_REAL_0; }
+	virtual void* CreateAndScheduleNotification( lua_State* _1, int _2 ) const { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual void ReleaseNotification( void* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void CancelNotification( void* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void FlurryInit( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void FlurryEvent( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void RuntimeErrorNotification( const char* _1, const char* _2, const char* _3 ) const { Rtt_ASSERT_NOT_REACHED(); }
+#ifdef Rtt_AUTHORING_SIMULATOR
+	virtual void SetCursorForRect( const char* _1, int _2, int _3, int _4, int _5 ) const { Rtt_ASSERT_NOT_REACHED(); }
+#endif
+	virtual void SetNativeProperty( lua_State* _1, const char* _2, int _3 ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual int PushNativeProperty( lua_State* _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual int PushSystemInfo( lua_State* _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual void RaiseError( Error _1, const char* _2 ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void SetProjectResourceDirectory( const char* _ ) { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void SetSkinResourceDirectory( const char* _ ) { Rtt_ASSERT_NOT_REACHED(); }
+	virtual bool FileExists( const char* _ ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual int SetSync( lua_State* _ ) const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual int GetSync( lua_State* _ ) const { Rtt_ASSERT_NOT_REACHED(); return 0; }
+	virtual void BeginRuntime( const Runtime& _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void EndRuntime( const Runtime& _ ) const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual PlatformExitCallback* GetExitCallback() { Rtt_ASSERT_NOT_REACHED(); return NULL; }
+	virtual bool RequestSystem( lua_State* _1, const char* _2, int _3 ) const { Rtt_ASSERT_NOT_REACHED(); return false; }
+	virtual void Suspend() const { Rtt_ASSERT_NOT_REACHED(); }
+	virtual void Resume() const { Rtt_ASSERT_NOT_REACHED(); }
+
+	virtual void PathForFile( const char* filename, Directory baseDir, U32 flags, String& result ) const
+	{
+		Rtt_ASSERT( NULL == filename );
+	
+		switch (baseDir)
+		{
+		case MPlatform::kCachesDir:
+			result.Set( fCachesDirBase );
+			break;
+		case MPlatform::kPluginsDir:
+			result.Set( fPluginsDirBase );
+			break;
+		case MPlatform::kResourceDir:
+			result.Set( fResourceDirBase );
+			break;
+		case MPlatform::kSystemResourceDir:
+			result.Set( fSystemResourceDirBase );
+			break;
+		default:
+			Rtt_ASSERT_NOT_REACHED();
+		}
+	}
+
+public:
+	String fCachesDirBase;
+	String fPluginsDirBase;
+	String fSystemResourceDirBase;
+	String fResourceDirBase;
+};
+
+static void
+InitLuaForBuild( lua_State *L, const MPlatform& platform )
+{
+	int stackRef = SaveStack( L ); // InitializeLuaPath() expects empty stack
+
+	lua_pushcfunction( L, luaopen_coronabaselib );
+	lua_pushstring( L, "coronabaselib" );
+	lua_call( L, 1, 0 );
+	lua_getglobal( L, "coronabaselib" );
+
+	Rtt_ASSERT( lua_istable( L, -1 ) );
+
+	lua_getfield( L, -1, "print" );
+
+	Rtt_ASSERT( lua_isfunction( L, -1 ) );
+
+	lua_setglobal( L, "print" );
+	lua_pop( L, 1 );
+	lua_pushcfunction( L, luaopen_lfs );
+	lua_pushstring( L, "lfs" );
+	lua_call( L, 1, 0 );
+
+	Lua::RegisterModuleLoader( L, "json", Lua::Open< luaload_json > );
+	LuaContext::InitializeLuaPath( L, platform );
+
+	RestoreStack( L, stackRef );
+}
+
+#endif
+
+#if !defined( Rtt_NO_GUI )
+static bool
+ResolveClause( const char* str, bool isForFile, std::string& clause )
+{
+	const char * dot = strchr( str, '.' );
+
+	if ( dot && Rtt_StringCompare( dot, ".lua" ) != 0 )
+	{
+		Rtt_LogException( "WARNING: dot found but not used for Lua extension" );
+		return false;
+	}
+
+	clause = str;
+		
+	if ( isForFile && !dot )
+	{
+		clause += ".lua";
+	}
+
+	for ( size_t pos = 0; pos < clause.size(); )
+	{
+		switch ( clause[pos] )
+		{
+		case '*':
+			clause.insert( clause.begin() + pos, '.' );
+			pos += 2;
+			break;
+		case '~':
+			Rtt_ASSERT( 0 == pos );
+			
+			pos++;
+			break;
+		case '?':
+			clause[pos++] = '.';
+			break;
+		case '.':
+			clause.insert( clause.begin() + pos, '%' );
+			pos += 2;
+			break;
+		default:
+			pos++;
+		}
+	}
+	
+	return true;
+}
+
+static void
+AuxReadFilter( const char *str, String& filter, bool isForFile )
+{
+	char ch = '\0';
+	bool ok = true, isNewClause = true;
+	
+	for ( int i = 0; ok && str[i]; i++ )
+	{
+		ch = str[i];
+		
+		unsigned char uch = static_cast<unsigned char> ( ch ); // n.b. is*() undefined for negative values
+		
+		if ( isdigit( uch ) )
+		{
+			ok = i; // n.b. false on i == 0
+		}
+		else if ( '.' == ch )
+		{
+			ok = isForFile;
+		}
+		else if ( '~' == ch )
+		{
+			ok = isNewClause;
+		}
+		else
+		{
+			ok = isalnum( uch ) || ( '_' == ch ) || ( '*' == ch ) || ( '?' == ch ) || ( ';' == ch );
+		}
+		
+		isNewClause = ( ';' == ch );
+	}
+		
+	if ( ok )
+	{
+		std::string build;
+		
+		for ( auto&& luaForm : ListOfStringsIter( str ) )
+		{
+			std::string patternForm;
+			if ( luaForm.empty() )
+			{
+				continue;
+			}
+			else if ( ResolveClause( luaForm.c_str(), isForFile, patternForm ) )
+			{
+				if ( !build.empty() )
+				{
+					build += '|';
+				}
+				
+				build += patternForm;
+			}
+		}
+
+		filter.Set( build.c_str() );
+	}
+	else
+	{
+		Rtt_LogException( "WARNING: Bad character in %s exclusions: '%c'", isForFile ? "file" : "directory", ch );
+	}
+}
+		
+void
+PlatformAppPackager::ReadFilter( lua_State *L, const char* key, String& exclude, bool isForFile )
+{
+	exclude.Set( "" );
+
+	lua_getfield( L, -1, key );
+	
+	if ( lua_isstring( L, -1 ) )
+	{
+		AuxReadFilter( lua_tostring( L, -1 ), exclude, isForFile );
+	}
+	else if ( !lua_isnil( L, -1 ) )
+	{
+		Rtt_LogException( "WARNING: expected string for '%s' filter, got %s", key, luaL_typename( L, -1 ) );
+	}
+	
+	lua_pop( L, 1 );
+}
+
+void
+PlatformAppPackager::PrepareFilters( AppPackagerParams* params )
+{
+	Rtt_ASSERT( NULL != params );
+	
+	if ( NULL == params->GetFilterState() )
+	{
+		params->SetFilterState( Rtt_NEW( NULL, PackagerParamsFilterState ) );
+	}
+}
+
+#endif
+
 bool
 PlatformAppPackager::ReadBuildSettings( const char * srcDir )
 {
+	ClearBuildCallbacks();
+
 	lua_State *L = fVM;
 	
 	int status = OpenBuildSettings( srcDir );
@@ -1593,7 +2249,58 @@ PlatformAppPackager::ReadBuildSettings( const char * srcDir )
 				lua_pop( L, 1 ); // pop settings.splashScreen.{platform}
 			}
 			lua_pop( L, 1 ); // pop settings.splashScreen
+			
+			lua_getfield( L, -1, "callbacks" ); // push settings.callbacks
+
+			if ( lua_istable( L, -1 ) )
+			{
+			#if defined( Rtt_NO_GUI )
+				Rtt_TRACE(( "`callbacks` not yet supported in builder" ));
+			#else
+				int preBuildResult = Lua::DumpFuncOrFilename( srcDir, L, "preBuild" );
+				if ( preBuildResult > 0 )
+				{
+					const char* str = lua_tolstring( L, -1, &fPreBuildFuncLength );
+	
+					fPreBuildFunc = (char*)Rtt_MALLOC( NULL, fPreBuildFuncLength );
+					
+					memcpy( fPreBuildFunc, str, fPreBuildFuncLength );
+					
+					lua_pop( L, 1 );
+				}
+				else if ( preBuildResult < 0 ) // n.b. already logged
+				{
+					retflag = false;
+				}
+				
+				int appStartResult = Lua::DumpFuncOrFilename( srcDir, L, "appStart" );
+				if ( appStartResult > 0 )
+				{
+					const char* str = lua_tolstring( L, -1, &fAppStartFuncLength );
+	
+					fAppStartFunc = (char*)Rtt_MALLOC( NULL, fAppStartFuncLength );
+					
+					memcpy( fAppStartFunc, str, fAppStartFuncLength );
+					
+					lua_pop( L, 1 );
+				}
+				else if ( appStartResult < 0 )
+				{
+					retflag = false;
+				}
+			#endif
+			}
+
+			lua_pop( L, 1 ); // pop	settings.callbacks
+
+		#if !defined( Rtt_NO_GUI )
+			ReadFilter( L, "luaExcludeFiles", fExcludeFiles, true );
+			ReadFilter( L, "luaExcludeDirs", fExcludeDirs, false );
+			ReadFilter( L, "transientLuaExcludeFiles", fTransientExcludeFiles, true );
+			ReadFilter( L, "transientLuaExcludeDirs", fTransientExcludeDirs, false );
+		#endif
 		}
+		
 		lua_pop( L, 1 ); // pop settings
 		
 		// set global table "settings" to nil
@@ -1739,6 +2446,314 @@ PlatformAppPackager::IsAppSettingsEmpty( const MPlatform& platform )
 
 	return result;
 }
+
+#if !defined( Rtt_NO_GUI )
+
+static int NoOp( lua_State * ) { return 0; }
+
+static void
+AddSystemLib( lua_State *L )
+{
+	lua_createtable( L, 0, 2 );
+	
+	luaL_Reg funcs[] = {
+		{ "getInfo", LuaLibSystem::getInfo },
+		{ "pathForFile", NoOp },
+		{ NULL, NULL },
+	};
+	
+	luaL_register( L, NULL, funcs );
+	lua_setfield( L, -2, "system" );
+}
+
+#endif
+
+static int
+AddRequireFunc( lua_State *L, const std::string& requireFunc, const std::string& requiredPlugins )
+{
+	if ( 0 != luaL_loadbuffer( L, requireFunc.data(), requireFunc.size(), "require" ) )
+	{
+		Rtt_LogException( "Error: failed to load 'require'" );
+		return LUA_REFNIL;
+	}
+	else
+	{
+		lua_pushvalue( L, -1 ); // env, require, require
+		lua_setfield( L, -3, "require" ); // env = { require = require }, require
+		lua_newtable( L ); // env, require, pluginsList
+
+		int index = 1;
+		for ( auto&& pluginName : ListOfStringsIter( requiredPlugins.c_str() ) )
+		{
+			lua_pushstring( L, pluginName.c_str() ); // env, require, pluginsList, pluginName
+			lua_rawseti( L, -2, index++ ); // env, require, pluginsList = { ..., pluginName }
+		}
+
+		if ( 0 == lua_pcall( L, 1, 0, 0 ) ) // env
+		{
+			lua_getfield( L, -1, "require" ); // env, require
+			lua_pushvalue( L, -2 ); // env, require, env
+			lua_setfenv( L, -2 ); // env, require; require.environment = env
+			lua_pop( L, 1 ); // env
+		
+			AddSystemLib( L ); // env = { require, system }
+			
+			return true;
+		}
+		else
+		{
+			Rtt_LogException( "Error: failed to initialize custom require: %s", lua_tostring( L, -1 ) );
+			return false;
+		}
+	}
+}
+
+bool
+PlatformAppPackager::WriteAppStart( const char* dstDir, bool stripDebug )
+{
+	if ( 0 == fAppStartFuncLength )
+	{
+		return true;
+	}
+
+	lua_State *L = fVM;
+
+	#define PATT(TYPE) "%s" LUA_DIRSEP "_appStart_." Rtt_LUA_##TYPE##_FILE_EXTENSION
+
+	lua_pushfstring( L, PATT( SCRIPT ), dstDir );
+	lua_pushfstring( L, PATT( OBJECT ), dstDir );
+
+	const char *scriptName = lua_tostring( L, -2 );
+	const char *compiledName = lua_tostring( L, -1 );
+	
+	#undef PATT
+	
+	bool ok = false;
+	FILE *fp = Rtt_FileOpen( scriptName, "wb" );
+	if ( fp )
+	{
+		bool writeOk = ( fwrite( fAppStartFunc, 1, fAppStartFuncLength, fp ) == fAppStartFuncLength );
+		bool closeOk = ( 0 == Rtt_FileClose( fp ) );
+
+		ok = ( writeOk && closeOk );
+		if ( ok )
+		{
+			ok = ( 0 == Rtt_LuaCompile( L, 1, &scriptName, compiledName, stripDebug ) );
+		}
+
+		Rtt_DeleteFile( scriptName );
+	}
+	
+	if ( !ok )
+	{
+		Rtt_LogException( "ERROR: failed to write `appStart` to '%s'", compiledName );
+	}
+
+	lua_pop( L, 2 );
+	
+	return ok;
+}
+
+void
+PlatformAppPackager::ClearBuildCallbacks()
+{
+	Rtt_FREE( fPreBuildFunc );
+	Rtt_FREE( fAppStartFunc );
+
+	fPreBuildFunc = NULL;
+	fAppStartFunc = NULL;
+	fPreBuildFuncLength = 0;
+	fAppStartFuncLength = 0;
+
+#if !defined( Rtt_NO_GUI )
+	fExcludeFiles.Set( "" );
+	fExcludeDirs.Set( "" );
+	fTransientExcludeFiles.Set( "" );
+	fTransientExcludeDirs.Set( "" );
+#endif
+}
+
+bool
+PlatformAppPackager::CompileAppScripts( AppPackagerParams * params, const char* dstDir )
+{
+	const char *stageDir = NULL;
+
+#if !defined( Rtt_NO_GUI )
+	if ( fUseFilters )
+	{
+		PrepareFilters( params );
+	}
+
+	stageDir = GetStageDir();
+#endif
+
+	// n.b. CompileScripts() may turn off stripping (neverStripDebugInfo), so ask afterward
+	return CompileScripts( params, dstDir, stageDir ) && WriteAppStart( dstDir, params->IsStripDebug() );
+}
+
+#if !defined( Rtt_NO_GUI )
+
+bool
+PlatformAppPackager::BeginBuildCallbacks( AppPackagerParams* params, const char* tmpDirBase, const char* platform )
+{
+	Rtt_ASSERT( fStageDir.IsEmpty() );
+
+	std::string stageTemplate( tmpDirBase );
+
+	if ( !stageTemplate.empty() && '/' != stageTemplate.back() && LUA_DIRSEP[0] != stageTemplate.back() )
+	{
+		stageTemplate += LUA_DIRSEP;
+	}
+
+	stageTemplate += "CLstageXXXXXX";
+
+	std::vector<char> buffer( stageTemplate.begin(), stageTemplate.end() );
+
+	buffer.push_back( '\0' );
+
+	const char *stageDir = Rtt_MakeTempDirectory( buffer.data() );
+	if ( NULL == stageDir )
+	{
+		String message( "ERROR: failed to create build stage directory: " );
+
+		message.Append( stageTemplate.c_str() );
+		params->SetBuildMessage( message.GetString() );
+
+		Rtt_LogException( "%s", message.GetString() );
+
+		return false;
+	}
+
+	fStageDir.Set( stageDir );
+
+	if ( !DoPreBuild( params->GetRuntime(), params->GetSrcDir(), stageDir, platform ) )
+	{
+		if ( NULL == params->GetBuildMessage() )
+		{
+			params->SetBuildMessage( "ERROR: `preBuild` callback failed. Check the Simulator console for details." );
+		}
+
+		return false;
+	}
+
+	EnableFilters( true ); // n.b. picked up by CompileAppScripts()
+
+	return true;
+}
+
+void
+PlatformAppPackager::EndBuildCallbacks()
+{
+	EnableFilters( false );
+
+	if ( !fStageDir.IsEmpty() )
+	{
+		// n.b. Rtt_DeleteDirectory() does not follow links, so anything `preBuild`
+		// symlinked into the stage directory is only unlinked, never emptied
+		if ( Rtt_IsDirectory( fStageDir.GetString() ) && !Rtt_DeleteDirectory( fStageDir.GetString() ) )
+		{
+			Rtt_LogException( "WARNING: failed to remove build stage directory '%s'", fStageDir.GetString() );
+		}
+
+		fStageDir.Set( "" );
+	}
+}
+
+bool
+PlatformAppPackager::DoPreBuild( Runtime *runtime, const char* srcDir, const char* stageDir, const char* platform )
+{
+	bool ok = true;
+		
+	if ( 0 != fPreBuildFuncLength )
+	{
+		if ( NULL == runtime )
+		{
+			Rtt_LogException( "ERROR: `preBuild` needs the project's runtime, but none was supplied to the packager" );
+
+			return false;
+		}
+
+		lua_State *L = fVM;
+		int top = lua_gettop( L );
+
+		void *ud;
+		lua_Alloc alloc = lua_getallocf( L, &ud );
+		
+		ProxyPlatform proxyPlatform( fServices.Platform() );
+		LuaContextUserdata contextUD( NULL, proxyPlatform, runtime );
+		// ^^ TODO: the proxy platform is annoying... is it avoidable? trying with Runtime->Platform() was crashing in pthread_setspecific() or something adjacent
+		
+		runtime->Platform().PathForFile( NULL, MPlatform::kCachesDir, MPlatform::kDefaultPathFlags, proxyPlatform.fCachesDirBase );
+		runtime->Platform().PathForFile( NULL, MPlatform::kPluginsDir, MPlatform::kDefaultPathFlags, proxyPlatform.fPluginsDirBase );
+		runtime->Platform().PathForFile( NULL, MPlatform::kResourceDir, MPlatform::kDefaultPathFlags, proxyPlatform.fResourceDirBase );
+	#if defined( Rtt_MAC_ENV )
+		proxyPlatform.fSystemResourceDirBase.Set( proxyPlatform.fResourceDirBase );
+	#else
+		runtime->Platform().PathForFile( NULL, MPlatform::kSystemResourceDir, MPlatform::kDefaultPathFlags, proxyPlatform.fSystemResourceDirBase );
+	#endif
+
+		lua_setallocf( L, alloc, &contextUD );
+		
+		InitLuaForBuild( L, proxyPlatform );
+
+		lua_newtable( L ); // ..., env
+
+		const std::string &requireFunc = runtime->GetRequireFunction();
+		if ( !requireFunc.empty() )
+		{
+			ok = AddRequireFunc( L, requireFunc, runtime->GetRequiredPlugins() ); // ..., env
+		}
+		
+		if ( ok )
+		{
+			if ( 0 != luaL_loadbuffer( L, fPreBuildFunc, fPreBuildFuncLength, "preBuild" ) ) // ..., env[, preBuild]
+			{
+				Rtt_LogException( "Error: failed to load `preBuild`" );
+				ok = false;
+			}
+			else
+			{
+				lua_insert( L, -2 ); // ..., preBuild, env
+				lua_createtable( L, 0, 1 ); // ..., preBuild, env, env_mt
+				lua_pushvalue( L, LUA_GLOBALSINDEX ); // ..., preBuild, env, env_mt, _G
+				lua_setfield( L, -2, "__index" ); // ..., preBuild, env, env_mt = { __index = _G }
+				lua_setmetatable( L, -2 ); // ..., preBuild, env; env.metatable = env_mt
+				lua_setfenv( L, -2 ); // ..., preBuild; preBuild.environment = env
+	
+				lua_newtable( L );
+				lua_pushstring( L, srcDir );
+				lua_setfield( L, -2, "srcDir" );
+
+				// Lua written under "<stageDir>/lua" is compiled into the app, cf. CompileScripts(),
+				// subject to the transientLuaExclude* filters
+				if ( stageDir )
+				{
+					lua_pushstring( L, stageDir );
+					lua_setfield( L, -2, "stageDir" );
+				}
+				
+				lua_pushstring( L, proxyPlatform.fCachesDirBase.GetString() );
+				lua_setfield( L, -2, "cacheDir" );
+				lua_pushstring( L, platform );
+				
+				if ( 0 != lua_pcall( L, 2, 0, 0 ) )
+				{
+					Rtt_LogException( "Error: `preBuild` failed with `%s`", lua_tostring( L, -1 ) );
+					ok = false;
+				}
+			}
+		}
+		
+		// TODO: restore require() stuff?
+		
+		lua_setallocf( L, alloc, ud );
+		lua_settop( L, top );
+	}
+	
+	return ok;
+}
+
+#endif
 
 /// Returns a copy of the input string, escaping characters as needed such as apostrophies and double quotes.
 /// @param input The source string to escape. Expected to be an ASCII or UTF-8 string. Cannot be NULL.

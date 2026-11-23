@@ -29,6 +29,8 @@ class Rtt::MacSimulatorServices
 #include "Rtt_MPlatformServices.h"
 #include "Rtt_Runtime.h"
 
+#include "Rtt_FileSystem.h"
+
 #include "XcodeToolHelper.h"
 
 #include <string.h>
@@ -116,18 +118,14 @@ OSXAppPackager::Build( AppPackagerParams * params, const char* tmpDirBase )
 	const char tmpTemplate[] = "CLtmpXXXXXX";
 	char tmpDir[kDefaultNumBytes + 1]; Rtt_ASSERT( kDefaultNumBytes > ( strlen( tmpDirBase ) + strlen( tmpTemplate ) ) );
 	int tmpDirLen = snprintf( tmpDir, kDefaultNumBytes, "%s%s", tmpDirBase, tmpTemplate );
-	mktemp(tmpDir);
-	
-    const char kCmdFormat[] = "mkdir -p %s";
-    char cmd[kDefaultNumBytes + 1]; Rtt_ASSERT( kDefaultNumBytes > ( sizeof( kCmdFormat ) + tmpDirLen ) );
-    snprintf( cmd, kDefaultNumBytes, kCmdFormat, tmpDir );
+    char *tmpResult = Rtt_MakeTempDirectory( tmpDir );
     
     const char kTmpResourceCarFormat[] = "%s-resource.car";
     char tmpResourceCar[kDefaultNumBytes + 1]; Rtt_ASSERT( kDefaultNumBytes > ( sizeof( kTmpResourceCarFormat ) + tmpDirLen ) );
     snprintf( tmpResourceCar, kDefaultNumBytes, kTmpResourceCarFormat, tmpDir );
     
     // Create the temporary directory
-	if ( Rtt_VERIFY( 0 == system( cmd ) ) )
+	if ( Rtt_VERIFY( tmpResult ) )
 	{
         osxParams->SetIncludeBuildSettings(true);
 		
@@ -137,13 +135,34 @@ OSXAppPackager::Build( AppPackagerParams * params, const char* tmpDirBase )
 		String outputDir;
 		outputDir.Set(tmpDir);
 
-		if ((result = PrepackagePlugins(osxParams, tmpPluginsDir, outputDir)) != PlatformAppPackager::kNoError)
+		bool ok = true;
+
+	#if !defined( Rtt_NO_GUI )
+		if ( !BeginBuildCallbacks( params, tmpDirBase, "mac" ) )
 		{
-			return result;
+			result = PlatformAppPackager::kBuildError;
+			ok = false;
+		}
+	#endif
+
+		// n.b. no early returns from here on, so that the intermediate files get cleaned up
+		if (ok && (result = PrepackagePlugins(osxParams, tmpPluginsDir, outputDir)) != PlatformAppPackager::kNoError)
+		{
+			ok = false;
 		}
 			
-        if ( CompileScripts( osxParams, tmpDir ) && ArchiveDirectoryTree(osxParams, tmpDir, tmpResourceCar) )
+		bool compiled = ok && CompileAppScripts( osxParams, tmpDir );
+			
+	#if !defined( Rtt_NO_GUI )
+		EndBuildCallbacks();
+	#endif
+			
+        if ( !ok )
         {
+            // result already set
+        }
+        else if ( compiled && ArchiveDirectoryTree(osxParams, tmpDir, tmpResourceCar) )
+		{
             lua_State *L = fVM;
             lua_getglobal( L, "OSXPostPackage" ); Rtt_ASSERT( lua_isfunction( L, -1 ) );
             
@@ -228,11 +247,19 @@ OSXAppPackager::Build( AppPackagerParams * params, const char* tmpDirBase )
             result = PlatformAppPackager::kLocalPackagingError;
         }
 
-		// Clean up intermediate files
-		Rtt_ASSERT(strcmp(tmpDir, "/") != 0);
-		snprintf( cmd, kDefaultNumBytes, "rm -rf \"%s\"", tmpDir );
-		(void)Rtt_VERIFY( 0 == system( cmd ) );
+		// Clean up intermediate files (n.b. rmdir() is "rm -rf", so the resource.car file is fine too)
+		Rtt_ASSERT( strcmp(tmpDir, "/") != 0 );
+		
+ 		(void)Rtt_VERIFY( rmdir( tmpDir ) );
+		(void)Rtt_VERIFY( rmdir( tmpPluginsDir.GetString() ) );
+ 		(void)Rtt_VERIFY( rmdir( tmpResourceCar ) );
+ 		// TODO: add the retainTmpDir option here and consistently elsewhere
 	}
+	else
+	{
+		result = PlatformAppPackager::kLocalPackagingError;
+		osxParams->SetBuildMessage( "ERROR: failed to create temporary build directory" );
+ 	}
 
     // Indicate status in the console
 	if (PlatformAppPackager::kNoError == result)
@@ -320,7 +347,7 @@ OSXAppPackager::PrepackagePlugins(OSXAppPackagerParams *params, String& pluginsD
 		// Note: Compiling already compiled Lua works fine, the result will be stripped
 		OSXAppPackagerParams pluginParamsSettings(params->GetAppName(), "", pluginsDir.GetString(), outputDir.GetString());
 
-		bool wasCompiled = CompileScripts(&pluginParamsSettings, outputDir.GetString());
+		bool wasCompiled = CompileScripts(&pluginParamsSettings, outputDir.GetString(), NULL);
 
 		if (!wasCompiled)
 		{
@@ -355,7 +382,7 @@ OSXAppPackager::PrepackagePlugins(OSXAppPackagerParams *params, String& pluginsD
 	// OSXPostPackage picks up the compiled .lu files alongside the native dylibs.
 	OSXAppPackagerParams pluginParamsSettings(params->GetAppName(), "", pluginsDir.GetString(), outputDir.GetString());
 
-	bool wasCompiled = CompileScripts(&pluginParamsSettings, outputDir.GetString());
+	bool wasCompiled = CompileScripts(&pluginParamsSettings, outputDir.GetString(), NULL);
 	if (!wasCompiled)
 	{
 		if (Rtt_StringIsEmpty(pluginParamsSettings.GetBuildMessage()))

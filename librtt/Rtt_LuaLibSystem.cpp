@@ -35,11 +35,18 @@
 #include <locale>
 #include <locale.h>
 #include <string.h>
+#include <string>
 #include <vector>
+
+#if defined( Rtt_WIN_ENV )
+	#define WIN32_LEAN_AND_MEAN
+	#include <windows.h>
+#endif
 
 #include "Rtt_Lua.h"
 #include "CoronaLibrary.h"
 #include "CoronaLua.h"
+#include "Rtt_FileSystem.h"
 
 // ----------------------------------------------------------------------------
 
@@ -70,6 +77,177 @@ static void PushStringOrNil( lua_State *L, const char *str )
         lua_pushnil( L );
     }
 }
+
+static bool
+WarnAboutMissingEnvVar( lua_State *L, const char *message )
+{
+	static int sDummy;
+
+	lua_pushlightuserdata( L, &sDummy );
+	lua_rawget( L, LUA_REGISTRYINDEX );
+	
+	bool exists = !lua_isnil( L, -1 );
+
+	lua_pop( L, 1 );
+	
+	if ( !exists )
+	{
+		lua_pushlightuserdata( L, &sDummy );
+		lua_pushboolean( L, 1 );
+		lua_rawset( L, LUA_REGISTRYINDEX );
+		
+		Rtt_LogException( "WARNING: %s", message );
+	}
+	
+	return false;
+}
+
+static bool
+GetNativePath( lua_State *L )
+{
+
+#ifdef Rtt_WIN_ENV
+	// n.b. getenv() gives the ANSI code page, so non-ASCII install paths need the wide version
+	// CORONA_ROOT is "<install>\Native"; fall back to CORONA_PATH (the install directory itself),
+	// which the simulator assigns if missing, e.g. in development builds
+	struct {
+		const wchar_t *fName;
+		const char *fFormat;
+	} vars[] = {
+		{ L"CORONA_ROOT", "%s/Corona" },
+		{ L"CORONA_PATH", "%s/Native/Corona" },
+	};
+
+	for ( auto&& var : vars )
+	{
+		const wchar_t *value = _wgetenv( var.fName );
+		if ( NULL == value || L'\0' == *value )
+		{
+			continue;
+		}
+
+		int length = WideCharToMultiByte( CP_UTF8, 0, value, -1, NULL, 0, NULL, NULL );
+		if ( length > 0 )
+		{
+			std::string root( length, '\0' );
+
+			WideCharToMultiByte( CP_UTF8, 0, value, -1, &root[0], length, NULL, NULL );
+			root.resize( length - 1 ); // n.b. drop the terminator...
+
+			while ( !root.empty() && ( '\\' == root.back() || '/' == root.back() ) )
+			{
+				root.pop_back(); // ...and any trailing separator, e.g. CORONA_PATH's
+			}
+
+			lua_pushfstring( L, var.fFormat, root.c_str() );
+
+			return true;
+		}
+	}
+	
+	return WarnAboutMissingEnvVar( L, "missing `CORONA_ROOT` environment variable; unable to find native path" );
+#elif defined( Rtt_MAC_ENV )
+	const char *home = getenv( "HOME" );	
+	if ( NULL == home )
+	{
+		return WarnAboutMissingEnvVar( L, "missing `HOME` environment variable; unable to find native path" );
+	}
+	
+	std::string pathToLink = home;
+	
+	pathToLink += "/Library/Application Support/Corona/Native";
+
+	char path[PATH_MAX];
+	ssize_t linkLength = readlink( pathToLink.c_str(), path, PATH_MAX - 1 );
+	if( linkLength > 0 )
+	{
+		if ( '/' == path[linkLength - 1] )
+		{
+			--linkLength;
+		}
+		
+		path[linkLength] = '\0';
+		
+		lua_pushfstring( L, "%s/Corona", path );
+		
+		return true;
+	}
+	else
+	{
+		Rtt_LogException( "WARNING: unable to find `Native` symbolic link (for `include` and `lib` in application support" );
+		return false;
+	}
+#elif defined( Rtt_LINUX_ENV )
+	// ???
+	return false;
+#else /* non-desktop */
+	return false;
+#endif
+}
+
+#if defined( Rtt_IS_LOCAL_BUILD )
+
+static void
+AddDevDir( lua_State *L, const char *key, const char *fmt, const std::string& buf )
+{
+	const char *path = lua_pushfstring( L, fmt, buf.c_str() );
+	if ( Rtt_IsDirectory( path ) )
+	{
+		lua_setfield( L, -2, key );
+	}
+	else
+	{
+		lua_pop( L, 1 );
+	}
+}
+
+static bool
+GetDevPaths( lua_State *L )
+{
+	std::string buf = { __FILE__ };
+
+	for ( int i = 0; i < 2; i++ ) /* expects "../<corona>/librtt/Rtt_LibSystem.cpp" */
+	{
+		size_t pos = buf.find_last_of(
+			#if defined( Rtt_WIN_ENV )
+				"/\\"
+			#else
+				"/"
+			#endif
+		);
+
+		if ( std::string::npos == pos )
+		{
+			Rtt_LogException( "ERROR: layout too shallow" );
+			return false;
+		}
+		else if ( ( 1 == i ) && buf.compare( pos + 1, std::string::npos, "librtt" ) != 0 )
+		{
+			Rtt_LogException( "ERROR: middle part of path expected to be `librtt`" );
+			return false;
+		}
+		else
+		{
+			buf.resize( pos );
+		}
+	}
+
+	if ( !buf.empty() )
+	{
+		lua_createtable( L, 0, 2 );
+		
+		AddDevDir( L, "Corona", "%s/librtt/Corona", buf );
+		AddDevDir( L, "lua", "%s/external/lua-5.1.3/src", buf );
+		
+		return true;
+	}
+	else
+	{
+		Rtt_LogException( "ERROR: Unexpected file layout" );
+		return false;
+	}
+}
+#endif
 
 int
 LuaLibSystem::getInfo( lua_State *L )
@@ -299,6 +477,18 @@ LuaLibSystem::getInfo( lua_State *L )
                 lua_setfield( L, -2, "hasInstanceID" );
             }
         }
+    }
+    else if ( Rtt_StringCompare( key, "nativeCoronaDir" ) == 0 )
+    {
+		result = GetNativePath( L );
+    }
+    else if ( Rtt_StringCompare( key, "devCoronaDir" ) == 0 )
+    {
+    #if defined( Rtt_IS_LOCAL_BUILD )
+		result = GetDevPaths( L );
+    #else
+		return 0;
+    #endif
     }
     else
     {

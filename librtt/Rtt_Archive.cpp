@@ -624,6 +624,13 @@ Archive::Serialize( const char *dstPath, int numSrcPaths, const char *srcPaths[]
 
 	if (Rtt_FileExists(dstPath))
 	{
+		if (NULL == tmpDirName)
+		{
+			fprintf(stderr, "car: cannot create temporary directory '%s'\n", tmpDirTemplate);
+
+			return;
+		}
+	
 		// Archive already exists, extract the current contents so we can overwrite
 		// old files with fresh copies and add any new ones (this is done to avoid
 		// implementing actual archive editing)
@@ -641,6 +648,8 @@ Archive::Serialize( const char *dstPath, int numSrcPaths, const char *srcPaths[]
 			if ( ! Rtt_CopyFile(srcPaths[i], tmpFileCopy.GetString()))
 			{
 				fprintf(stderr, "car: cannot open '%s' for reading\n", srcPaths[i]);
+
+				Rtt_DeleteDirectory(tmpDirName);
 
 				return;
 			}
@@ -745,7 +754,10 @@ Archive::Serialize( const char *dstPath, int numSrcPaths, const char *srcPaths[]
 		delete [] entries;
 	}
 
-	Rtt_DeleteDirectory(tmpDirName);
+	if ( tmpDirName )
+	{
+		Rtt_DeleteDirectory(tmpDirName);
+	}
 }
 
 static void

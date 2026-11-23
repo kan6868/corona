@@ -241,9 +241,21 @@ AndroidAppPackager::Build( AppPackagerParams * params, const char * tmpDirBase )
 	snprintf(tmpDir, kDefaultNumBytes, "%s" LUA_DIRSEP "%s", tmpDirBase, tmpTemplate);
 
     // This is not as foolproof as mkdtemp() but has the advantage of working on Win32
-    if ( mkdir( mktemp(tmpDir) ) )
+    if ( mkdir( mktemp(tmpDir) ) ) // tODO: Rtt_MakeTempDirectory()?
 	{
-		char* inputFile = Prepackage( params, tmpDir );
+		char* inputFile = NULL;
+
+ 	#if !defined( Rtt_NO_GUI )
+		Runtime *runtime = params->GetRuntime();
+		if ( BeginBuildCallbacks( params, tmpDirBase, "android" ) )
+	#endif
+ 		{
+			inputFile = Prepackage( params, tmpDir ); // n.b. picks up the stage directory, filters, and `appStart`
+ 		}
+
+	#if !defined( Rtt_NO_GUI )
+		EndBuildCallbacks(); // n.b. gradle only consumes tmpDir from here on
+	#endif
 
 		if (inputFile) //offline build
 		{
@@ -583,7 +595,7 @@ AndroidAppPackager::Prepackage( AppPackagerParams * params, const char * tmpDir 
 		Rtt_Log("Prepackage: Compiling Lua ...");
 	}
 	
-	if ( CompileScripts( params, tmpDir ) && CreateBuildProperties( * params, tmpDir ) )
+	if ( CompileAppScripts( params, tmpDir ) && CreateBuildProperties( * params, tmpDir ) )
 	{
 		if (! Rtt_StringIsEmpty(GetSplashImageFile()))
 		{
